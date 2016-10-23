@@ -1,9 +1,9 @@
 /**
  * Probes are designed in mind to Work, Carry and Move.
  * Basically, is the role which manages energy and uses it to store, build, and repair.
- * Name inspired in Starcraft probes.
+ * Probes name inspired in Starcraft probes.
  */
-var roleProbe = {
+var manager = {
   /**
    * We will run manage in every iteration in every tick to assign tasks and ask them
    * to work. Spawn new probes if necessary.
@@ -31,9 +31,7 @@ var roleProbe = {
     }
 
     // print some useful data
-    console.log(
-      'Probes: ' + probes.length + '/' + maxProbes + '.'
-    );
+    console.log('Probes: ' + probes.length + '/' + maxProbes);
   },
 
   /**
@@ -52,7 +50,7 @@ var roleProbe = {
       if (probe.carry.energy < probe.carryCapacity) {
         var sources = probe.room.find(FIND_SOURCES);
         if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(sources[probe.memory.source_index]);
+        probe.moveTo(sources[probe.memory.source_index]);
         }
       } else {
         this.setState(probe, 'ready');
@@ -100,7 +98,7 @@ var roleProbe = {
         this.setState(probe, 'free');
       }
     }
-  },
+	},
 
   /**
    * Assigns a source to the probe
@@ -163,4 +161,4 @@ var roleProbe = {
   }
 };
 
-module.exports = roleProbe;
+module.exports = manager;

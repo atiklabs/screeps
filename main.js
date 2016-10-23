@@ -1,14 +1,15 @@
 var code = require('code');
 var tools = require('tools');
-var probe = require('role.probe');
+var arquitect = require('arquitect');
+var manager = require('manager');
 
 module.exports.loop = function () {
-    // This will clean the unused memory
-    tools.cleanMemory();
-
-    // This code will update previous versions of the software
-    code.update();
-
-    // Manage probes
-    probe.manage();
+  // This will clean the unused memory
+  tools.cleanMemory();
+  // This code will update previous versions of the software
+  code.update();
+  // Arquitect to design the construction sites
+  arquitect.plan();
+  // Manage probes
+  manager.manage();
 };

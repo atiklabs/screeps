@@ -22,11 +22,9 @@ var code = {
    * Update model acording to the current version
    */
   update: function() {
-    if (Memory.code == undefined) {
+    if (Memory.code === undefined) {
       Memory.code = {};
-    }
-    if (this.getVersion() == undefined) {
-      this.setVersion(1.0);
+      Memory.code.version = 1.0;
     }
     if (this.getVersion() == 1.0) {
       for (var name in Game.creeps) {
@@ -38,6 +36,10 @@ var code = {
         }
       }
       this.setVersion(1.1);
+    }
+    if (this.getVersion() == 1.1) {
+      Memory.arquitect = {};
+      this.setVersion(1.2);
     }
 	}
 };
