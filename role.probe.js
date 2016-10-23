@@ -70,7 +70,7 @@ var roleProbe = {
         if (probe.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           probe.moveTo(targets[0]);
           this.setState(probe, 'reparing');
-        } else {
+        } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
       }
@@ -82,7 +82,7 @@ var roleProbe = {
         if (probe.build(targets[0]) == ERR_NOT_IN_RANGE) {
           probe.moveTo(targets[0]);
           this.setState(probe, 'build');
-        } else {
+        } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
       }
@@ -92,7 +92,7 @@ var roleProbe = {
       if (probe.upgradeController(probe.room.controller) == ERR_NOT_IN_RANGE) {
         probe.moveTo(probe.room.controller);
         this.setState(probe, 'controller');
-      } else {
+      } else if (probe.carry.energy === 0) {
         this.setState(probe, 'free');
       }
     }
