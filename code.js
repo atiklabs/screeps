@@ -24,6 +24,8 @@ var code = {
   update: function() {
     if (Memory.code === undefined) {
       Memory.code = {};
+    }
+    if (Memory.code.version === undefined) {
       Memory.code.version = 1.0;
     }
     if (this.getVersion() == 1.0) {
