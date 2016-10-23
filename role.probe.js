@@ -10,7 +10,7 @@ var roleProbe = {
    */
   manage: function() {
     // Useful variables
-    var maxProbes = 12;
+    var maxProbes = 8;
     var probes = this.getAllProbes();
     var probesLength = probes.length;
 
