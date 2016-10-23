@@ -73,6 +73,8 @@ var roleProbe = {
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
+      } else {
+        this.setState(probe, 'ready');
       }
     }
     // ready, construction
@@ -85,6 +87,8 @@ var roleProbe = {
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
+      } else {
+        this.setState(probe, 'ready');
       }
     }
     // ready, controller
@@ -96,7 +100,7 @@ var roleProbe = {
         this.setState(probe, 'free');
       }
     }
-	},
+  },
 
   /**
    * Assigns a source to the probe
