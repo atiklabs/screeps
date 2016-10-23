@@ -51,8 +51,8 @@ var roleProbe = {
     if (this.getState(probe) == 'free') {
       if (probe.carry.energy < probe.carryCapacity) {
         var sources = probe.room.find(FIND_SOURCES);
-        if (probe.harvest(sources[probe.memory.sources_index]) == ERR_NOT_IN_RANGE) {
-            probe.moveTo(sources[probe.memory.sources_index]);
+        if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
+            probe.moveTo(sources[probe.memory.source_index]);
         }
       } else {
         this.setState(probe, 'ready');
