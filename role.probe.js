@@ -144,8 +144,10 @@ var roleProbe = {
    * @param {string} state
    */
   setState: function(probe, state) {
-    probe.memory.state = state;
-    probe.say(state);
+    if (probe.memory.state != state) {
+      probe.memory.state = state;
+      probe.say(state);
+    }
   },
 
   /**
