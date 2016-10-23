@@ -10,7 +10,7 @@ var roleProbe = {
    */
   manage: function() {
     // Useful variables
-    var maxProbes = 8;
+    var maxProbes = 16;
     var probes = this.getAllProbes();
     var probesLength = probes.length;
 
@@ -52,7 +52,7 @@ var roleProbe = {
       if (probe.carry.energy < probe.carryCapacity) {
         var sources = probe.room.find(FIND_SOURCES);
         if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
-            probe.moveTo(sources[probe.memory.source_index]);
+          probe.moveTo(sources[probe.memory.source_index]);
         }
       } else {
         this.setState(probe, 'ready');
