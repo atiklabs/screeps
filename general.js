@@ -1,3 +1,4 @@
+// jshint esversion: 6
 /**
  * The general will command the troops based on an strategy to win any opponent.
  */
@@ -49,9 +50,9 @@ var general = {
     if (totalSoldiersPower < maxSoldiersPower) {
       var name = null;
       var level = null;
-      var especialization = null;
-      if (true || tanks <= healers && tanks <= damagers) {
-        especialization = 'tank';
+      var archetype = null;
+      if (tanks <= healers && tanks <= damagers) {
+        archetype = 'tank';
         if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
           name = Game.spawns.Base.createCreep([ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE]); // costs 500
           level = 2;
@@ -60,7 +61,7 @@ var general = {
           level = 1;
         }
       } else if (healers <= tanks && healers <= damagers) {
-        especialization = 'healer';
+        archetype = 'healer';
         if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
           name = Game.spawns.Base.createCreep([HEAL, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE]); // costs 500
           level = 2;
@@ -69,7 +70,7 @@ var general = {
           level = 1;
         }
       } else if (damagers <= tanks && damagers <= healers) {
-        especialization = 'damager';
+        archetype = 'damager';
         if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
           name = Game.spawns.Base.createCreep([RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE]); // costs 500
           level = 2;
@@ -81,9 +82,9 @@ var general = {
       if (name !== null && isNaN(name)) {
         Game.creeps[name].memory.role = 'soldier';
         Game.creeps[name].memory.state = 'init';
-        Game.creeps[name].memory.specialization = especialization;
+        Game.creeps[name].memory.archetype = archetype;
         Game.creeps[name].memory.level = level;
-        console.log('Spawned soldier [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (totalSoldiersPower + level) + '/' + maxSoldiersPower +')');
+        console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + archetype + ']: ' + name + ' ('+ (totalSoldiersPower + level) + '/' + maxSoldiersPower +')');
       }
     }
   },
@@ -93,6 +94,7 @@ var general = {
    */
   run: function(soldier) {
     var path = null;
+    var target = null;
     var targets = null;
     // init
     if (this.getState(soldier) == 'init') {
@@ -125,13 +127,40 @@ var general = {
     }
     // attack
     if (this.getState(soldier) == 'attack') {
-      var target = soldier.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-      if (target) {
-        if (soldier.attack(target) == ERR_NOT_IN_RANGE) {
+      if (soldier.memory.archetype == 'tank') {
+        target = soldier.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if (target) {
+          if (soldier.attack(target) == ERR_NOT_IN_RANGE) {
+            soldier.moveTo(target);
+          }
+        } else {
+          this.setState(soldier, 'patrol');
+        }
+      } else if (soldier.memory.archetype == 'healer') {
+        targets = soldier.pos.find(FIND_MY_CREEPS, {
+          filter: (creep) => {
+            return (creep.role == 'soldier' || creep.archetype == 'tank');
+          }
+        });
+        if (targets.length > 0) {
+          targets.sort(function(a, b) { return a.hits - b.hits; });
+          if (soldier.heal(targets[0]) == ERR_NOT_IN_RANGE) {
+            soldier.moveTo(targets[0]);
+          }
+        }
+      } else if (soldier.memory.archetype == 'damager') {
+        target = soldier.pos.findClosestByPath(FIND_MY_CREEPS, {
+          filter: (creep) => {
+            return (creep.role == 'soldier' || creep.archetype == 'tank');
+          }
+        });
+        if (target !== null) {
           soldier.moveTo(target);
         }
-      } else {
-        this.setState(soldier, 'patrol');
+        targets = soldier.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+        if (targets.length > 0) {
+          creep.rangedAttack(targets[0]);
+        }
       }
     }
   },

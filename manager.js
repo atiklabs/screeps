@@ -1,3 +1,4 @@
+// jshint esversion: 6
 /**
  * Workers are designed in mind to Work, Carry and Move.
  * Basically, worker is the role which manages energy and uses it to store, build, and repair.
@@ -111,12 +112,13 @@ var manager = {
       // ready for reparing
       if (this.getMode() == 'repair') {
         this.setState(worker, 'repair');
-        target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+        targets = worker.pos.find(FIND_STRUCTURES, {
           filter: object => object.hits < object.hitsMax
         });
-        if (target !== null) {
-          if (worker.repair(target) == ERR_NOT_IN_RANGE) {
-            worker.moveTo(target);
+        targets.sort((a,b) => a.hits - b.hits);
+        if (targets.length > 0) {
+          if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+            worker.moveTo(target[0]);
           } else if (worker.carry.energy === 0) {
             this.setState(worker, 'free');
           }

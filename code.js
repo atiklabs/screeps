@@ -114,6 +114,17 @@ var code = {
       Memory.arquitect.worker_locations = {};
       this.setVersion(1.9);
     }
+    // v1.10
+    if (this.getVersion() == 1.9) {
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        if (creep.memory.role == 'soldier') {
+          creep.memory.archetype = creep.memory.especialization;
+          delete creep.memory.especialization;
+        }
+      }
+      this.setVersion(1.10);
+    }
 	}
 };
 
