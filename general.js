@@ -47,6 +47,7 @@ var general = {
 
     // Spawn automatically new soldiers
     if (totalSoldiersPower < maxSoldiersPower) {
+      console.log('tanks' + tanks + 'healers' + healers + 'damagers' + damagers);
       var name = null;
       var level = null;
       var archetype = null;
