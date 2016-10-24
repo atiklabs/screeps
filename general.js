@@ -102,6 +102,10 @@ var general = {
     // patrol
     if (this.getState(soldier) == 'patrol') {
       if (soldier.memory.patrol == 'controller') {
+        console.log(soldier.room.controller);
+        console.log(soldier);
+        console.log(Game.spawns.Base);
+        /*
         path = soldier.room.findPath(soldier, soldier.room.controller);
         if (path.length > 5) {
           soldier.moveTo(soldier.room.controller);
@@ -109,6 +113,7 @@ var general = {
           soldier.memory.patrol = 'spawn';
           soldier.moveTo(Game.spawns.Base);
         }
+        */
       } else if (soldier.memory.patrol == 'spawn') {
         path = soldier.room.findPath(soldier, Game.spawns.Base);
         if (path.length > 5) {
