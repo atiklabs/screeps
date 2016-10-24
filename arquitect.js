@@ -25,6 +25,7 @@ var arquitect = {
   },
 
   planRoad: function () {
+    var minValue = 10;
     var roadRoom = null;
     var roadPosX = null;
     var roadPosY = null;
@@ -33,13 +34,15 @@ var arquitect = {
       for (var posX in Memory.arquitect.probe_locations[room]) {
         for (var posY in Memory.arquitect.probe_locations[room][posX]) {
           if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
-            var constructionSiteFound = Game.rooms[room].lookfor(LOOK_CONSTRUCTION_SITES, posX, posY);
-            if (constructionSiteFound.length === 0) {
-              var structureFound = Game.rooms[room].lookfor(LOOK_STRUCTURES, posX, posY);
-              if (structureFound.length === 0) {
-                roadRoom = room;
-                roadPosX = posX;
-                roadPosY = posY;
+            if (Memory.arquitect.probe_locations[room][posX][posY] >= minValue) {
+              var constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posX, posY);
+              if (constructionSiteFound.length === 0) {
+                var structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posX, posY);
+                if (structureFound.length === 0) {
+                  roadRoom = room;
+                  roadPosX = posX;
+                  roadPosY = posY;
+                }
               }
             }
           }
