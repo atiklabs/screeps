@@ -77,7 +77,7 @@ var arquitect = {
     var probes = manager.getAllProbes();
     var probesLength = probes.length;
     for (var i = 0; i < probesLength; i++) {
-      if (probes[i].fatigue === 0) {
+      //if (probes[i].fatigue === 0) {
         var room = probes[i].room.name;
         var posX = probes[i].pos.x;
         var posY = probes[i].pos.y;
@@ -92,7 +92,7 @@ var arquitect = {
         }
         Memory.arquitect.probe_locations[room][posX][posY]++;
       }
-    }
+    //}
   },
 
   /**
