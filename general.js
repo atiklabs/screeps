@@ -34,20 +34,19 @@ var general = {
     // Count total soldiers power
     for (var i = 0; i < soldiersLength; i++) {
       totalSoldiersPower += soldiers[i].memory.level;
-      if (soldiers[i].archetype == 'tank') {
+      if (soldiers[i].memory.archetype == 'tank') {
         tanks++;
       }
-      if (soldiers[i].archetype == 'healer') {
+      if (soldiers[i].memory.archetype == 'healer') {
         healers++;
       }
-      if (soldiers[i].archetype == 'damagers') {
+      if (soldiers[i].memory.archetype == 'damagers') {
         damagers++;
       }
     }
 
     // Spawn automatically new soldiers
     if (totalSoldiersPower < maxSoldiersPower) {
-      console.log('tanks' + tanks + 'healers' + healers + 'damagers' + damagers);
       var name = null;
       var level = null;
       var archetype = null;
