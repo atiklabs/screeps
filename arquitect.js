@@ -40,9 +40,9 @@ var arquitect = {
               posX = parseInt(posX);
               posY = parseInt(posY);
               constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posX, posY);
-              if (constructionSiteFound === null) {
+              if (constructionSiteFound.length === 0) {
                 structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posX, posY);
-                if (structureFound === null) {
+                if (structureFound.length === 0) {
                   maxValue = Memory.arquitect.probe_locations[room][posX][posY];
                   roadRoom = room;
                   roadPosX = posX;
