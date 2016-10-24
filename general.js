@@ -96,6 +96,7 @@ var general = {
     var target = null;
     var targets = null;
     var soldiers = this.getAllSoldiers();
+    var soldiersLength = soldiers.length;
     // init
     if (this.getState(soldier) == 'init') {
       this.setState(soldier, 'patrol');
@@ -120,9 +121,8 @@ var general = {
           soldier.moveTo(soldier.room.controller);
         }
       }
-
       targets = soldier.room.find(FIND_HOSTILE_CREEPS);
-      if (targets.length > 0) {
+      if (targets.length > 0 && soldiersLength >= 3) {
         this.setState(soldier, 'attack');
       }
     }
@@ -159,7 +159,7 @@ var general = {
           soldier.moveTo(target);
         }
         targets = soldier.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-        if (targets.length > 0 && soldiers.length >= 3) {
+        if (targets.length > 0) {
           creep.rangedAttack(targets[0]);
         }
       }
