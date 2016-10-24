@@ -61,6 +61,16 @@ var code = {
       }
       this.setVersion(1.3);
     }
+    // v1.4
+    if (this.getVersion() == 1.3) {
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        if (creep.memory.role == 'probe') {
+          creep.memory.state = 'init';
+        }
+      }
+      this.setVersion(1.4);
+    }
 	}
 };
 

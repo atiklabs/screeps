@@ -44,11 +44,21 @@ var manager = {
     if (probe.memory.state == 'init') {
       this.setState(probe, 'free');
     }
-    // free (need to get energy)
+    // free
     if (this.getState(probe) == 'free') {
       if (probe.carry.energy === 0) {
-        this.assignSource(probe);
+        this.setState(probe, 'harvest');
+      } else {
+        this.setState(probe, 'ready');
+      }
+    }
+    // harvest
+    if (this.getState(probe) == 'harvest') {
+      if (probe.carry.energy < probe.carryCapacity) {
         var sources = probe.room.find(FIND_SOURCES);
+        if (probe.memory.source_index === null) {
+          this.assignSource(probe);
+        }
         if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
           probe.moveTo(sources[probe.memory.source_index]);
         }
@@ -58,7 +68,7 @@ var manager = {
       }
     }
     // ready reparing
-    if (this.getState(probe) == 'ready' || this.getState(probe) == 'reparing') {
+    if (this.getState(probe) == 'ready' || this.getState(probe) == 'transfer') {
       target = probe.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
           return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
@@ -68,7 +78,7 @@ var manager = {
       if (target !== null) {
         if (probe.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           probe.moveTo(target);
-          this.setState(probe, 'reparing');
+          this.setState(probe, 'transfer');
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
