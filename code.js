@@ -35,7 +35,7 @@ var code = {
     // v1.1
     if (this.getVersion() == 1.0) {
       for (name in Game.creeps) {
-        var creep = Game.creeps[name];
+        creep = Game.creeps[name];
         if (creep.memory.role == 'harvester' || creep.memory.role == 'upgrader' || creep.memory.role == 'builder') {
           creep.memory.role = 'probe';
           creep.memory.state = 'init';
