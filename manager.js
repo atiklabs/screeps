@@ -10,7 +10,7 @@ var manager = {
    */
   manage: function() {
     // Useful variables
-    var maxProbesPower = 32;
+    var maxProbesPower = 20;
     var totalProbesPower = 0;
     var probes = this.getAllProbes();
     var probesLength = probes.length;
