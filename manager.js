@@ -76,9 +76,9 @@ var manager = {
         }
       });
       if (target !== null) {
+        this.setState(probe, 'transfer');
         if (probe.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           probe.moveTo(target);
-          this.setState(probe, 'transfer');
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
@@ -90,9 +90,9 @@ var manager = {
     if (this.getState(probe) == 'ready' || this.getState(probe) == 'build') {
       target = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
       if (target !== null) {
+        this.setState(probe, 'build');
         if (probe.build(target) == ERR_NOT_IN_RANGE) {
           probe.moveTo(target);
-          this.setState(probe, 'build');
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
