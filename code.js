@@ -86,6 +86,17 @@ var code = {
       Memory.arquitect.probe_locations = {};
       this.setVersion(1.6);
     }
+    // v1.7
+    if (this.getVersion() == 1.6) {
+      Memory.manager = {};
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        if (creep.memory.role == 'probe' && creep.memory.state == 'controller') {
+          creep.memory.state = 'upgrade';
+        }
+      }
+      this.setVersion(1.7);
+    }
 	}
 };
 

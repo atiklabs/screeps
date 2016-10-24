@@ -10,7 +10,7 @@ var manager = {
    */
   manage: function() {
     // Useful variables
-    var maxProbesPower = 16;
+    var maxProbesPower = 32;
     var totalProbesPower = 0;
     var probes = this.getAllProbes();
     var probesLength = probes.length;
@@ -40,9 +40,6 @@ var manager = {
         console.log('Spawned probe [level ' + Game.creeps[name].memory.level + ']: ' + name);
       }
     }
-
-    // print some useful data
-    console.log('Probes power: ' + totalProbesPower + '/' + maxProbesPower);
   },
 
   /**
@@ -78,7 +75,6 @@ var manager = {
         this.setState(probe, 'ready');
       }
     }
-    // ready reparing
     if (this.getState(probe) == 'ready' || this.getState(probe) == 'transfer') {
       target = probe.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
@@ -97,27 +93,28 @@ var manager = {
         this.setState(probe, 'ready');
       }
     }
-    // ready, construction
-    if (this.getState(probe) == 'ready' || this.getState(probe) == 'build') {
-      target = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-      if (target !== null) {
+    // ready reparing
+    if (this.getState(probe) == 'ready' || this.getState(probe) == 'build' || this.getState(probe) == 'upgrade') {
+      if (this.getMode() == 'build') {
         this.setState(probe, 'build');
-        if (probe.build(target) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(target);
+        target = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+        if (target !== null) {
+          if (probe.build(target) == ERR_NOT_IN_RANGE) {
+            probe.moveTo(target);
+          } else if (probe.carry.energy === 0) {
+            this.setState(probe, 'free');
+          }
+        } else {
+          this.setState(probe, 'free');
+        }
+      }
+      if (this.getMode() == 'upgrade') {
+        this.setState(probe, 'upgrade');
+        if (probe.upgradeController(probe.room.controller) == ERR_NOT_IN_RANGE) {
+          probe.moveTo(probe.room.controller);
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
         }
-      } else {
-        this.setState(probe, 'ready');
-      }
-    }
-    // ready, controller
-    if (this.getState(probe) == 'ready' || this.getState(probe) == 'controller') {
-      if (probe.upgradeController(probe.room.controller) == ERR_NOT_IN_RANGE) {
-        probe.moveTo(probe.room.controller);
-        this.setState(probe, 'controller');
-      } else if (probe.carry.energy === 0) {
-        this.setState(probe, 'free');
       }
     }
 	},
@@ -180,6 +177,23 @@ var manager = {
       probe.memory.state = state;
       probe.say(state);
     }
+  },
+
+  /**
+   * Set current manager mode
+   * @return {string} getMode
+   */
+  getMode: function() {
+    return Memory.manager.mode;
+  },
+
+  /**
+   * Set current manager mode
+   * @param {string} mode
+   */
+  setMode: function(mode) {
+    Memory.manager.mode = mode;
+    console.log('Manager mode: ' + mode);
   },
 
   /**
