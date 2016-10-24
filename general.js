@@ -34,13 +34,13 @@ var general = {
     // Count total soldiers power
     for (var i = 0; i < soldiersLength; i++) {
       totalSoldiersPower += soldiers[i].memory.level;
-      if (soldiers[i].specialization == 'tank') {
+      if (soldiers[i].archetype == 'tank') {
         tanks++;
       }
-      if (soldiers[i].specialization == 'healer') {
+      if (soldiers[i].archetype == 'healer') {
         healers++;
       }
-      if (soldiers[i].specialization == 'damagers') {
+      if (soldiers[i].archetype == 'damagers') {
         damagers++;
       }
     }
