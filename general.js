@@ -9,7 +9,7 @@ var general = {
     var soldiers = this.getAllSoldiers();
     var soldiersLength = soldiers.length;
 
-    // Tell every worker to continue their task
+    // Tell every soldier to continue their task
     for (var i = 0; i < soldiersLength; i++) {
       this.run(soldiers[i]);
     }
@@ -23,7 +23,7 @@ var general = {
   recruit: function() {
     // Useful variables
     var soldiers = this.getAllSoldiers();
-    var soldiersLength = workers.soldiers;
+    var soldiersLength = soldiers.length;
     var maxSoldiersPower = 2;
 
     var totalSoldiersPower = 0;
@@ -104,9 +104,9 @@ var general = {
         soldier.memory.patrol = 'controller';
       }
       if (soldier.memory.patrol == 'controller') {
-        path = soldier.room.findPath(soldier, worker.room.controller);
+        path = soldier.room.findPath(soldier, soldier.room.controller);
         if (path.length > 5) {
-          soldier.moveTo(worker.room.controller);
+          soldier.moveTo(soldier.room.controller);
         } else {
           soldier.memory.patrol = 'spawn';
           soldier.moveTo(Game.spawns.Base);
@@ -117,7 +117,7 @@ var general = {
           soldier.moveTo(Game.spawns.Base);
         } else {
           soldier.memory.patrol = 'controller';
-          soldier.moveTo(worker.room.controller);
+          soldier.moveTo(soldier.room.controller);
         }
       }
       targets = soldier.room.find(Game.HOSTILE_CREEPS);
