@@ -97,12 +97,10 @@ var general = {
     // init
     if (this.getState(soldier) == 'init') {
       this.setState(soldier, 'patrol');
+      soldier.memory.patrol = 'controller';
     }
     // patrol
     if (this.getState(soldier) == 'patrol') {
-      if (soldier.memory.patrol === null) {
-        soldier.memory.patrol = 'controller';
-      }
       if (soldier.memory.patrol == 'controller') {
         path = soldier.room.findPath(soldier, soldier.room.controller);
         if (path.length > 5) {
