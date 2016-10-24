@@ -138,7 +138,7 @@ var general = {
           this.setState(soldier, 'patrol');
         }
       } else if (soldier.memory.archetype == 'healer') {
-        targets = soldier.pos.find(FIND_MY_CREEPS, {
+        targets = soldier.room.find(FIND_MY_CREEPS, {
           filter: (creep) => {
             return (creep.memory.role == 'soldier' && creep.memory.archetype == 'tank');
           }
@@ -152,7 +152,7 @@ var general = {
       } else if (soldier.memory.archetype == 'damager') {
         target = soldier.pos.findClosestByPath(FIND_MY_CREEPS, {
           filter: (creep) => {
-            return (creep.memory.role == 'soldier' || creep.memory.archetype == 'tank');
+            return (creep.memory.role == 'soldier' && creep.memory.archetype == 'tank');
           }
         });
         if (target !== null) {
