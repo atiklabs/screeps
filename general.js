@@ -102,20 +102,15 @@ var general = {
     // patrol
     if (this.getState(soldier) == 'patrol') {
       if (soldier.memory.patrol == 'controller') {
-        console.log(soldier.room.controller);
-        console.log(soldier);
-        console.log(Game.spawns.Base);
-        /*
-        path = soldier.room.findPath(soldier, soldier.room.controller);
+        path = soldier.room.findPath(soldier.pos, soldier.room.controller.pos);
         if (path.length > 5) {
           soldier.moveTo(soldier.room.controller);
         } else {
           soldier.memory.patrol = 'spawn';
           soldier.moveTo(Game.spawns.Base);
         }
-        */
       } else if (soldier.memory.patrol == 'spawn') {
-        path = soldier.room.findPath(soldier, Game.spawns.Base);
+        path = soldier.room.findPath(soldier.pos, Game.spawns.Base.pos);
         if (path.length > 5) {
           soldier.moveTo(Game.spawns.Base);
         } else {
