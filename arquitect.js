@@ -68,19 +68,21 @@ var arquitect = {
     var probes = manager.getAllProbes();
     var probesLength = probes.length;
     for (var i = 0; i < probesLength; i++) {
-      var room = probes[i].room.name;
-      var posX = probes[i].pos.x;
-      var posY = probes[i].pos.y;
-      if (typeof Memory.arquitect.probe_locations[room] == 'undefined') {
-        Memory.arquitect.probe_locations[room] = {};
+      if (probes[i].fatigue === 0) {
+        var room = probes[i].room.name;
+        var posX = probes[i].pos.x;
+        var posY = probes[i].pos.y;
+        if (typeof Memory.arquitect.probe_locations[room] == 'undefined') {
+          Memory.arquitect.probe_locations[room] = {};
+        }
+        if (typeof Memory.arquitect.probe_locations[room][posX] == 'undefined') {
+          Memory.arquitect.probe_locations[room][posX] = {};
+        }
+        if (typeof Memory.arquitect.probe_locations[room][posX][posY] == 'undefined') {
+          Memory.arquitect.probe_locations[room][posX][posY] = 0;
+        }
+        Memory.arquitect.probe_locations[room][posX][posY]++;
       }
-      if (typeof Memory.arquitect.probe_locations[room][posX] == 'undefined') {
-        Memory.arquitect.probe_locations[room][posX] = {};
-      }
-      if (typeof Memory.arquitect.probe_locations[room][posX][posY] == 'undefined') {
-        Memory.arquitect.probe_locations[room][posX][posY] = 0;
-      }
-      Memory.arquitect.probe_locations[room][posX][posY]++;
     }
   }
 };
