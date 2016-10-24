@@ -25,7 +25,7 @@ var code = {
     if (typeof Memory.code == 'undefined') {
       Memory.code = {};
     }
-    if (Memory.code.version == 'undefined') {
+    if (typeof Memory.code.version == 'undefined') {
       Memory.code.version = 1.0;
     }
     if (this.getVersion() == 1.0) {

@@ -2,6 +2,7 @@ var code = require('code');
 var tools = require('tools');
 var arquitect = require('arquitect');
 var manager = require('manager');
+var general = require('general');
 
 module.exports.loop = function () {
   // This will clean the unused memory
@@ -12,4 +13,6 @@ module.exports.loop = function () {
   arquitect.plan();
   // Manage probes
   manager.manage();
+  // Attack!
+  general.command();
 };
