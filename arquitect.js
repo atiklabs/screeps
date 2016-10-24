@@ -41,6 +41,7 @@ var arquitect = {
               if (constructionSiteFound.length === 0) {
                 var structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posX, posY);
                 if (structureFound.length === 0) {
+                  maxValue = Memory.arquitect.probe_locations[room][posX][posY];
                   roadRoom = room;
                   roadPosX = posX;
                   roadPosY = posY;
@@ -51,8 +52,10 @@ var arquitect = {
         }
       }
     }
-    Game.rooms[room].createConstructionSite(roadPosX, roadPosY, STRUCTURE_ROAD);
-    console.log('Construction site created [road]: ' + roadPosX + ', ' + roadPosY);
+    if (maxValue !== null) {
+      Game.rooms[room].createConstructionSite(roadPosX, roadPosY, STRUCTURE_ROAD);
+      console.log('Construction site created [road]: ' + roadPosX + ', ' + roadPosY);
+    }
   },
 
   /**
