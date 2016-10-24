@@ -9,7 +9,7 @@ var manager = {
    */
   manage: function() {
     // Useful variables
-    var maxWorkersPower = 24;
+    var maxWorkersPower = 16;
     var totalWorkersPower = 0;
     var workers = this.getAllWorkers();
     var workersLength = workers.length;
@@ -24,14 +24,11 @@ var manager = {
     if (totalWorkersPower < maxWorkersPower) {
       var name = null;
       var level = null;
-      if (Game.spawns.Base.room.energyCapacityAvailable >= 550) {
-        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE]); // costs 550
-        level = 3;
-      } else if (Game.spawns.Base.room.energyCapacityAvailable >= 400) {
-        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE]); // costs 400
+      if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
+        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]); // costs 500
         level = 2;
-      } else if (Game.spawns.Base.room.energyCapacityAvailable >= 200) {
-        name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE]); // costs 200
+      } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
+        name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE, MOVE]); // costs 250
         level = 1;
       }
       if (name !== null && isNaN(name)) {
@@ -39,7 +36,7 @@ var manager = {
         Game.creeps[name].memory.state = 'init';
         Game.creeps[name].memory.source_index = null;
         Game.creeps[name].memory.level = level;
-        console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + '('+ (totalWorkersPower + level) + '/' + maxWorkersPower +')');
+        console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (totalWorkersPower + level) + '/' + maxWorkersPower +')');
       }
     }
   },
@@ -51,7 +48,7 @@ var manager = {
   run: function(worker) {
     var targets = null;
     // init
-    if (worker.memory.state == 'init') {
+    if (this.getState(worker) == 'init') {
       this.setState(worker, 'free');
     }
     // free
