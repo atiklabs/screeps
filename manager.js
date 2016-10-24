@@ -213,7 +213,7 @@ var manager = {
   setMode: function(mode) {
     if  (Memory.manager.mode != mode) {
       Memory.manager.mode = mode;
-      console.log('Manager mode: ' + mode);
+      console.log('Manager: ' + mode);
     }
   },
 

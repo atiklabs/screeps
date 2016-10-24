@@ -3,27 +3,28 @@ var general = require('general');
 var arquitect = require('arquitect');
 
 /**
- * The director configures the manager, general and arquitect and runs them.
+ * The director configures the arquitect, general and manager and runs them.
  */
 var director = {
   /**
    * Orquestrate the system.
    */
   orquestrate: function() {
-    var ticksHour = Math.floor(Game.time/2000);
+    var ticksHour = Math.floor(Game.time/1500);
     if (ticksHour%3 === 0) {
+      arquitect.setMode('plan');
       manager.setMode('build');
     } else if (ticksHour%3 == 1) {
+      arquitect.setMode('study');
       manager.setMode('upgrade');
     } else {
+      arquitect.setMode('rest');
       manager.setMode('repair');
     }
-    // Manage probes
-    manager.manage();
-    // Attack!
-    general.command();
-    // Arquitect to design the construction sites
+    // Ask arquitect, general and manager to work
     arquitect.plan();
+    general.command();
+    manager.manage();
   }
 };
 

@@ -16,16 +16,25 @@ var arquitect = {
     var constructionSitesLength = constructionSites.length;
 
     // study
-    this.saveCurentProbeLocations();
+    if (this.getMode() == 'study') {
+      this.saveCurrentProbeLocations();
+      if (Game.time%10 === 0) {
+        this.ageProbeLocations();
+      }
+    }
 
     // plan roads
-    if (constructionSitesLength < minConstructionSites && Game.time%10 === 0) {
-      this.planRoad();
+    if (this.getMode() == 'plan') {
+      if (constructionSitesLength < minConstructionSites && Game.time%100 === 0) {
+        this.planRoad();
+      }
     }
   },
 
+  /**
+   * Will plan one road in the most transited location
+   */
   planRoad: function () {
-    var minValue = 100;
     var roadRoom = null;
     var roadPosX = null;
     var roadPosY = null;
@@ -38,16 +47,14 @@ var arquitect = {
           if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
             posXInt = parseInt(posX);
             posYInt = parseInt(posY);
-            if (Memory.arquitect.probe_locations[room][posX][posY] >= minValue) {
-              constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
-              if (constructionSiteFound.length === 0) {
-                structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
-                if (structureFound.length === 0) {
-                  maxValue = Memory.arquitect.probe_locations[room][posX][posY];
-                  roadRoom = room;
-                  roadPosX = posXInt;
-                  roadPosY = posYInt;
-                }
+            constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
+            if (constructionSiteFound.length === 0) {
+              structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
+              if (structureFound.length === 0) {
+                maxValue = Memory.arquitect.probe_locations[room][posX][posY];
+                roadRoom = room;
+                roadPosX = posXInt;
+                roadPosY = posYInt;
               }
             }
           }
@@ -64,7 +71,7 @@ var arquitect = {
   /**
   * Save current probes location
   */
-  saveCurentProbeLocations: function() {
+  saveCurrentProbeLocations: function() {
     var probes = manager.getAllProbes();
     var probesLength = probes.length;
     for (var i = 0; i < probesLength; i++) {
@@ -84,7 +91,41 @@ var arquitect = {
         Memory.arquitect.probe_locations[room][posX][posY]++;
       }
     }
-  }
+  },
+
+  /**
+   * Age all probe locations by one.
+   */
+  ageProbeLocations: function() {
+    for (var room in Memory.arquitect.probe_locations) {
+      for (var posX in Memory.arquitect.probe_locations[room]) {
+        for (var posY in Memory.arquitect.probe_locations[room][posX]) {
+          if (Memory.arquitect.probe_locations[room][posX][posY] > 0) {
+            Memory.arquitect.probe_locations[room][posX][posY]--;
+          }
+        }
+      }
+    }
+  },
+
+  /**
+   * Set current manager mode
+   * @return {string} getMode
+   */
+  getMode: function() {
+    return Memory.arquitect.mode;
+  },
+
+  /**
+   * Set current manager mode
+   * @param {string} mode
+   */
+  setMode: function(mode) {
+    if  (Memory.arquitect.mode != mode) {
+      Memory.arquitect.mode = mode;
+      console.log('Arquitect: ' + mode);
+    }
+  },
 };
 
 module.exports = arquitect;
