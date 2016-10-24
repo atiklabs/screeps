@@ -58,15 +58,15 @@ var manager = {
     }
     // ready reparing
     if (this.getState(probe) == 'ready' || this.getState(probe) == 'reparing') {
-      targets = probe.pos.findClosestByRange(FIND_STRUCTURES, {
+      target = probe.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
           return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
             structure.energy < structure.energyCapacity;
         }
       });
-      if (targets.length > 0) {
-        if (probe.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(targets[0]);
+      if (target !== null) {
+        if (probe.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          probe.moveTo(target);
           this.setState(probe, 'reparing');
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
@@ -77,10 +77,10 @@ var manager = {
     }
     // ready, construction
     if (this.getState(probe) == 'ready' || this.getState(probe) == 'build') {
-      targets = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-      if (targets.length > 0) {
-        if (probe.build(targets[0]) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(targets[0]);
+      target = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+      if (target !== null) {
+        if (probe.build(target) == ERR_NOT_IN_RANGE) {
+          probe.moveTo(target);
           this.setState(probe, 'build');
         } else if (probe.carry.energy === 0) {
           this.setState(probe, 'free');
