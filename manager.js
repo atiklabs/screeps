@@ -93,8 +93,8 @@ var manager = {
         this.setState(probe, 'ready');
       }
     }
-    // ready reparing
-    if (this.getState(probe) == 'ready' || this.getState(probe) == 'build' || this.getState(probe) == 'upgrade') {
+    if (this.getState(probe) == 'ready' || this.getState(probe) == 'build' || this.getState(probe) == 'upgrade' || this.getState(probe) == 'repair') {
+      // ready for building
       if (this.getMode() == 'build') {
         this.setState(probe, 'build');
         target = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
@@ -105,9 +105,28 @@ var manager = {
             this.setState(probe, 'free');
           }
         } else {
+          this.setMode('repair');
           this.setState(probe, 'free');
         }
       }
+      // ready for reparing
+      if (this.getMode() == 'repair') {
+        this.setState(probe, 'repair');
+        target = probe.pos.findClosestByRange(FIND_STRUCTURES, {
+          filter: object => object.hits < object.hitsMax
+        });
+        if (target !== null) {
+          if (probe.repair(target) == ERR_NOT_IN_RANGE) {
+            probe.moveTo(target);
+          } else if (probe.carry.energy === 0) {
+            this.setState(probe, 'free');
+          }
+        } else {
+          this.setMode('upgrade');
+          this.setState(probe, 'free');
+        }
+      }
+      // ready for upgrading controller
       if (this.getMode() == 'upgrade') {
         this.setState(probe, 'upgrade');
         if (probe.upgradeController(probe.room.controller) == ERR_NOT_IN_RANGE) {

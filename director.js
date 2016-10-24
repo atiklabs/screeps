@@ -10,10 +10,13 @@ var director = {
    * Orquestrate the system.
    */
   orquestrate: function() {
-    if (Math.floor(Game.time/3600)%2 === 0) {
+    var ticksHour = Math.floor(Game.time/2000);
+    if (ticksHour%3 === 0) {
       manager.setMode('build');
-    } else {
+    } else if (ticksHour%3 == 1) {
       manager.setMode('upgrade');
+    } else {
+      manager.setMode('repair');
     }
     // Manage probes
     manager.manage();
