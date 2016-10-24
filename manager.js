@@ -25,19 +25,19 @@ var manager = {
     if (totalProbesPower < maxProbesPower) {
       var name = null;
       var level = null;
-      if (Game.spawns.Base.room.energyAvailable >= 300) {
-        level = 1;
-        name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE, WORK, CARRY, MOVE]); // costs 400
-      } else if (Game.spawns.Base.room.energyAvailable >= 200) {
+      if (Game.spawns.Base.room.energyAvailable >= 450) {
+        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE]); // costs 450
         level = 2;
+      } else if (Game.spawns.Base.room.energyAvailable >= 200) {
         name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE]); // costs 200
+        level = 1;
       }
       if (name !== null && isNaN(name)) {
         Game.creeps[name].memory.role = 'probe';
         Game.creeps[name].memory.state = 'init';
         Game.creeps[name].memory.source_index = null;
         Game.creeps[name].memory.level = level;
-        console.log('Spawned probe ' + name + 'level' + Game.creeps[name].memory.level);
+        console.log('Spawned probe [level ' + Game.creeps[name].memory.level + ']: ' + name);
       }
     }
 
