@@ -42,21 +42,21 @@ var arquitect = {
     var constructionSiteFound = null;
     var structureFound = null;
     for (var room in Memory.arquitect.probe_locations) {
-      for (var posX in Memory.arquitect.probe_locations[room]) {
-        for (var posY in Memory.arquitect.probe_locations[room][posX]) {
-          if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
-            posXInt = parseInt(posX);
-            posYInt = parseInt(posY);
-            console.log(room);
-            console.log(Game.rooms[room]);
-            constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
-            if (constructionSiteFound.length === 0) {
-              structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
-              if (structureFound.length === 0) {
-                maxValue = Memory.arquitect.probe_locations[room][posX][posY];
-                roadRoom = room;
-                roadPosX = posXInt;
-                roadPosY = posYInt;
+      if (typeof Game.rooms[room] !== 'undefined') {
+        for (var posX in Memory.arquitect.probe_locations[room]) {
+          for (var posY in Memory.arquitect.probe_locations[room][posX]) {
+            if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
+              posXInt = parseInt(posX);
+              posYInt = parseInt(posY);
+              constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
+              if (constructionSiteFound.length === 0) {
+                structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
+                if (structureFound.length === 0) {
+                  maxValue = Memory.arquitect.probe_locations[room][posX][posY];
+                  roadRoom = room;
+                  roadPosX = posXInt;
+                  roadPosY = posYInt;
+                }
               }
             }
           }
