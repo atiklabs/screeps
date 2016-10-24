@@ -30,7 +30,7 @@ var general = {
     var totalSoldiersPower = 0;
     var tanks = 0;
     var healers = 0;
-    var rangeds = 0;
+    var damagers = 0;
 
     // Count total soldiers power
     for (var i = 0; i < soldiersLength; i++) {
