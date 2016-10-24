@@ -41,7 +41,7 @@ var arquitect = {
               console.log(LOOK_CONSTRUCTION_SITES);
               console.log(posX);
               console.log(posY);
-              constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posX, posY);
+              constructionSiteFound = Game.spawns.Base.room.lookForAt(LOOK_CONSTRUCTION_SITES, posX, posY);
               console.log(constructionSiteFound);
               if (constructionSiteFound !== null) {
                 structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posX, posY);
