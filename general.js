@@ -25,8 +25,7 @@ var general = {
     // Useful variables
     var soldiers = this.getAllSoldiers();
     var soldiersLength = soldiers.length;
-    var maxSoldiersPower = 2;
-
+    var maxSoldiersPower = 3;
     var totalSoldiersPower = 0;
     var tanks = 0;
     var healers = 0;
@@ -53,7 +52,7 @@ var general = {
       var archetype = null;
       if (tanks <= healers && tanks <= damagers) {
         archetype = 'tank';
-        if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
+        if (Game.spawns.Base.room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
           name = Game.spawns.Base.createCreep([ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE]); // costs 500
           level = 2;
         } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
@@ -62,7 +61,7 @@ var general = {
         }
       } else if (healers <= tanks && healers <= damagers) {
         archetype = 'healer';
-        if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
+        if (Game.spawns.Base.room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
           name = Game.spawns.Base.createCreep([HEAL, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE]); // costs 500
           level = 2;
         } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
@@ -71,7 +70,7 @@ var general = {
         }
       } else if (damagers <= tanks && damagers <= healers) {
         archetype = 'damager';
-        if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
+        if (Game.spawns.Base.room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
           name = Game.spawns.Base.createCreep([RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE]); // costs 500
           level = 2;
         } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
@@ -96,6 +95,7 @@ var general = {
     var path = null;
     var target = null;
     var targets = null;
+    var soldiers = this.getAllSoldiers();
     // init
     if (this.getState(soldier) == 'init') {
       this.setState(soldier, 'patrol');
@@ -120,6 +120,7 @@ var general = {
           soldier.moveTo(soldier.room.controller);
         }
       }
+
       targets = soldier.room.find(FIND_HOSTILE_CREEPS);
       if (targets.length > 0) {
         this.setState(soldier, 'attack');
@@ -158,7 +159,7 @@ var general = {
           soldier.moveTo(target);
         }
         targets = soldier.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-        if (targets.length > 0) {
+        if (targets.length > 0 && soldiers.length >= 3) {
           creep.rangedAttack(targets[0]);
         }
       }
