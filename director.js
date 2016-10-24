@@ -10,13 +10,13 @@ var director = {
    * Orquestrate the system.
    */
   orquestrate: function() {
-    var ticksHour = Math.floor((Game.time - 200)/600);
-    if (ticksHour%3 === 0) {
-      arquitect.setMode('plan');
-      manager.setMode('build');
-    } else if (ticksHour%3 == 1) {
+    var ticksHour = Math.floor((Game.time)/1000);
+    if (ticksHour%100 >= 0 || ticksHour%100 < 40) {
       arquitect.setMode('study');
       manager.setMode('upgrade');
+    } else if (ticksHour%100 >= 40 || ticksHour%100 < 80) {
+      arquitect.setMode('plan');
+      manager.setMode('build');
     } else {
       arquitect.setMode('rest');
       manager.setMode('repair');

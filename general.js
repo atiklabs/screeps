@@ -7,6 +7,21 @@ var general = {
    */
   command: function() {
 
+  },
+
+  /**
+   * Comm'on folks! Time to join the army!
+   */
+  recruit: function() {
+
+  },
+
+  /**
+  * Get all army units
+  * @return {array} army
+  */
+  getAllSoldiers: function() {
+    return _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
   }
 };
 

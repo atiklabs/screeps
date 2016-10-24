@@ -1,31 +1,33 @@
 /**
- * Probes are designed in mind to Work, Carry and Move.
- * Basically, is the role which manages energy and uses it to store, build, and repair.
- * Probes name inspired in Starcraft probes.
+ * Workers are designed in mind to Work, Carry and Move.
+ * Basically, worker is the role which manages energy and uses it to store, build, and repair.
  */
 var manager = {
   /**
    * We will run manage in every iteration in every tick to assign tasks and ask them
-   * to work. Spawn new probes if necessary.
+   * to work. Spawn new workers if necessary.
    */
   manage: function() {
     // Useful variables
-    var maxProbesPower = 20;
-    var totalProbesPower = 0;
-    var probes = this.getAllProbes();
-    var probesLength = probes.length;
+    var maxWorkersPower = 24;
+    var totalWorkersPower = 0;
+    var workers = this.getAllWorkers();
+    var workersLength = workers.length;
 
-    // Tell every probe to continue their task
-    for (var i = 0; i < probesLength; i++) {
-      this.run(probes[i]);
-      totalProbesPower += probes[i].memory.level;
+    // Tell every worker to continue their task
+    for (var i = 0; i < workersLength; i++) {
+      this.run(workers[i]);
+      totalWorkersPower += workers[i].memory.level;
     }
 
-    // Spawn automatically new probes
-    if (totalProbesPower < maxProbesPower) {
+    // Spawn automatically new workers
+    if (totalWorkersPower < maxWorkersPower) {
       var name = null;
       var level = null;
-      if (Game.spawns.Base.room.energyCapacityAvailable >= 400) {
+      if (Game.spawns.Base.room.energyCapacityAvailable >= 550) {
+        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE]); // costs 550
+        level = 3;
+      } else if (Game.spawns.Base.room.energyCapacityAvailable >= 400) {
         name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE]); // costs 400
         level = 2;
       } else if (Game.spawns.Base.room.energyCapacityAvailable >= 200) {
@@ -33,168 +35,168 @@ var manager = {
         level = 1;
       }
       if (name !== null && isNaN(name)) {
-        Game.creeps[name].memory.role = 'probe';
+        Game.creeps[name].memory.role = 'worker';
         Game.creeps[name].memory.state = 'init';
         Game.creeps[name].memory.source_index = null;
         Game.creeps[name].memory.level = level;
-        console.log('Spawned probe [level ' + Game.creeps[name].memory.level + ']: ' + name + '('+ (totalProbesPower + level) + '/' + maxProbesPower +')');
+        console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + '('+ (totalWorkersPower + level) + '/' + maxWorkersPower +')');
       }
     }
   },
 
   /**
-   * Probe, it's time to do your task!
-   * @param {Creep} probe
+   * Worker, it's time to do your task!
+   * @param {Creep} worker
    */
-  run: function(probe) {
+  run: function(worker) {
     var targets = null;
     // init
-    if (probe.memory.state == 'init') {
-      this.setState(probe, 'free');
+    if (worker.memory.state == 'init') {
+      this.setState(worker, 'free');
     }
     // free
-    if (this.getState(probe) == 'free') {
-      if (probe.carry.energy === 0) {
-        this.setState(probe, 'harvest');
+    if (this.getState(worker) == 'free') {
+      if (worker.carry.energy === 0) {
+        this.setState(worker, 'harvest');
       } else {
-        this.setState(probe, 'ready');
+        this.setState(worker, 'ready');
       }
     }
     // harvest
-    if (this.getState(probe) == 'harvest') {
-      if (probe.carry.energy < probe.carryCapacity) {
-        var sources = probe.room.find(FIND_SOURCES);
-        if (probe.memory.source_index === null) {
-          this.assignSource(probe);
+    if (this.getState(worker) == 'harvest') {
+      if (worker.carry.energy < worker.carryCapacity) {
+        var sources = worker.room.find(FIND_SOURCES);
+        if (worker.memory.source_index === null) {
+          this.assignSource(worker);
         }
-        if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(sources[probe.memory.source_index]);
+        if (worker.harvest(sources[worker.memory.source_index]) == ERR_NOT_IN_RANGE) {
+          worker.moveTo(sources[worker.memory.source_index]);
         }
       } else {
-        this.unassignSource(probe);
-        this.setState(probe, 'ready');
+        this.unassignSource(worker);
+        this.setState(worker, 'ready');
       }
     }
-    if (this.getState(probe) == 'ready' || this.getState(probe) == 'transfer') {
-      target = probe.pos.findClosestByRange(FIND_STRUCTURES, {
+    if (this.getState(worker) == 'ready' || this.getState(worker) == 'transfer') {
+      target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
           return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
             structure.energy < structure.energyCapacity;
         }
       });
       if (target !== null) {
-        this.setState(probe, 'transfer');
-        if (probe.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(target);
-        } else if (probe.carry.energy === 0) {
-          this.setState(probe, 'free');
+        this.setState(worker, 'transfer');
+        if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          worker.moveTo(target);
+        } else if (worker.carry.energy === 0) {
+          this.setState(worker, 'free');
         }
       } else {
-        this.setState(probe, 'ready');
+        this.setState(worker, 'ready');
       }
     }
-    if (this.getState(probe) == 'ready' || this.getState(probe) == 'build' || this.getState(probe) == 'upgrade' || this.getState(probe) == 'repair') {
+    if (this.getState(worker) == 'ready' || this.getState(worker) == 'build' || this.getState(worker) == 'upgrade' || this.getState(worker) == 'repair') {
       // ready for building
       if (this.getMode() == 'build') {
-        this.setState(probe, 'build');
-        target = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+        this.setState(worker, 'build');
+        target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
         if (target !== null) {
-          if (probe.build(target) == ERR_NOT_IN_RANGE) {
-            probe.moveTo(target);
-          } else if (probe.carry.energy === 0) {
-            this.setState(probe, 'free');
+          if (worker.build(target) == ERR_NOT_IN_RANGE) {
+            worker.moveTo(target);
+          } else if (worker.carry.energy === 0) {
+            this.setState(worker, 'free');
           }
         } else {
           this.setMode('repair');
-          this.setState(probe, 'free');
+          this.setState(worker, 'free');
         }
       }
       // ready for reparing
       if (this.getMode() == 'repair') {
-        this.setState(probe, 'repair');
-        target = probe.pos.findClosestByRange(FIND_STRUCTURES, {
+        this.setState(worker, 'repair');
+        target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
           filter: object => object.hits < object.hitsMax
         });
         if (target !== null) {
-          if (probe.repair(target) == ERR_NOT_IN_RANGE) {
-            probe.moveTo(target);
-          } else if (probe.carry.energy === 0) {
-            this.setState(probe, 'free');
+          if (worker.repair(target) == ERR_NOT_IN_RANGE) {
+            worker.moveTo(target);
+          } else if (worker.carry.energy === 0) {
+            this.setState(worker, 'free');
           }
         } else {
           this.setMode('upgrade');
-          this.setState(probe, 'free');
+          this.setState(worker, 'free');
         }
       }
       // ready for upgrading controller
       if (this.getMode() == 'upgrade') {
-        this.setState(probe, 'upgrade');
-        if (probe.upgradeController(probe.room.controller) == ERR_NOT_IN_RANGE) {
-          probe.moveTo(probe.room.controller);
-        } else if (probe.carry.energy === 0) {
-          this.setState(probe, 'free');
+        this.setState(worker, 'upgrade');
+        if (worker.upgradeController(worker.room.controller) == ERR_NOT_IN_RANGE) {
+          worker.moveTo(worker.room.controller);
+        } else if (worker.carry.energy === 0) {
+          this.setState(worker, 'free');
         }
       }
     }
 	},
 
   /**
-   * Assigns a source to the probe
-   * @param {Creep} probe
+   * Assigns a source to the worker
+   * @param {Creep} worker
    */
-  assignSource: function(probe) {
+  assignSource: function(worker) {
     // initialize variables
-    var sources = probe.room.find(FIND_SOURCES);
+    var sources = worker.room.find(FIND_SOURCES);
     var sourcesLength = sources.length;
-    var probes = this.getAllProbes();
-    var probesLength = probes.length;
-    var probesAssignedToSource = new Array(sourcesLength);
+    var workers = this.getAllWorkers();
+    var workersLength = workers.length;
+    var workersAssignedToSource = new Array(sourcesLength);
     var i = null;
     for (i = 0; i < sourcesLength; i++) {
-      probesAssignedToSource[i] = 0;
+      workersAssignedToSource[i] = 0;
     }
-    // get number of assigned probes in every source
-    for (i = 0; i < probesLength; i++) {
-     if (probes[i].memory.source_index !== null) {
-       probesAssignedToSource[probes[i].memory.source_index]++;
+    // get number of assigned workers in every source
+    for (i = 0; i < workersLength; i++) {
+     if (workers[i].memory.source_index !== null) {
+       workersAssignedToSource[workers[i].memory.source_index]++;
      }
     }
-    // get the source with the minimum probes assigned
+    // get the source with the minimum workers assigned
     var minSourceIndex = 0;
-    var minSourceProbes = probesAssignedToSource[minSourceIndex];
+    var minSourceWorkers = workersAssignedToSource[minSourceIndex];
     for (i = 1; i < sourcesLength; i++) {
-      if (probesAssignedToSource[i] < minSourceProbes) {
+      if (workersAssignedToSource[i] < minSourceWorkers) {
         minSourceIndex = i;
       }
     }
-    probe.memory.source_index = minSourceIndex;
+    worker.memory.source_index = minSourceIndex;
   },
 
   /**
-   * Unassigns a probe source.
-   * @param {Creep} probe
+   * Unassigns a worker source.
+   * @param {Creep} worker
    */
-  unassignSource: function(probe) {
-    probe.memory.source_index = null;
+  unassignSource: function(worker) {
+    worker.memory.source_index = null;
   },
 
   /**
-   * Get the state of a probe.
+   * Get the state of a worker.
    * @return {string} getState
    */
-  getState: function(probe) {
-    return probe.memory.state;
+  getState: function(worker) {
+    return worker.memory.state;
   },
 
   /**
    * Set an state and say it.
-   * @param {Creep} probe
+   * @param {Creep} worker
    * @param {string} state
    */
-  setState: function(probe, state) {
-    if (probe.memory.state != state) {
-      probe.memory.state = state;
-      probe.say(state);
+  setState: function(worker, state) {
+    if (worker.memory.state != state) {
+      worker.memory.state = state;
+      worker.say(state);
     }
   },
 
@@ -218,11 +220,11 @@ var manager = {
   },
 
   /**
-  * Get all probes
-  * @return {array} probes
+  * Get all workers
+  * @return {array} workers
   */
-  getAllProbes: function() {
-    return _.filter(Game.creeps, (creep) => creep.memory.role == 'probe');
+  getAllWorkers: function() {
+    return _.filter(Game.creeps, (creep) => creep.memory.role == 'worker');
   }
 };
 

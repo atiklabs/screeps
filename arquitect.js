@@ -17,9 +17,9 @@ var arquitect = {
 
     // study
     if (this.getMode() == 'study') {
-      this.saveCurrentProbeLocations();
+      this.saveCurrentWorkerLocations();
       if (Game.time%100 === 0) {
-        this.ageProbeLocations();
+        this.ageWorkerLocations();
       }
     }
 
@@ -41,18 +41,18 @@ var arquitect = {
     var maxValue = null;
     var constructionSiteFound = null;
     var structureFound = null;
-    for (var room in Memory.arquitect.probe_locations) {
+    for (var room in Memory.arquitect.worker_locations) {
       if (typeof Game.rooms[room] !== 'undefined') {
-        for (var posX in Memory.arquitect.probe_locations[room]) {
-          for (var posY in Memory.arquitect.probe_locations[room][posX]) {
-            if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
+        for (var posX in Memory.arquitect.worker_locations[room]) {
+          for (var posY in Memory.arquitect.worker_locations[room][posX]) {
+            if (maxValue === null || maxValue < Memory.arquitect.worker_locations[room][posX][posY]) {
               posXInt = parseInt(posX);
               posYInt = parseInt(posY);
               constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
               if (constructionSiteFound.length === 0) {
                 structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
                 if (structureFound.length === 0) {
-                  maxValue = Memory.arquitect.probe_locations[room][posX][posY];
+                  maxValue = Memory.arquitect.worker_locations[room][posX][posY];
                   roadRoom = room;
                   roadPosX = posXInt;
                   roadPosY = posYInt;
@@ -71,39 +71,39 @@ var arquitect = {
   },
 
   /**
-  * Save current probes location
+  * Save current workers location
   */
-  saveCurrentProbeLocations: function() {
-    var probes = manager.getAllProbes();
-    var probesLength = probes.length;
-    for (var i = 0; i < probesLength; i++) {
-      //if (probes[i].fatigue === 0) {
-        var room = probes[i].room.name;
-        var posX = probes[i].pos.x;
-        var posY = probes[i].pos.y;
-        if (typeof Memory.arquitect.probe_locations[room] == 'undefined') {
-          Memory.arquitect.probe_locations[room] = {};
+  saveCurrentWorkerLocations: function() {
+    var workers = manager.getAllWorkers();
+    var workersLength = workers.length;
+    for (var i = 0; i < workersLength; i++) {
+      //if (workers[i].fatigue === 0) {
+        var room = workers[i].room.name;
+        var posX = workers[i].pos.x;
+        var posY = workers[i].pos.y;
+        if (typeof Memory.arquitect.worker_locations[room] == 'undefined') {
+          Memory.arquitect.worker_locations[room] = {};
         }
-        if (typeof Memory.arquitect.probe_locations[room][posX] == 'undefined') {
-          Memory.arquitect.probe_locations[room][posX] = {};
+        if (typeof Memory.arquitect.worker_locations[room][posX] == 'undefined') {
+          Memory.arquitect.worker_locations[room][posX] = {};
         }
-        if (typeof Memory.arquitect.probe_locations[room][posX][posY] == 'undefined') {
-          Memory.arquitect.probe_locations[room][posX][posY] = 0;
+        if (typeof Memory.arquitect.worker_locations[room][posX][posY] == 'undefined') {
+          Memory.arquitect.worker_locations[room][posX][posY] = 0;
         }
-        Memory.arquitect.probe_locations[room][posX][posY]++;
+        Memory.arquitect.worker_locations[room][posX][posY]++;
       }
     //}
   },
 
   /**
-   * Age all probe locations by one.
+   * Age all worker locations by one.
    */
-  ageProbeLocations: function() {
-    for (var room in Memory.arquitect.probe_locations) {
-      for (var posX in Memory.arquitect.probe_locations[room]) {
-        for (var posY in Memory.arquitect.probe_locations[room][posX]) {
-          if (Memory.arquitect.probe_locations[room][posX][posY] > 0) {
-            Memory.arquitect.probe_locations[room][posX][posY]--;
+  ageWorkerLocations: function() {
+    for (var room in Memory.arquitect.worker_locations) {
+      for (var posX in Memory.arquitect.worker_locations[room]) {
+        for (var posY in Memory.arquitect.worker_locations[room][posX]) {
+          if (Memory.arquitect.worker_locations[room][posX][posY] > 0) {
+            Memory.arquitect.worker_locations[room][posX][posY]--;
           }
         }
       }

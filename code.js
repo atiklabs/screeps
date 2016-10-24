@@ -97,6 +97,18 @@ var code = {
       }
       this.setVersion(1.7);
     }
+    // v1.8
+    if (this.getVersion() == 1.7) {
+      Memory.arquitect.worker_locations = Memory.arquitect.worker_locations;
+      delete Memory.arquitect.probe_locations;
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        if (creep.memory.role == 'probe') {
+          creep.memory.role = 'worker';
+        }
+      }
+      this.setVersion(1.8);
+    }
 	}
 };
 
