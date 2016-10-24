@@ -42,17 +42,18 @@ var manager = {
     var targets = null;
     // init
     if (probe.memory.state == 'init') {
-      this.assignSource(probe);
       this.setState(probe, 'free');
     }
     // free (need to get energy)
     if (this.getState(probe) == 'free') {
-      if (probe.carry.energy < probe.carryCapacity) {
+      if (probe.carry.energy === 0) {
+        this.assignSource(probe);
         var sources = probe.room.find(FIND_SOURCES);
         if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
           probe.moveTo(sources[probe.memory.source_index]);
         }
       } else {
+        this.unassignSource(probe);
         this.setState(probe, 'ready');
       }
     }
@@ -130,6 +131,14 @@ var manager = {
       }
     }
     probe.memory.source_index = minSourceIndex;
+  },
+
+  /**
+   * Unassigns a probe source.
+   * @param {Creep} probe
+   */
+  unassignSource: function(probe) {
+    probe.memory.source_index = null;
   },
 
   /**
