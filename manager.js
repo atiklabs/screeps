@@ -50,7 +50,7 @@ var manager = {
       if (probe.carry.energy < probe.carryCapacity) {
         var sources = probe.room.find(FIND_SOURCES);
         if (probe.harvest(sources[probe.memory.source_index]) == ERR_NOT_IN_RANGE) {
-        probe.moveTo(sources[probe.memory.source_index]);
+          probe.moveTo(sources[probe.memory.source_index]);
         }
       } else {
         this.setState(probe, 'ready');
@@ -58,7 +58,7 @@ var manager = {
     }
     // ready reparing
     if (this.getState(probe) == 'ready' || this.getState(probe) == 'reparing') {
-      targets = probe.room.find(FIND_STRUCTURES, {
+      targets = probe.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
           return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
             structure.energy < structure.energyCapacity;
@@ -77,8 +77,8 @@ var manager = {
     }
     // ready, construction
     if (this.getState(probe) == 'ready' || this.getState(probe) == 'build') {
-      targets = probe.room.find(FIND_CONSTRUCTION_SITES);
-      if (targets.length) {
+      targets = probe.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+      if (targets.length > 0) {
         if (probe.build(targets[0]) == ERR_NOT_IN_RANGE) {
           probe.moveTo(targets[0]);
           this.setState(probe, 'build');
@@ -115,7 +115,7 @@ var manager = {
     for (i = 0; i < sourcesLength; i++) {
       probesAssignedToSource[i] = 0;
     }
-    // get number of probes per source
+    // get number of assigned probes in every source
     for (i = 0; i < probesLength; i++) {
      if (probes[i].memory.source_index !== null) {
        probesAssignedToSource[probes[i].memory.source_index]++;
@@ -124,7 +124,7 @@ var manager = {
     // get the source with the minimum probes assigned
     var minSourceIndex = 0;
     var minSourceProbes = probesAssignedToSource[minSourceIndex];
-    for (i = 0; i < sourcesLength; i++) {
+    for (i = 1; i < sourcesLength; i++) {
       if (probesAssignedToSource[i] < minSourceProbes) {
         minSourceIndex = i;
       }
