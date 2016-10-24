@@ -25,7 +25,7 @@ var arquitect = {
   },
 
   planRoad: function () {
-    var minValue = 10;
+    var minValue = 100;
     var roadRoom = null;
     var roadPosX = null;
     var roadPosY = null;
