@@ -25,8 +25,8 @@ var manager = {
     if (totalProbesPower < maxProbesPower) {
       var name = null;
       var level = null;
-      if (Game.spawns.Base.room.energyCapacity >= 450) {
-        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE]); // costs 450
+      if (Game.spawns.Base.room.energyCapacity >= 400) {
+        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE]); // costs 400
         level = 2;
       } else if (Game.spawns.Base.room.energyCapacity >= 200) {
         name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE]); // costs 200
