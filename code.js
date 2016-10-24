@@ -123,9 +123,9 @@ var code = {
           delete creep.memory.especialization;
         }
       }
-      this.setVersion(1.10);
+      this.setVersion(2.0);
     }
-	}
+  }
 };
 
 module.exports = code;
