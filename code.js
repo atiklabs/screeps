@@ -99,7 +99,7 @@ var code = {
     }
     // v1.8
     if (this.getVersion() == 1.7) {
-      Memory.arquitect.worker_locations = Memory.arquitect.worker_locations;
+      Memory.arquitect.worker_locations = {};
       delete Memory.arquitect.probe_locations;
       for (name in Game.creeps) {
         creep = Game.creeps[name];
@@ -108,6 +108,11 @@ var code = {
         }
       }
       this.setVersion(1.8);
+    }
+    // v1.9
+    if (this.getVersion() == 1.8) {
+      Memory.arquitect.worker_locations = {};
+      this.setVersion(1.9);
     }
 	}
 };
