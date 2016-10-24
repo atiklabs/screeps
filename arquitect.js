@@ -47,6 +47,8 @@ var arquitect = {
           if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
             posXInt = parseInt(posX);
             posYInt = parseInt(posY);
+            console.log(room);
+            console.log(Game.rooms[room]);
             constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
             if (constructionSiteFound.length === 0) {
               structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
