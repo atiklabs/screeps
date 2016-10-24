@@ -10,7 +10,7 @@ var director = {
    * Orquestrate the system.
    */
   orquestrate: function() {
-    var ticksHour = Math.floor(Game.time/600);
+    var ticksHour = Math.floor((Game.time - 200)/600);
     if (ticksHour%3 === 0) {
       arquitect.setMode('plan');
       manager.setMode('build');
