@@ -31,11 +31,11 @@ var arquitect = {
     var roadPosY = null;
     var maxValue = null;
     for (var room in Memory.arquitect.probe_locations) {
-      console.log(room);
       for (var posX in Memory.arquitect.probe_locations[room]) {
         for (var posY in Memory.arquitect.probe_locations[room][posX]) {
           if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
             if (Memory.arquitect.probe_locations[room][posX][posY] >= minValue) {
+              console.log(Game.rooms[room]);
               var constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posX, posY);
               if (constructionSiteFound.length === 0) {
                 var structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posX, posY);
