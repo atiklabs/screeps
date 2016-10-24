@@ -118,7 +118,7 @@ var general = {
           soldier.moveTo(soldier.room.controller);
         }
       }
-      targets = soldier.room.find(HOSTILE_CREEPS);
+      targets = soldier.room.find(Game.HOSTILE_CREEPS);
       if (targets.length > 0) {
         this.setState(soldier, 'attack');
       }
