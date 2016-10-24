@@ -17,6 +17,8 @@ var arquitect = {
     if (constructionSitesLength < minConstructionSites) {
 
     }
+    // study
+    this.saveCurentProbesLocation();
   },
 
   /**
@@ -26,9 +28,19 @@ var arquitect = {
     var probes = manager.getAllProbes();
     var probesLength = probes.length;
     for (var i = 0; i < probesLength; i++) {
+      var room = probes[i].room.name;
       var pos_x = probes[i].pos.x;
       var pos_y = probes[i].pos.y;
-
+      if (typeof Memory.arquitect[room] == 'undefined') {
+        Memory.arquitect[room] = {};
+      }
+      if (typeof Memory.arquitect[room][pos_x] == 'undefined') {
+        Memory.arquitect[room][pos_x] = {};
+      }
+      if (typeof Memory.arquitect[room][pos_x][pos_y] == 'undefined') {
+        Memory.arquitect[room][pos_x][pos_y] = 0;
+      }
+      Memory.arquitect[room][pos_x][pos_y]++;
     }
   }
 };
