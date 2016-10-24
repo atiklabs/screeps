@@ -31,6 +31,7 @@ var arquitect = {
     var roadPosY = null;
     var maxValue = null;
     for (var room in Memory.arquitect.probe_locations) {
+      console.log(room);
       for (var posX in Memory.arquitect.probe_locations[room]) {
         for (var posY in Memory.arquitect.probe_locations[room][posX]) {
           if (maxValue === null || maxValue < Memory.arquitect.probe_locations[room][posX][posY]) {
