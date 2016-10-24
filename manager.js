@@ -42,7 +42,7 @@ var manager = {
     }
 
     // print some useful data
-    console.log('Probes: ' + probes.length + '/' + maxProbes);
+    console.log('Probes power: ' + totalProbesPower + '/' + maxProbesPower);
   },
 
   /**
