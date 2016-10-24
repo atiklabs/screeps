@@ -140,7 +140,7 @@ var general = {
       } else if (soldier.memory.archetype == 'healer') {
         targets = soldier.pos.find(FIND_MY_CREEPS, {
           filter: (creep) => {
-            return (creep.role == 'soldier' || creep.archetype == 'tank');
+            return (creep.memory.role == 'soldier' && creep.memory.archetype == 'tank');
           }
         });
         if (targets.length > 0) {
@@ -152,7 +152,7 @@ var general = {
       } else if (soldier.memory.archetype == 'damager') {
         target = soldier.pos.findClosestByPath(FIND_MY_CREEPS, {
           filter: (creep) => {
-            return (creep.role == 'soldier' || creep.archetype == 'tank');
+            return (creep.memory.role == 'soldier' || creep.memory.archetype == 'tank');
           }
         });
         if (target !== null) {
