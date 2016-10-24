@@ -46,7 +46,7 @@ var manager = {
    * @param {Creep} worker
    */
   run: function(worker) {
-    var targets = null;
+    var target = null;
     // init
     if (this.getState(worker) == 'init') {
       this.setState(worker, 'free');
