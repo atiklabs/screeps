@@ -18,14 +18,14 @@ var arquitect = {
     // study
     if (this.getMode() == 'study') {
       this.saveCurrentProbeLocations();
-      if (Game.time%10 === 0) {
+      if (Game.time%100 === 0) {
         this.ageProbeLocations();
       }
     }
 
     // plan roads
     if (this.getMode() == 'plan') {
-      if (constructionSitesLength < minConstructionSites && Game.time%100 === 0) {
+      if (constructionSitesLength < minConstructionSites && Game.time%10 === 0) {
         this.planRoad();
       }
     }
