@@ -81,6 +81,11 @@ var code = {
       }
       this.setVersion(1.5);
     }
+    // v1.6
+    if (this.getVersion() == 1.5) {
+      Memory.arquitect.probe_locations = {};
+      this.setVersion(1.6);
+    }
 	}
 };
 
