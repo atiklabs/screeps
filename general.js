@@ -125,10 +125,10 @@ var general = {
     }
     // attack
     if (this.getState(soldier) == 'attack') {
-      var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+      var target = soldier.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
       if (target) {
-        if (creep.attack(target) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target);
+        if (soldier.attack(target) == ERR_NOT_IN_RANGE) {
+          soldier.moveTo(target);
         }
       } else {
         this.setState(soldier, 'patrol');
