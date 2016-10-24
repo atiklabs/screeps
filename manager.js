@@ -212,7 +212,7 @@ var manager = {
    * @param {string} mode
    */
   setMode: function(mode) {
-    console.log('Manager: ' + mode);
+    console.log('Manager: ' + mode + ':' + mode + ':' + mode == mode);
     if (Memory.manager.mode != mode) {
       Memory.manager.mode = mode;
       console.log('Manager: ' + mode);
