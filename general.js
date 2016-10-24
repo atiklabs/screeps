@@ -148,6 +148,8 @@ var general = {
           if (soldier.heal(targets[0]) == ERR_NOT_IN_RANGE) {
             soldier.moveTo(targets[0]);
           }
+        } else {
+          this.setState(soldier, 'patrol');
         }
       } else if (soldier.memory.archetype == 'damager') {
         target = soldier.pos.findClosestByPath(FIND_MY_CREEPS, {
@@ -157,10 +159,12 @@ var general = {
         });
         if (target !== null) {
           soldier.moveTo(target);
-        }
-        targets = soldier.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-        if (targets.length > 0) {
-          creep.rangedAttack(targets[0]);
+          targets = soldier.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+          if (targets.length > 0) {
+            creep.rangedAttack(targets[0]);
+          }
+        } else {
+          this.setState(soldier, 'patrol');
         }
       }
     }
