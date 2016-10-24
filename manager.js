@@ -37,7 +37,7 @@ var manager = {
         Game.creeps[name].memory.state = 'init';
         Game.creeps[name].memory.source_index = null;
         Game.creeps[name].memory.level = level;
-        console.log('Spawned probe [level ' + Game.creeps[name].memory.level + ']: ' + name);
+        console.log('Spawned probe [level ' + Game.creeps[name].memory.level + ']: ' + name + '('+ totalProbesPower + '/' + maxProbesPower +')');
       }
     }
   },
