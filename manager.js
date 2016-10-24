@@ -10,23 +10,34 @@ var manager = {
    */
   manage: function() {
     // Useful variables
-    var maxProbes = 16;
+    var maxProbesPower = 16;
+    var totalProbesPower = 0;
     var probes = this.getAllProbes();
     var probesLength = probes.length;
 
     // Tell every probe to continue their task
     for (var i = 0; i < probesLength; i++) {
       this.run(probes[i]);
+      totalProbesPower += probes[i].memory.level;
     }
 
     // Spawn automatically new probes
-    if (probes.length < maxProbes) {
-      var new_name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE]);
-      if (isNaN(new_name)) {
-        Game.creeps[new_name].memory.role = 'probe';
-        Game.creeps[new_name].memory.state = 'init';
-        Game.creeps[new_name].memory.source_index = null;
-        console.log("Spawned new probe " + new_name);
+    if (totalProbesPower < maxProbesPower) {
+      var name = null;
+      var level = null;
+      if (Game.spawns.Base.room.energyAvailable >= 300) {
+        level = 1;
+        name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE, WORK, CARRY, MOVE]); // costs 400
+      } else if (Game.spawns.Base.room.energyAvailable >= 200) {
+        level = 2;
+        name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE]); // costs 200
+      }
+      if (name !== null && isNaN(name)) {
+        Game.creeps[name].memory.role = 'probe';
+        Game.creeps[name].memory.state = 'init';
+        Game.creeps[name].memory.source_index = null;
+        Game.creeps[name].memory.level = level;
+        console.log('Spawned probe ' + name + 'level' + Game.creeps[name].memory.level);
       }
     }
 

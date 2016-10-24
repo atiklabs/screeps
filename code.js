@@ -71,6 +71,16 @@ var code = {
       }
       this.setVersion(1.4);
     }
+    // v1.5
+    if (this.getVersion() == 1.4) {
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        if (creep.memory.role == 'probe') {
+          creep.memory.level = 1;
+        }
+      }
+      this.setVersion(1.5);
+    }
 	}
 };
 
