@@ -191,7 +191,7 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setState(worker, 'repair');
+      this.setState(worker, 'ready');
     }
   },
 
@@ -216,7 +216,7 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setState(worker, 'tower');
+      this.setState(worker, 'ready');
     }
   },
 
@@ -238,7 +238,7 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setState(worker, 'upgrade');
+      this.setState(worker, 'ready');
     }
   },
 
