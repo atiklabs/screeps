@@ -190,25 +190,7 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setState(worker, 'upgrade');
-    }
-  },
-
-  /**
-   * Build
-   * @param {Creep} worker
-   */
-  setWorkerToBuild: function(worker) {
-    var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-    if (target !== null) {
-      this.setState(worker, 'build');
-      if (worker.build(target) == ERR_NOT_IN_RANGE) {
-        worker.moveTo(target);
-      } else if (worker.carry.energy === 0) {
-        this.setState(worker, 'free');
-      }
-    } else {
-      this.setState(worker, 'upgrade');
+      this.setState(worker, 'repair');
     }
   },
 
@@ -229,6 +211,24 @@ var manager = {
       this.setState(worker, 'repair');
       if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
         worker.moveTo(targets[0]);
+      } else if (worker.carry.energy === 0) {
+        this.setState(worker, 'free');
+      }
+    } else {
+      this.setState(worker, 'build');
+    }
+  },
+
+  /**
+   * Build
+   * @param {Creep} worker
+   */
+  setWorkerToBuild: function(worker) {
+    var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+    if (target !== null) {
+      this.setState(worker, 'build');
+      if (worker.build(target) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(target);
       } else if (worker.carry.energy === 0) {
         this.setState(worker, 'free');
       }
