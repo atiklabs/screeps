@@ -14,20 +14,18 @@ var director = {
     if (ticksHour%1000 >= 0 && ticksHour%1000 < 500) {
       arquitect.setMode('study');
       manager.setMode('default');
-      //manager.setMode('upgrade');
     } else if (ticksHour%1000 >= 500 && ticksHour%1000 < 750) {
       arquitect.setMode('plan');
       manager.setMode('default');
-      //manager.setMode('build');
     } else {
       arquitect.setMode('rest');
       manager.setMode('default');
-      //manager.setMode('repair');
     }
+    general.setMode('rest');
     // Ask arquitect, general and manager to work
-    arquitect.plan();
-    general.command();
-    manager.manage();
+    arquitect.plan(); // study, plan, rest
+    general.command(); // rest, defend, claim, conquer
+    manager.manage(); // default, upgrade, build, repair
   }
 };
 
