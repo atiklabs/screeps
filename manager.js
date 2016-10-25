@@ -117,6 +117,7 @@ var manager = {
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
           var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
           if (minState == buildWorkers) {
+            console.log('try to build');
             this.setWorkerToBuild(worker);
           } else if (minState == repairWorkers) {
             this.setWorkerToRepair(worker);
@@ -201,8 +202,6 @@ var manager = {
   setWorkerToBuild: function(worker) {
     var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (target !== null) {
-      console.log('try to build');
-
       this.setState(worker, 'build');
       if (worker.build(target) == ERR_NOT_IN_RANGE) {
         worker.moveTo(target);
