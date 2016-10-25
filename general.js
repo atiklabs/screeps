@@ -18,7 +18,9 @@ var general = {
     }
 
     // Recruit
-    this.recruit();
+    for (let roomName in Game.rooms) {
+      this.recruit(roomName);
+    }
 
     // Use tower if necessary
     function isStructureTower(structure) {
@@ -40,17 +42,16 @@ var general = {
   /**
    * Comm'on folks! Time to join the army!
    */
-  recruit: function() {
+  recruit: function(roomName) {
     // Useful variables
+    var room = Game.rooms[roomName];
     var soldiers = this.getAllSoldiers();
     var soldiersLength = soldiers.length;
-    var maxSoldiersPower = 6;
-    var totalSoldiersPower = 0;
-    var tanks = 0;
-    var healers = 0;
-    var damagers = 0;
+    var maxSoldiers = 3;
 
     // Count total soldiers power
+    var tanks, healers, damagers;
+    tanks = healers = damagers = 0;
     for (var i = 0; i < soldiersLength; i++) {
       totalSoldiersPower += soldiers[i].memory.level;
       if (soldiers[i].memory.archetype == 'tank') {
@@ -63,46 +64,51 @@ var general = {
         damagers++;
       }
     }
+    var minArchetype = Math.min(tanks, healers, damagers);
 
     // Spawn automatically new soldiers
-    if (totalSoldiersPower < maxSoldiersPower) {
-      var name = null;
-      var level = null;
-      var archetype = null;
-      if (tanks <= healers && tanks <= damagers) {
-        archetype = 'tank';
-        if (Game.spawns.Base.room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
-          name = Game.spawns.Base.createCreep([ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE]); // costs 500
-          level = 2;
-        } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
-          name = Game.spawns.Base.createCreep([ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE]); // costs 250
-          level = 1;
+    if (soldiersLength < maxSoldiers) {
+      var name, level, archetype;
+      name = level = archetype = null;
+      var spawns = room.find(FIND_STRUCTURES, {
+        filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+      });
+      if (spawns.length > 0) {
+        if (minArchetype <= tanks) {
+          archetype = 'tank';
+          if (room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
+            name = spawns[0].createCreep([ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE]); // costs 500
+            level = 2;
+          } else if (room.energyCapacityAvailable >= 250) {
+            name = spawns[0].createCreep([ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE]); // costs 250
+            level = 1;
+          }
+        } else if (minArchetype <= healers) {
+          archetype = 'healer';
+          if (room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
+            name = spawns[0].createCreep([HEAL, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE]); // costs 500
+            level = 2;
+          } else if (room.energyCapacityAvailable >= 250) {
+            name = spawns[0].createCreep([HEAL, MOVE]); // costs 250
+            level = 1;
+          }
+        } else if (minArchetype <= damagers) {
+          archetype = 'damager';
+          if (room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
+            name = spawns[0].createCreep([RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE]); // costs 500
+            level = 2;
+          } else if (room.energyCapacityAvailable >= 250) {
+            name = spawns[0].createCreep([RANGED_ATTACK, MOVE, MOVE]); // costs 250
+            level = 1;
+          }
         }
-      } else if (healers <= tanks && healers <= damagers) {
-        archetype = 'healer';
-        if (Game.spawns.Base.room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
-          name = Game.spawns.Base.createCreep([HEAL, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE]); // costs 500
-          level = 2;
-        } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
-          name = Game.spawns.Base.createCreep([HEAL, MOVE]); // costs 250
-          level = 1;
+        if (name !== null && isNaN(name)) {
+          Game.creeps[name].memory.role = 'soldier';
+          Game.creeps[name].memory.state = 'init';
+          Game.creeps[name].memory.archetype = archetype;
+          Game.creeps[name].memory.level = level;
+          console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + archetype + ']: ' + name + ' ('+ (soldiersLength + 1) + '/' + maxSoldiers +')');
         }
-      } else if (damagers <= tanks && damagers <= healers) {
-        archetype = 'damager';
-        if (Game.spawns.Base.room.energyCapacityAvailable >= 500 && maxSoldiersPower >= 6) {
-          name = Game.spawns.Base.createCreep([RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE]); // costs 500
-          level = 2;
-        } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
-          name = Game.spawns.Base.createCreep([RANGED_ATTACK, MOVE, MOVE]); // costs 250
-          level = 1;
-        }
-      }
-      if (name !== null && isNaN(name)) {
-        Game.creeps[name].memory.role = 'soldier';
-        Game.creeps[name].memory.state = 'init';
-        Game.creeps[name].memory.archetype = archetype;
-        Game.creeps[name].memory.level = level;
-        console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + archetype + ']: ' + name + ' ('+ (totalSoldiersPower + level) + '/' + maxSoldiersPower +')');
       }
     }
   },
@@ -129,15 +135,18 @@ var general = {
           soldier.moveTo(soldier.room.controller);
         } else {
           soldier.memory.patrol = 'spawn';
-          soldier.moveTo(Game.spawns.Base);
         }
       } else if (soldier.memory.patrol == 'spawn') {
-        path = soldier.room.findPath(soldier.pos, Game.spawns.Base.pos);
+        var spawns = soldier.room.find(FIND_STRUCTURES, {
+          filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+        });
+        path = soldier.room.findPath(soldier.pos, spawns[0].pos);
         if (path.length > 5) {
-          soldier.moveTo(Game.spawns.Base);
+          if (spawns.length > 0) {
+            soldier.moveTo(spawns[0]);
+          }
         } else {
           soldier.memory.patrol = 'controller';
-          soldier.moveTo(soldier.room.controller);
         }
       }
       targets = soldier.room.find(FIND_HOSTILE_CREEPS);
