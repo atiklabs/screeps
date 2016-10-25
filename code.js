@@ -125,6 +125,11 @@ var code = {
       }
       this.setVersion('1.10');
     }
+    // 1.11
+    if (this.getVersion() == '1.10') {
+      Memory.general = {};
+      this.setVersion('1.11');
+    }
   }
 };
 

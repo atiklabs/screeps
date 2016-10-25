@@ -7,6 +7,8 @@ var general = {
    * Commant the troops to the victory.
    */
   command: function() {
+    if (this.getMode() == 'rest') return;
+
     var soldiers = this.getAllSoldiers();
     var soldiersLength = soldiers.length;
 
@@ -187,6 +189,25 @@ var general = {
     if (soldier.memory.state != state) {
       soldier.memory.state = state;
       soldier.say(state);
+    }
+  },
+
+  /**
+   * Set current general mode
+   * @return {string} getMode
+   */
+  getMode: function() {
+    return Memory.general.mode;
+  },
+
+  /**
+   * Set current general mode
+   * @param {string} mode
+   */
+  setMode: function(mode) {
+    if (Memory.general.mode != mode) {
+      Memory.general.mode = mode;
+      console.log('General: ' + mode);
     }
   },
 
