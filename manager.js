@@ -24,14 +24,17 @@ var manager = {
     // Spawn automatically new workers
     if (totalWorkersPower < maxWorkersPower) {
       var name = null;
-      var level = null;
-      if (Game.spawns.Base.room.energyCapacityAvailable >= 500) {
-        name = Game.spawns.Base.createCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]); // costs 500
-        level = 2;
-      } else if (Game.spawns.Base.room.energyCapacityAvailable >= 250) {
-        name = Game.spawns.Base.createCreep([WORK, CARRY, MOVE, MOVE]); // costs 250
-        level = 1;
+      var level = 0;
+      var capacitySpended = 0;
+      var parts = [];
+      while (capacitySpended + 250 <= Game.spawns.Base.room.energyCapacityAvailable) {
+        parts.push('WORK');
+        parts.push('CARRY');
+        parts.push('MOVE');
+        level++;
+        capacitySpended += 250;
       }
+      name = Game.spawns.Base.createCreep(parts);
       if (name !== null && isNaN(name)) {
         Game.creeps[name].memory.role = 'worker';
         Game.creeps[name].memory.state = 'init';
@@ -79,6 +82,8 @@ var manager = {
     // if ready set task
     if (this.getState(worker) == 'ready') {
       this.setWorkerToTransfer(worker);
+    }
+    if (this.getState(worker) == 'ready') {
       switch(this.getMode()) {
         case 'build':
           this.setWorkerToBuild(worker);

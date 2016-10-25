@@ -27,7 +27,7 @@ var general = {
     // Useful variables
     var soldiers = this.getAllSoldiers();
     var soldiersLength = soldiers.length;
-    var maxSoldiersPower = 0;
+    var maxSoldiersPower = 6;
     var totalSoldiersPower = 0;
     var tanks = 0;
     var healers = 0;
