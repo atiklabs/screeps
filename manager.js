@@ -43,7 +43,7 @@ var manager = {
   },
 
   /**
-   * Worker, it's time to do your task!
+   * Worker, it's time to set your task!
    * @param {Creep} worker
    */
   run: function(worker) {
@@ -60,15 +60,13 @@ var manager = {
         this.setState(worker, 'ready');
       }
     }
-    // harvest
+    // maintain the same task
     if (this.getState(worker) == 'harvest') {
       this.setWorkerToHarvest(worker);
     }
-    // transfer
-    if (this.getState(worker) == 'ready' || this.getState(worker) == 'transfer') {
+    if (this.getState(worker) == 'transfer') {
       this.setWorkerToTransfer(worker);
     }
-    // set a task
     if (this.getState(worker) == 'build') {
       this.setWorkerToBuild(worker);
     }
@@ -78,7 +76,9 @@ var manager = {
     if (this.getState(worker) == 'upgrade') {
       this.setWorkerToUpgrade(worker);
     }
+    // if ready set task
     if (this.getState(worker) == 'ready') {
+      this.setWorkerToTransfer(worker);
       switch(this.getMode()) {
         case 'build':
           this.setWorkerToBuild(worker);
@@ -105,6 +105,10 @@ var manager = {
     }
 	},
 
+  /**
+   * Harvest
+   * @param {Creep} worker
+   */
   setWorkerToHarvest: function(worker) {
     if (worker.carry.energy < worker.carryCapacity) {
       var sources = worker.room.find(FIND_SOURCES);
@@ -120,6 +124,10 @@ var manager = {
     }
   },
 
+  /**
+   * Transfer
+   * @param {Creep} worker
+   */
   setWorkerToTransfer: function(worker) {
     target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => {
@@ -139,6 +147,10 @@ var manager = {
     }
   },
 
+  /**
+   * Build
+   * @param {Creep} worker
+   */
   setWorkerToBuild: function(worker) {
     this.setState(worker, 'build');
     target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
@@ -153,6 +165,10 @@ var manager = {
     }
   },
 
+  /**
+   * Repair
+   * @param {Creep} worker
+   */
   setWorkerToRepair: function(worker) {
     this.setState(worker, 'repair');
     targets = worker.room.find(FIND_STRUCTURES, {
@@ -170,6 +186,10 @@ var manager = {
     }
   },
 
+  /**
+   * Upgrade
+   * @param {Creep} worker
+   */
   setWorkerToUpgrade: function(worker) {
     this.setState(worker, 'upgrade');
     if (worker.upgradeController(worker.room.controller) == ERR_NOT_IN_RANGE) {
