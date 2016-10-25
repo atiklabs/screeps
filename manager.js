@@ -170,7 +170,7 @@ var manager = {
       }
     });
     if (target !== null) {
-      this.setState(worker, 'transfer');
+      this.setState(worker, 'tower');
       if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         worker.moveTo(target);
       } else if (worker.carry.energy === 0) {
