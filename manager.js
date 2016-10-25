@@ -50,7 +50,7 @@ var manager = {
           Game.creeps[name].memory.state = 'init';
           Game.creeps[name].memory.source_index = null;
           Game.creeps[name].memory.level = level;
-          console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (totalWorkersPower + level) + '/' + maxWorkersPower +')');
+          console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (workers.length + 1) + '/' + maxWorkers +')');
         }
       }
     }
