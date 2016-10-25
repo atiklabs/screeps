@@ -115,7 +115,7 @@ var manager = {
           var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
           var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
-          console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairs, ' + towerWorkers + ' Towers')
+          console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairs, ' + towerWorkers + ' Towers');
           var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
           if (this.getState(worker) == 'ready' && buildWorkers < total/4) {
             this.setWorkerToBuild(worker);
