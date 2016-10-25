@@ -116,7 +116,7 @@ var manager = {
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
           var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
           var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
-          if (minState == buildWorkers) {
+          if (this.getState(worker) == 'ready' && minState == buildWorkers) {
             this.setWorkerToBuild(worker);
           }
           if (this.getState(worker) == 'ready' && minState == repairWorkers) {
@@ -200,18 +200,17 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToRepair: function(worker) {
-    var targets = worker.room.find(FIND_MY_STRUCTURES, {
+    var target = worker.room.findClosestByPath(FIND_MY_STRUCTURES, {
       // repair thos structures damaged, if it's a road and worker_locations of the road is 0 do not repair.
       filter: structure => {
-        return structure.hits < structure.hitsMax &&
+        return structure.hits < structure.hitsMax - 150 &&
           (structure.structureType != STRUCTURE_ROAD || Memory.arquitect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0);
       }
     });
-    targets.sort((a,b) => a.hits - b.hits);
-    if (targets.length > 0) {
+    if (target !== null) {
       this.setState(worker, 'repair');
-      if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-        worker.moveTo(targets[0]);
+      if (worker.repair(target) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(target);
       } else if (worker.carry.energy === 0) {
         this.setState(worker, 'free');
       }
