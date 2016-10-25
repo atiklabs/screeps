@@ -23,20 +23,21 @@ var general = {
     }
 
     // Use tower if necessary
-    function isStructureTower(structure) {
-      return structure.structureType == STRUCTURE_TOWER;
-    }
     for (let roomName in Game.rooms) {
-      var towers = Game.rooms[roomName].find(FIND_MY_STRUCTURES, {
-        filter: isStructureTower
-      });
-      for (let tower of towers) {
-        var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if (target !== null) {
-          console.log('attack' + target);
-          tower.attack(target);
-        }
-      }
+      this.defendRoomWithTower(roomName);
+    }
+  },
+
+  /**
+   * Defend room with tower.
+   * @param {string} roomName
+   */
+  defendRoomWithTower: function(roomName) {
+    var hostiles = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
+    if (hostiles.length > 0) {
+      var towers = Game.rooms[roomName].find(
+          FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+      towers.forEach(tower => tower.attack(hostiles[0]));
     }
   },
 
