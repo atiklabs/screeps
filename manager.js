@@ -10,7 +10,7 @@ var manager = {
    */
   manage: function() {
     // Useful variables
-    var maxWorkersPower = 16;
+    var maxWorkersPower = 24;
     var totalWorkersPower = 0;
     var workers = this.getAllWorkers();
     var workersLength = workers.length;
