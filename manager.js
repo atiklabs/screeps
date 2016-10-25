@@ -200,7 +200,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToRepair: function(worker) {
-    var target = worker.room.findClosestByPath(FIND_MY_STRUCTURES, {
+    var target = worker.findClosestByPath(FIND_MY_STRUCTURES, {
       // repair thos structures damaged, if it's a road and worker_locations of the road is 0 do not repair.
       filter: structure => {
         return structure.hits < structure.hitsMax - 150 &&
