@@ -199,6 +199,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToBuild: function(worker) {
+    console.log('try to build');
     var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (target !== null) {
       this.setState(worker, 'build');
