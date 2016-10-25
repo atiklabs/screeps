@@ -19,7 +19,7 @@ var arquitect = {
     // plan roads
     if (this.getMode() == 'plan') {
       for (let roomName in Game.rooms) {
-        this.planRoad(room);
+        this.planRoad(roomName);
       }
     }
   },
@@ -27,7 +27,8 @@ var arquitect = {
   /**
    * Will plan one road in the most transited location
    */
-  planRoad: function (room) {
+  planRoad: function (roomName) {
+    var room = Game.rooms[roomName];
     var maxConstructionSites = 2;
     if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) {
       return;
