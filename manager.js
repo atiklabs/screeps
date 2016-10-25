@@ -115,18 +115,17 @@ var manager = {
           var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
           var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
-          console.log(upgradeWorkers + ' Upgraders,' + buildWorkers + ' Builders,' + repairWorkers + ' Repairs,' + towerWorkers + ' Towers');
-          var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
-          if (this.getState(worker) == 'ready' && minState == buildWorkers) {
+          var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
+          if (this.getState(worker) == 'ready' && buildWorkers < total/4) {
             this.setWorkerToBuild(worker);
           }
-          if (this.getState(worker) == 'ready' && minState == repairWorkers) {
+          if (this.getState(worker) == 'ready' && repairWorkers < total/4) {
             this.setWorkerToRepair(worker);
           }
-          if (this.getState(worker) == 'ready' && minState == towerWorkers) {
+          if (this.getState(worker) == 'ready' && towerWorkers < total/4) {
             this.setWorkerToTower(worker);
           }
-          if (this.getState(worker) == 'ready' && minState == upgradeWorkers) {
+          if (this.getState(worker) == 'ready' && upgradeWorkers < total/4) {
             this.setWorkerToUpgrade(worker);
           }
           if (this.getState(worker) == 'ready') {
