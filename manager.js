@@ -61,11 +61,11 @@ var manager = {
    * @param {Creep} worker
    */
   run: function(worker) {
-    var target = null;
     // init
     if (this.getState(worker) == 'init') {
       this.setState(worker, 'free');
     }
+
     // free
     if (this.getState(worker) == 'free') {
       if (worker.carry.energy === 0) {
@@ -74,6 +74,7 @@ var manager = {
         this.setState(worker, 'ready');
       }
     }
+
     // maintain the same task
     if (this.getState(worker) == 'harvest') {
       this.setWorkerToHarvest(worker);
@@ -93,6 +94,7 @@ var manager = {
     if (this.getState(worker) == 'upgrade') {
       this.setWorkerToUpgrade(worker);
     }
+
     // if ready set task
     if (this.getState(worker) == 'ready') {
       this.setWorkerToTransfer(worker);
@@ -152,7 +154,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToTransfer: function(worker) {
-    target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+    var target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => {
         return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
           structure.energy < structure.energyCapacity;
@@ -175,7 +177,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToTower: function(worker) {
-    target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+    var target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => {
         return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
       }
@@ -197,9 +199,9 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToBuild: function(worker) {
-    this.setState(worker, 'build');
-    target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+    var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (target !== null) {
+      this.setState(worker, 'build');
       if (worker.build(target) == ERR_NOT_IN_RANGE) {
         worker.moveTo(target);
       } else if (worker.carry.energy === 0) {
@@ -215,8 +217,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToRepair: function(worker) {
-    this.setState(worker, 'repair');
-    targets = worker.room.find(FIND_STRUCTURES, {
+    var targets = worker.room.find(FIND_STRUCTURES, {
       // repair thos structures damaged, if it's a road and worker_locations of the road is 0 do not repair.
       filter: structure => {
         return structure.hits < structure.hitsMax &&
@@ -225,6 +226,7 @@ var manager = {
     });
     targets.sort((a,b) => a.hits - b.hits);
     if (targets.length > 0) {
+      this.setState(worker, 'repair');
       if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
         worker.moveTo(targets[0]);
       } else if (worker.carry.energy === 0) {
