@@ -116,6 +116,7 @@ var manager = {
           var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
           var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
+          console.log(minState + ', ' + buildWorkers + ' ' + towerWorkers)
           if (minState == buildWorkers) {
             this.setWorkerToBuild(worker);
           } else if (minState == repairWorkers) {
