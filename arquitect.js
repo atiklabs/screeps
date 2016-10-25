@@ -9,7 +9,7 @@ var arquitect = {
    */
   plan: function() {
     // set some variables
-    var minConstructionSites = 4;
+    var minConstructionSites = 5;
     var maxConstructionSites = 10;
     var structures = Game.spawns.Base.room.find(FIND_STRUCTURES);
     var constructionSites = Game.spawns.Base.room.find(FIND_CONSTRUCTION_SITES);

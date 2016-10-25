@@ -149,8 +149,7 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setMode('repair');
-      this.setState(worker, 'free');
+      this.setState(worker, 'upgrade');
     }
   },
 
@@ -167,8 +166,7 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setMode('upgrade');
-      this.setState(worker, 'free');
+      this.setState(worker, 'upgrade');
     }
   },
 
