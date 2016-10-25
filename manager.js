@@ -11,8 +11,9 @@ var manager = {
   manage: function() {
     // Tell every worker to continue their task
     var workers = this.getAllWorkers();
-    for (let workerName in workers) {
-      this.run(Game.spawns[workerName]);
+    var workersLength = workers.length;
+    for (let i = 0; i < workersLength; i++) {
+      this.run(workers[i]);
     }
 
     for (let roomName in Game.rooms) {
