@@ -116,7 +116,6 @@ var manager = {
           var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
           var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
-          console.log(minState + ', ' + buildWorkers + ' ' + towerWorkers + ' ' + upgradeWorkers)
           if (minState == buildWorkers) {
             this.setWorkerToBuild(worker);
           } else if (minState == repairWorkers) {
@@ -174,18 +173,14 @@ var manager = {
   },
 
   /**
-   * Tower
+   * Build
    * @param {Creep} worker
    */
-  setWorkerToTower: function(worker) {
-    var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-      filter: (structure) => {
-        return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
-      }
-    });
+  setWorkerToBuild: function(worker) {
+    var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (target !== null) {
-      this.setState(worker, 'tower');
-      if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      this.setState(worker, 'build');
+      if (worker.build(target) == ERR_NOT_IN_RANGE) {
         worker.moveTo(target);
       } else if (worker.carry.energy === 0) {
         this.setState(worker, 'free');
@@ -216,19 +211,23 @@ var manager = {
         this.setState(worker, 'free');
       }
     } else {
-      this.setState(worker, 'build');
+      this.setState(worker, 'tower');
     }
   },
 
   /**
-   * Build
+   * Tower
    * @param {Creep} worker
    */
-  setWorkerToBuild: function(worker) {
-    var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+  setWorkerToTower: function(worker) {
+    var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+      filter: (structure) => {
+        return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
+      }
+    });
     if (target !== null) {
-      this.setState(worker, 'build');
-      if (worker.build(target) == ERR_NOT_IN_RANGE) {
+      this.setState(worker, 'tower');
+      if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         worker.moveTo(target);
       } else if (worker.carry.energy === 0) {
         this.setState(worker, 'free');
