@@ -112,7 +112,7 @@ var manager = {
       // ready for reparing
       if (this.getMode() == 'repair') {
         this.setState(worker, 'repair');
-        targets = worker.pos.find(FIND_STRUCTURES, {
+        targets = worker.room.find(FIND_STRUCTURES, {
           filter: object => object.hits < object.hitsMax
         });
         targets.sort((a,b) => a.hits - b.hits);
