@@ -10,7 +10,7 @@ var manager = {
    */
   manage: function() {
     // Useful variables
-    var maxWorkersPower = 24;
+    var maxWorkersPower = Game.spawns.Base.room.controller.level*16;
     var totalWorkersPower = 0;
     var workers = this.getAllWorkers();
     var workersLength = workers.length;
