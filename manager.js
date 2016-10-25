@@ -75,7 +75,7 @@ var manager = {
     if (this.getState(worker) == 'repair') {
       this.setWorkerToRepair(worker);
     }
-    if (this.getState(worker) == 'update') {
+    if (this.getState(worker) == 'upgrade') {
       this.setWorkerToUpgrade(worker);
     }
     if (this.getState(worker) == 'ready') {
