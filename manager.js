@@ -199,9 +199,10 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToBuild: function(worker) {
-    console.log('try to build');
     var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (target !== null) {
+      console.log('try to build');
+
       this.setState(worker, 'build');
       if (worker.build(target) == ERR_NOT_IN_RANGE) {
         worker.moveTo(target);
