@@ -130,6 +130,16 @@ var code = {
       Memory.general = {};
       this.setVersion('1.11');
     }
+    // 1.12
+    if (this.getVersion() == '1.11') {
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        if (creep.memory.role == 'worker') {
+          creep.memory.state = 'ready';
+        }
+      }
+      this.setVersion('1.12');
+    }
   }
 };
 
