@@ -13,13 +13,16 @@ var director = {
     var ticksHour = Math.floor((Game.time)%10000);
     if (ticksHour%1000 >= 0 && ticksHour%1000 < 500) {
       arquitect.setMode('study');
-      manager.setMode('upgrade');
+      manager.setMode('default');
+      //manager.setMode('upgrade');
     } else if (ticksHour%1000 >= 500 && ticksHour%1000 < 750) {
       arquitect.setMode('plan');
-      manager.setMode('build');
+      manager.setMode('default');
+      //manager.setMode('build');
     } else {
       arquitect.setMode('rest');
-      manager.setMode('repair');
+      manager.setMode('default');
+      //manager.setMode('repair');
     }
     // Ask arquitect, general and manager to work
     arquitect.plan();

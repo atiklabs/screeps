@@ -62,82 +62,115 @@ var manager = {
     }
     // harvest
     if (this.getState(worker) == 'harvest') {
-      if (worker.carry.energy < worker.carryCapacity) {
-        var sources = worker.room.find(FIND_SOURCES);
-        if (worker.memory.source_index === null) {
-          this.assignSource(worker);
-        }
-        if (worker.harvest(sources[worker.memory.source_index]) == ERR_NOT_IN_RANGE) {
-          worker.moveTo(sources[worker.memory.source_index]);
-        }
-      } else {
-        this.unassignSource(worker);
-        this.setState(worker, 'ready');
-      }
+      this.setWorkerToHarvest(worker);
     }
+    // transfer
     if (this.getState(worker) == 'ready' || this.getState(worker) == 'transfer') {
-      target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
-            structure.energy < structure.energyCapacity;
-        }
-      });
-      if (target !== null) {
-        this.setState(worker, 'transfer');
-        if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          worker.moveTo(target);
-        } else if (worker.carry.energy === 0) {
-          this.setState(worker, 'free');
-        }
-      } else {
-        this.setState(worker, 'ready');
-      }
+      this.setWorkerToTransfer(worker);
     }
-    if (this.getState(worker) == 'ready' || this.getState(worker) == 'build' || this.getState(worker) == 'upgrade' || this.getState(worker) == 'repair') {
-      // ready for building
-      if (this.getMode() == 'build') {
-        this.setState(worker, 'build');
-        target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-        if (target !== null) {
-          if (worker.build(target) == ERR_NOT_IN_RANGE) {
-            worker.moveTo(target);
-          } else if (worker.carry.energy === 0) {
-            this.setState(worker, 'free');
+    // set a task
+    if (this.getState(worker) == 'ready' || this.getState(worker) == 'build' || this.getState(worker) == 'repair' || this.getState(worker) == 'update') {
+      switch(this.getMode()) {
+        case 'build':
+          this.setWorkerToBuild(worker);
+          break;
+        case 'repair':
+          this.setWorkerToRepair(worker);
+          break;
+        case 'upgrade':
+          this.setWorkerToUpgrade(worker);
+          break;
+        case 'default':
+          var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
+          var buildWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'build').length;
+          var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
+          if (buildWorkers <= upgradeWorkers && buildWorkers <= repairWorkers) {
+            this.setWorkerToBuild(worker);
+          } else if (repairWorkers <= upgradeWorkers && repairWorkers <= buildWorkers) {
+            this.setWorkerToRepair(worker);
+          } else {
+            this.setWorkerToUpgrade(worker);
           }
-        } else {
-          this.setMode('repair');
-          this.setState(worker, 'free');
-        }
-      }
-      // ready for reparing
-      if (this.getMode() == 'repair') {
-        this.setState(worker, 'repair');
-        targets = worker.room.find(FIND_STRUCTURES, {
-          filter: object => object.hits < object.hitsMax
-        });
-        targets.sort((a,b) => a.hits - b.hits);
-        if (targets.length > 0) {
-          if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-            worker.moveTo(targets[0]);
-          } else if (worker.carry.energy === 0) {
-            this.setState(worker, 'free');
-          }
-        } else {
-          this.setMode('upgrade');
-          this.setState(worker, 'free');
-        }
-      }
-      // ready for upgrading controller
-      if (this.getMode() == 'upgrade') {
-        this.setState(worker, 'upgrade');
-        if (worker.upgradeController(worker.room.controller) == ERR_NOT_IN_RANGE) {
-          worker.moveTo(worker.room.controller);
-        } else if (worker.carry.energy === 0) {
-          this.setState(worker, 'free');
-        }
+          break;
       }
     }
 	},
+
+  setWorkerToHarvest: function(worker) {
+    if (worker.carry.energy < worker.carryCapacity) {
+      var sources = worker.room.find(FIND_SOURCES);
+      if (worker.memory.source_index === null) {
+        this.assignSource(worker);
+      }
+      if (worker.harvest(sources[worker.memory.source_index]) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(sources[worker.memory.source_index]);
+      }
+    } else {
+      this.unassignSource(worker);
+      this.setState(worker, 'ready');
+    }
+  },
+
+  setWorkerToTransfer: function(worker) {
+    target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
+          structure.energy < structure.energyCapacity;
+      }
+    });
+    if (target !== null) {
+      this.setState(worker, 'transfer');
+      if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(target);
+      } else if (worker.carry.energy === 0) {
+        this.setState(worker, 'free');
+      }
+    } else {
+      this.setState(worker, 'ready');
+    }
+  },
+
+  setWorkerToBuild: function(worker) {
+    this.setState(worker, 'build');
+    target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+    if (target !== null) {
+      if (worker.build(target) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(target);
+      } else if (worker.carry.energy === 0) {
+        this.setState(worker, 'free');
+      }
+    } else {
+      this.setMode('repair');
+      this.setState(worker, 'free');
+    }
+  },
+
+  setWorkerToRepair: function(worker) {
+    this.setState(worker, 'repair');
+    targets = worker.room.find(FIND_STRUCTURES, {
+      filter: object => object.hits < object.hitsMax
+    });
+    targets.sort((a,b) => a.hits - b.hits);
+    if (targets.length > 0) {
+      if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(targets[0]);
+      } else if (worker.carry.energy === 0) {
+        this.setState(worker, 'free');
+      }
+    } else {
+      this.setMode('upgrade');
+      this.setState(worker, 'free');
+    }
+  },
+
+  setWorkerToUpgrade: function(worker) {
+    this.setState(worker, 'upgrade');
+    if (worker.upgradeController(worker.room.controller) == ERR_NOT_IN_RANGE) {
+      worker.moveTo(worker.room.controller);
+    } else if (worker.carry.energy === 0) {
+      this.setState(worker, 'free');
+    }
+  },
 
   /**
    * Assigns a source to the worker
