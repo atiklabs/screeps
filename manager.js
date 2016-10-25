@@ -110,22 +110,27 @@ var manager = {
         case 'upgrade':
           this.setWorkerToUpgrade(worker);
           break;
-        case 'default':
-          var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
+        default:
           var buildWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'build').length;
           var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
           var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
+          var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
           var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
           if (minState == buildWorkers) {
             this.setWorkerToBuild(worker);
-          } else if (minState == repairWorkers) {
+          }
+          if (this.getState(worker) == 'ready' && minState == repairWorkers) {
             this.setWorkerToRepair(worker);
-          } else if (minState == towerWorkers) {
+          }
+          if (this.getState(worker) == 'ready' && minState == towerWorkers) {
             this.setWorkerToTower(worker);
-          } else {
+          }
+          if (this.getState(worker) == 'ready' && minState == upgradeWorkers) {
             this.setWorkerToUpgrade(worker);
           }
-          break;
+          if (this.getState(worker) == 'ready') {
+            this.setWorkerToUpgrade(worker);
+          }
       }
     }
 	},
