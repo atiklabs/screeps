@@ -27,10 +27,10 @@ var general = {
       return structure.structureType == STRUCTURE_TOWER;
     }
     for (let roomName in Game.rooms) {
-      var towers = Game.rooms[roomName].find(FIND_STRUCTURES, {
+      var towers = Game.rooms[roomName].find(FIND_MY_STRUCTURES, {
         filter: isStructureTower
       });
-      for (let tower in towers) {
+      for (let tower of towers) {
         var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (typeof target != 'undefined') {
           tower.attack(target);
@@ -70,7 +70,7 @@ var general = {
     if (soldiersLength < maxSoldiers) {
       var name, level, archetype;
       name = level = archetype = null;
-      var spawns = room.find(FIND_STRUCTURES, {
+      var spawns = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => structure.structureType == STRUCTURE_SPAWN
       });
       if (spawns.length > 0) {
@@ -137,7 +137,7 @@ var general = {
           soldier.memory.patrol = 'spawn';
         }
       } else if (soldier.memory.patrol == 'spawn') {
-        var spawns = soldier.room.find(FIND_STRUCTURES, {
+        var spawns = soldier.room.find(FIND_MY_STRUCTURES, {
           filter: (structure) => structure.structureType == STRUCTURE_SPAWN
         });
         path = soldier.room.findPath(soldier.pos, spawns[0].pos);

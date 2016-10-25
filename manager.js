@@ -40,7 +40,7 @@ var manager = {
         level++;
         capacitySpended += 200;
       }
-      var spawns = room.find(FIND_STRUCTURES, {
+      var spawns = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => structure.structureType == STRUCTURE_SPAWN
       });
       if (spawns.length > 0) {
@@ -154,7 +154,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToTransfer: function(worker) {
-    var target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+    var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
       filter: (structure) => {
         return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
           structure.energy < structure.energyCapacity;
@@ -177,7 +177,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToTower: function(worker) {
-    var target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+    var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
       filter: (structure) => {
         return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
       }
@@ -217,7 +217,7 @@ var manager = {
    * @param {Creep} worker
    */
   setWorkerToRepair: function(worker) {
-    var targets = worker.room.find(FIND_STRUCTURES, {
+    var targets = worker.room.find(FIND_MY_STRUCTURES, {
       // repair thos structures damaged, if it's a road and worker_locations of the road is 0 do not repair.
       filter: structure => {
         return structure.hits < structure.hitsMax &&
