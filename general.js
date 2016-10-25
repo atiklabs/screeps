@@ -33,7 +33,7 @@ var general = {
       for (let tower of towers) {
         var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (target !== null) {
-          console.log('attack' + target.name);
+          console.log('attack' + target);
           tower.attack(target);
         }
       }
