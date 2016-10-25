@@ -69,7 +69,16 @@ var manager = {
       this.setWorkerToTransfer(worker);
     }
     // set a task
-    if (this.getState(worker) == 'ready' || this.getState(worker) == 'build' || this.getState(worker) == 'repair' || this.getState(worker) == 'update') {
+    if (this.getState(worker) == 'build') {
+      this.setWorkerToBuild(worker);
+    }
+    if (this.getState(worker) == 'repair') {
+      this.setWorkerToRepair(worker);
+    }
+    if (this.getState(worker) == 'update') {
+      this.setWorkerToUpgrade(worker);
+    }
+    if (this.getState(worker) == 'ready') {
       switch(this.getMode()) {
         case 'build':
           this.setWorkerToBuild(worker);
