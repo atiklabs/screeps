@@ -27,15 +27,13 @@ var general = {
       return structure.structureType == STRUCTURE_TOWER;
     }
     for (let roomName in Game.rooms) {
-      console.log(roomName);
       var towers = Game.rooms[roomName].find(FIND_MY_STRUCTURES, {
         filter: isStructureTower
       });
       for (let tower of towers) {
         var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        console.log(tower);
-        console.log(target);
         if (typeof target != 'undefined') {
+          console.log('attack');
           tower.attack(target);
         }
       }
