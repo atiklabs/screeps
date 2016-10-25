@@ -11,10 +11,10 @@ var director = {
    */
   orquestrate: function() {
     var ticksHour = Math.floor((Game.time)%10000);
-    if (ticksHour%1000 >= 0 && ticksHour%1000 < 400) {
+    if (ticksHour%1000 >= 0 && ticksHour%1000 < 500) {
       arquitect.setMode('study');
       manager.setMode('upgrade');
-    } else if (ticksHour%1000 >= 400 && ticksHour%1000 < 800) {
+    } else if (ticksHour%1000 >= 500 && ticksHour%1000 < 750) {
       arquitect.setMode('plan');
       manager.setMode('build');
     } else {
