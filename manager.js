@@ -70,6 +70,9 @@ var manager = {
     if (this.getState(worker) == 'transfer') {
       this.setWorkerToTransfer(worker);
     }
+    if (this.getState(worker) == 'tower') {
+      this.setWorkerToTower(worker);
+    }
     if (this.getState(worker) == 'build') {
       this.setWorkerToBuild(worker);
     }
@@ -98,10 +101,14 @@ var manager = {
           var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
           var buildWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'build').length;
           var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
-          if (buildWorkers <= upgradeWorkers && buildWorkers <= repairWorkers) {
+          var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
+          var minState = Math.min(upgradeWorkers, buildWorkers, repairWorkers, towerWorkers);
+          if (minState == buildWorkers) {
             this.setWorkerToBuild(worker);
-          } else if (repairWorkers <= upgradeWorkers && repairWorkers <= buildWorkers) {
+          } else if (minState == repairWorkers) {
             this.setWorkerToRepair(worker);
+          } else if (minState == towerWorkers) {
+            this.setWorkerToTower(worker);
           } else {
             this.setWorkerToUpgrade(worker);
           }
@@ -149,6 +156,28 @@ var manager = {
       }
     } else {
       this.setState(worker, 'ready');
+    }
+  },
+
+  /**
+   * Tower
+   * @param {Creep} worker
+   */
+  setWorkerToTower: function(worker) {
+    target = worker.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
+      }
+    });
+    if (target !== null) {
+      this.setState(worker, 'transfer');
+      if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        worker.moveTo(target);
+      } else if (worker.carry.energy === 0) {
+        this.setState(worker, 'free');
+      }
+    } else {
+      this.setState(worker, 'upgrade');
     }
   },
 
