@@ -9,38 +9,48 @@ var manager = {
    * to work. Spawn new workers if necessary.
    */
   manage: function() {
-    // Useful variables
-    var maxWorkersPower = Game.spawns.Base.room.controller.level*12;
-    var totalWorkersPower = 0;
-    var workers = this.getAllWorkers();
-    var workersLength = workers.length;
-
     // Tell every worker to continue their task
-    for (var i = 0; i < workersLength; i++) {
-      this.run(workers[i]);
-      totalWorkersPower += workers[i].memory.level;
+    var workers = this.getAllWorkers();
+    for (let worker of worker) {
+      this.run(worker);
     }
 
+    for (let roomName in Game.rooms) {
+      this.recruit(roomName);
+    }
+  },
+
+  recruit: function(roomName) {
+    var room = Game.rooms[roomName];
+    if (typeof room.controller == 'undefined') return;
+    // Useful variables
+    var workers = this.getAllWorkers();
+    var maxWorkers = 10;
     // Spawn automatically new workers
-    if (totalWorkersPower < maxWorkersPower) {
+    if (workers.length < maxWorkers) {
       var name = null;
       var level = 0;
       var capacitySpended = 0;
       var parts = [];
-      while (capacitySpended + 200 <= Game.spawns.Base.room.energyCapacityAvailable) {
+      while (capacitySpended + 200 <= room.energyCapacityAvailable) {
         parts.push(WORK); // 100
         parts.push(CARRY); // 50
         parts.push(MOVE); // 50
         level++;
         capacitySpended += 200;
       }
-      name = Game.spawns.Base.createCreep(parts);
-      if (name !== null && isNaN(name)) {
-        Game.creeps[name].memory.role = 'worker';
-        Game.creeps[name].memory.state = 'init';
-        Game.creeps[name].memory.source_index = null;
-        Game.creeps[name].memory.level = level;
-        console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (totalWorkersPower + level) + '/' + maxWorkersPower +')');
+      var spawns = room.find(FIND_STRUCTURES, {
+        filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+      });
+      if (spawns.length > 0) {
+        name = spawns[0].createCreep(parts);
+        if (name !== null && isNaN(name)) {
+          Game.creeps[name].memory.role = 'worker';
+          Game.creeps[name].memory.state = 'init';
+          Game.creeps[name].memory.source_index = null;
+          Game.creeps[name].memory.level = level;
+          console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (totalWorkersPower + level) + '/' + maxWorkersPower +')');
+        }
       }
     }
   },

@@ -13,11 +13,28 @@ var general = {
     var soldiersLength = soldiers.length;
 
     // Tell every soldier to continue their task
-    for (var i = 0; i < soldiersLength; i++) {
+    for (let i = 0; i < soldiersLength; i++) {
       this.run(soldiers[i]);
     }
 
+    // Recruit
     this.recruit();
+
+    // Use tower if necessary
+    function isStructureTower(structure) {
+      return structure.structureType == STRUCTURE_TOWER;
+    }
+    for (let roomName in Game.rooms) {
+      var towers = Game.rooms[roomName].find(FIND_STRUCTURES, {
+        filter: isStructureTower
+      });
+      for (let tower in towers) {
+        var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if (typeof target != 'undefined') {
+          tower.attack(target);
+        }
+      }
+    }
   },
 
   /**

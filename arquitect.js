@@ -65,7 +65,7 @@ var arquitect = {
         }
       }
     }
-    if (maxValue !== null) {
+    if (maxValue !== null && maxValue > 5) {
       if (Game.rooms[roadRoom].createConstructionSite(roadPosX, roadPosY, STRUCTURE_ROAD) == OK) {
         console.log('Construction site created [road]: ' + roadPosX + ', ' + roadPosY);
       }
