@@ -118,7 +118,7 @@ var manager = {
         targets.sort((a,b) => a.hits - b.hits);
         if (targets.length > 0) {
           if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-            worker.moveTo(target[0]);
+            worker.moveTo(targets[0]);
           } else if (worker.carry.energy === 0) {
             this.setState(worker, 'free');
           }
