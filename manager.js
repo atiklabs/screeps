@@ -28,9 +28,9 @@ var manager = {
       var capacitySpended = 0;
       var parts = [];
       while (capacitySpended + 250 <= Game.spawns.Base.room.energyCapacityAvailable) {
-        parts.push('WORK');
-        parts.push('CARRY');
-        parts.push('MOVE');
+        parts.push(WORK);
+        parts.push(CARRY);
+        parts.push(MOVE);
         level++;
         capacitySpended += 250;
       }
