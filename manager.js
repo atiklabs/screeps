@@ -11,7 +11,7 @@ var manager = {
   manage: function() {
     // Tell every worker to continue their task
     var workers = this.getAllWorkers();
-    for (let worker of workers) {
+    for (let worker in workers) {
       this.run(worker);
     }
 
