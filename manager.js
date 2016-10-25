@@ -35,7 +35,6 @@ var manager = {
         capacitySpended += 250;
       }
       name = Game.spawns.Base.createCreep(parts);
-      console.log(name);
       if (name !== null && isNaN(name)) {
         Game.creeps[name].memory.role = 'worker';
         Game.creeps[name].memory.state = 'init';
