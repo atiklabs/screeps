@@ -7,19 +7,19 @@ var general = {
    * Commant the troops to the victory.
    */
   command: function() {
-    if (this.getMode() == 'rest') return;
+    if (this.getMode() == 'attack') {
+      var soldiers = this.getAllSoldiers();
+      var soldiersLength = soldiers.length;
 
-    var soldiers = this.getAllSoldiers();
-    var soldiersLength = soldiers.length;
+      // Tell every soldier to continue their task
+      for (let i = 0; i < soldiersLength; i++) {
+        this.run(soldiers[i]);
+      }
 
-    // Tell every soldier to continue their task
-    for (let i = 0; i < soldiersLength; i++) {
-      this.run(soldiers[i]);
-    }
-
-    // Recruit
-    for (let roomName in Game.rooms) {
-      this.recruit(roomName);
+      // Recruit
+      for (let roomName in Game.rooms) {
+        this.recruit(roomName);
+      }
     }
 
     // Use tower if necessary
