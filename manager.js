@@ -27,12 +27,12 @@ var manager = {
       var level = 0;
       var capacitySpended = 0;
       var parts = [];
-      while (capacitySpended + 250 <= Game.spawns.Base.room.energyCapacityAvailable) {
-        parts.push(WORK);
-        parts.push(CARRY);
-        parts.push(MOVE);
+      while (capacitySpended + 200 <= Game.spawns.Base.room.energyCapacityAvailable) {
+        parts.push(WORK); // 100
+        parts.push(CARRY); // 50
+        parts.push(MOVE); // 50
         level++;
-        capacitySpended += 250;
+        capacitySpended += 200;
       }
       name = Game.spawns.Base.createCreep(parts);
       if (name !== null && isNaN(name)) {
