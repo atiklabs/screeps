@@ -11,9 +11,7 @@ var arquitect = {
     // study
     if (this.getMode() == 'study') {
       this.saveCurrentWorkerLocations();
-      if (Game.time%100 === 0) {
-        this.ageWorkerLocations();
-      }
+      this.ageWorkerLocations();
     }
 
     // plan roads
@@ -29,7 +27,7 @@ var arquitect = {
    */
   planRoad: function (roomName) {
     var room = Game.rooms[roomName];
-    var maxConstructionSites = 10;
+    var maxConstructionSites = 2;
     if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) return;
     var roadRoom = null;
     var roadPosX = null;
@@ -95,11 +93,13 @@ var arquitect = {
    * Age all worker locations by one.
    */
   ageWorkerLocations: function() {
-    for (var room in Memory.arquitect.worker_locations) {
-      for (var posX in Memory.arquitect.worker_locations[room]) {
-        for (var posY in Memory.arquitect.worker_locations[room][posX]) {
-          if (Memory.arquitect.worker_locations[room][posX][posY] > 0) {
-            Memory.arquitect.worker_locations[room][posX][posY]--;
+    if (Game.time%100 === 0) {
+      for (var room in Memory.arquitect.worker_locations) {
+        for (var posX in Memory.arquitect.worker_locations[room]) {
+          for (var posY in Memory.arquitect.worker_locations[room][posX]) {
+            if (Memory.arquitect.worker_locations[room][posX][posY] > 0) {
+              Memory.arquitect.worker_locations[room][posX][posY]--;
+            }
           }
         }
       }
