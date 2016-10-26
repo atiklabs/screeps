@@ -4,6 +4,8 @@ var manager = require('manager');
  * Arquitext
  */
 var arquitect = {
+
+
   /**
    * Plan the next buildings.
    */
@@ -13,7 +15,6 @@ var arquitect = {
       // study
       if (this.getMode() == 'study') {
         this.saveCurrentWorkerLocations(roomName);
-        this.ageWorkerLocations(roomName);
       }
       // plan
       if (this.getMode() == 'plan') {
@@ -27,17 +28,12 @@ var arquitect = {
    * @param {string} roomName
    */
   planRoad: function (roomName) {
-    var room = Game.rooms[roomName];
     var maxConstructionSites = 2;
+    var room = Game.rooms[roomName];
     if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) return;
-    var roadRoom = null;
-    var roadPosX = null;
-    var roadPosY = null;
-    var posXInt = null;
-    var posYInt = null;
-    var maxValue = null;
-    var constructionSiteFound = null;
-    var structureFound = null;
+    var roadRoom, roadPosX, roadPosY, posXInt, posYInt, maxValue, constructionSiteFound, structureFound;
+    roadRoom = roadPosX = roadPosY = posXInt = posYInt = maxValue = 0;
+    constructionSiteFound = structureFound = null;
     if (typeof Memory.arquitect.worker_locations[roomName] !== 'undefined') {
       for (var posX in Memory.arquitect.worker_locations[roomName]) {
         for (var posY in Memory.arquitect.worker_locations[roomName][posX]) {
@@ -45,20 +41,18 @@ var arquitect = {
             posXInt = parseInt(posX);
             posYInt = parseInt(posY);
             constructionSiteFound = Game.rooms[roomName].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
-            if (constructionSiteFound.length === 0) {
-              structureFound = Game.rooms[roomName].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
-              if (structureFound.length === 0) {
-                maxValue = Memory.arquitect.worker_locations[roomName][posX][posY];
-                roadRoom = roomName;
-                roadPosX = posXInt;
-                roadPosY = posYInt;
-              }
+            structureFound = Game.rooms[roomName].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
+            if (constructionSiteFound.length === 0 && structureFound.length === 0) {
+              maxValue = Memory.arquitect.worker_locations[roomName][posX][posY];
+              roadRoom = roomName;
+              roadPosX = posXInt;
+              roadPosY = posYInt;
             }
           }
         }
       }
     }
-    if (maxValue !== null && maxValue > 100) {
+    if (maxValue !== null) {
       if (Game.rooms[roadRoom].createConstructionSite(roadPosX, roadPosY, STRUCTURE_ROAD) == OK) {
         console.log('Construction site created [road]: ' + roadPosX + ', ' + roadPosY);
       }
@@ -89,21 +83,10 @@ var arquitect = {
   },
 
   /**
-   * Age all worker locations by one.
-   * @param {string} roomName
+   * Reset worker locations for further study
    */
-  ageWorkerLocations: function(roomName) {
-    if (Game.time%100 === 0) {
-      for (var room in Memory.arquitect.worker_locations) {
-        for (var posX in Memory.arquitect.worker_locations[roomName]) {
-          for (var posY in Memory.arquitect.worker_locations[roomName][posX]) {
-            if (Memory.arquitect.worker_locations[roomName][posX][posY] > 0) {
-              Memory.arquitect.worker_locations[roomName][posX][posY]--;
-            }
-          }
-        }
-      }
-    }
+  resetWorkerlocations: function() {
+    Memory.arquitect.worker_locations = {};
   },
 
   /**
@@ -121,6 +104,7 @@ var arquitect = {
   setMode: function(mode) {
     if  (Memory.arquitect.mode != mode) {
       Memory.arquitect.mode = mode;
+      this.resetWorkerLocations();
       console.log('Arquitect: ' + mode);
     }
   },
