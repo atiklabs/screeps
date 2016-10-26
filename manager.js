@@ -204,8 +204,7 @@ var manager = {
     var targets = worker.room.find(FIND_MY_STRUCTURES, {
       // repair thos structures damaged, if it's a road and worker_locations of the road is 0 do not repair.
       filter: structure => {
-        return structure.hits < structure.hitsMax &&
-          (structure.structureType != STRUCTURE_ROAD || Memory.arquitect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0);
+        return structure.hits < structure.hitsMax;
       }
     });
     console.log(targets.length);
