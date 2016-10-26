@@ -40,17 +40,17 @@ var arquitect = {
     var constructionSiteFound = null;
     var structureFound = null;
     if (typeof Memory.arquitect.worker_locations[roomName] !== 'undefined') {
-      for (var posX in Memory.arquitect.worker_locations[room]) {
-        for (var posY in Memory.arquitect.worker_locations[room][posX]) {
+      for (var posX in Memory.arquitect.worker_locations[roomName]) {
+        for (var posY in Memory.arquitect.worker_locations[roomName][posX]) {
           if (maxValue === null || maxValue < Memory.arquitect.worker_locations[room][posX][posY]) {
             posXInt = parseInt(posX);
             posYInt = parseInt(posY);
-            constructionSiteFound = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
+            constructionSiteFound = Game.rooms[roomName].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
             if (constructionSiteFound.length === 0) {
-              structureFound = Game.rooms[room].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
+              structureFound = Game.rooms[roomName].lookForAt(LOOK_STRUCTURES, posXInt, posYInt);
               if (structureFound.length === 0) {
-                maxValue = Memory.arquitect.worker_locations[room][posX][posY];
-                roadRoom = room;
+                maxValue = Memory.arquitect.worker_locations[roomName][posX][posY];
+                roadRoom = roomName;
                 roadPosX = posXInt;
                 roadPosY = posYInt;
               }
