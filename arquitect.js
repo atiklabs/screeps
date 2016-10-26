@@ -32,8 +32,7 @@ var arquitect = {
     var room = Game.rooms[roomName];
     if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) return;
     var roadRoom, roadPosX, roadPosY, posXInt, posYInt, maxValue, constructionSiteFound, structureFound;
-    roadRoom = roadPosX = roadPosY = posXInt = posYInt = maxValue = 0;
-    constructionSiteFound = structureFound = null;
+    roadRoom = roadPosX = roadPosY = posXInt = posYInt = maxValue = constructionSiteFound = structureFound = 0;
     if (typeof Memory.arquitect.worker_locations[roomName] !== 'undefined') {
       for (var posX in Memory.arquitect.worker_locations[roomName]) {
         for (var posY in Memory.arquitect.worker_locations[roomName][posX]) {
