@@ -140,13 +140,13 @@ var code = {
       }
       this.setVersion('1.12');
     }
-    // 1.13
-    if (this.getVersion() == '1.12') {
+    // 1.14
+    if (this.getVersion() == '1.12' || this.getVersion() == '1.13') {
       for (name in Game.creeps) {
         creep = Game.creeps[name];
-        creep.memory.initial_room = creep.roomName;
+        creep.memory.initial_room = creep.room.roomName;
       }
-      this.setVersion('1.13');
+      this.setVersion('1.14');
     }
   }
 };
