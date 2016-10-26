@@ -30,8 +30,7 @@ var arquitect = {
   planRoad: function (roomName) {
     var room = Game.rooms[roomName];
     var maxConstructionSites = 10;
-    console.log(room.find(FIND_CONSTRUCTION_SITES).length);
-    if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) {
+    if (room.find(FIND_CONSTRUCTION_SITES).length < maxConstructionSites) {
       return;
     }
     var roadRoom = null;
