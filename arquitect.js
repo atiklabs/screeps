@@ -29,7 +29,8 @@ var arquitect = {
    */
   planRoad: function (roomName) {
     var room = Game.rooms[roomName];
-    var maxConstructionSites = 2;
+    var maxConstructionSites = 10;
+    console.log(room.find(FIND_CONSTRUCTION_SITES).length);
     if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) {
       return;
     }
@@ -61,7 +62,7 @@ var arquitect = {
         }
       }
     }
-    if (maxValue !== null && maxValue > 5) {
+    if (maxValue !== null && maxValue > 100) {
       if (Game.rooms[roadRoom].createConstructionSite(roadPosX, roadPosY, STRUCTURE_ROAD) == OK) {
         console.log('Construction site created [road]: ' + roadPosX + ', ' + roadPosY);
       }
