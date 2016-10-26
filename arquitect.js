@@ -39,7 +39,7 @@ var arquitect = {
     var maxValue = null;
     var constructionSiteFound = null;
     var structureFound = null;
-    if (typeof Memory.arquitect.worker_locations[room] !== 'undefined') {
+    if (typeof Memory.arquitect.worker_locations[roomName] !== 'undefined') {
       for (var posX in Memory.arquitect.worker_locations[room]) {
         for (var posY in Memory.arquitect.worker_locations[room][posX]) {
           if (maxValue === null || maxValue < Memory.arquitect.worker_locations[room][posX][posY]) {
@@ -59,7 +59,6 @@ var arquitect = {
         }
       }
     }
-    console.log(maxValue);
     if (maxValue !== null && maxValue > 100) {
       if (Game.rooms[roadRoom].createConstructionSite(roadPosX, roadPosY, STRUCTURE_ROAD) == OK) {
         console.log('Construction site created [road]: ' + roadPosX + ', ' + roadPosY);
