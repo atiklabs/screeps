@@ -103,8 +103,10 @@ var arquitect = {
   setMode: function(mode) {
     if  (Memory.arquitect.mode != mode) {
       Memory.arquitect.mode = mode;
-      this.resetWorkerLocations();
       console.log('Arquitect: ' + mode);
+      if (mode == 'study') {
+        this.resetWorkerLocations();
+      }
     }
   },
 };
