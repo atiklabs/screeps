@@ -30,7 +30,7 @@ var manager = {
     var workersLength = workers.length;
     var sourcesLength = room.find(FIND_SOURCES).length;
     var controllerLevel = room.controller.level;
-    var maxWorkers = 9 - controllerLevel + sourcesLength*2;
+    var maxWorkers = 9 - controllerLevel + sourcesLength + 1;
     // Spawn automatically new workers
     if (workersLength < maxWorkers) {
       var name = null;
