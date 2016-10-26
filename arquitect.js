@@ -85,7 +85,7 @@ var arquitect = {
   /**
    * Reset worker locations for further study
    */
-  resetWorkerlocations: function() {
+  resetWorkerLocations: function() {
     Memory.arquitect.worker_locations = {};
   },
 
