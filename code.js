@@ -141,7 +141,7 @@ var code = {
       this.setVersion('1.12');
     }
     // 1.15
-    if (this.getVersion() == '1.12' || this.getVersion() == '1.13' || this.getVersion() == '1.15') {
+    if (this.getVersion() == '1.12' || this.getVersion() == '1.13' || this.getVersion() == '1.14') {
       for (name in Game.creeps) {
         creep = Game.creeps[name];
         creep.memory.initial_room = creep.pos.roomName;
