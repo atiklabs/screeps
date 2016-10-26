@@ -42,7 +42,7 @@ var arquitect = {
     if (typeof Memory.arquitect.worker_locations[roomName] !== 'undefined') {
       for (var posX in Memory.arquitect.worker_locations[roomName]) {
         for (var posY in Memory.arquitect.worker_locations[roomName][posX]) {
-          if (maxValue === null || maxValue < Memory.arquitect.worker_locations[room][posX][posY]) {
+          if (maxValue === null || maxValue < Memory.arquitect.worker_locations[roomName][posX][posY]) {
             posXInt = parseInt(posX);
             posYInt = parseInt(posY);
             constructionSiteFound = Game.rooms[roomName].lookForAt(LOOK_CONSTRUCTION_SITES, posXInt, posYInt);
