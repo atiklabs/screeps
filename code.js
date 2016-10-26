@@ -140,6 +140,14 @@ var code = {
       }
       this.setVersion('1.12');
     }
+    // 1.13
+    if (this.getVersion() == '1.12') {
+      for (name in Game.creeps) {
+        creep = Game.creeps[name];
+        creep.memory.initial_room = creep.roomName;
+      }
+      this.setVersion('1.13');
+    }
   }
 };
 

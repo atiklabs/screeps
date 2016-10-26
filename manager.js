@@ -9,14 +9,15 @@ var manager = {
    * to work. Spawn new workers if necessary.
    */
   manage: function() {
-    // Tell every worker to continue their task
-    var workers = this.getAllWorkers();
-    var workersLength = workers.length;
-    for (let i = 0; i < workersLength; i++) {
-      this.run(workers[i]);
-    }
-
+    // For every room
     for (let roomName in Game.rooms) {
+      // Tell every worker to continue their task
+      var workers = this.getAllWorkers(roomName);
+      var workersLength = workers.length;
+      for (let i = 0; i < workersLength; i++) {
+        this.run(workers[i]);
+      }
+      // Recruit
       this.recruit(roomName);
     }
   },
@@ -25,10 +26,13 @@ var manager = {
     var room = Game.rooms[roomName];
     if (typeof room.controller == 'undefined') return;
     // Useful variables
-    var workers = this.getAllWorkers();
-    var maxWorkers = 10;
+    var workers = this.getAllWorkers(roomName);
+    var workersLength = workers.length;
+    var sourcesLength = room.find(FIND_SOURCES).length;
+    var controllerLevel = room.controller.level;
+    var maxWorkers = 10 - controllerLevel + sourcesLength*2;
     // Spawn automatically new workers
-    if (workers.length < maxWorkers) {
+    if (workersLength < maxWorkers) {
       var name = null;
       var level = 0;
       var capacitySpended = 0;
@@ -48,6 +52,7 @@ var manager = {
         if (name !== null && isNaN(name)) {
           Game.creeps[name].memory.role = 'worker';
           Game.creeps[name].memory.state = 'init';
+          Game.creeps[name].memory.initial_room = roomName;
           Game.creeps[name].memory.source_index = null;
           Game.creeps[name].memory.level = level;
           console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' ('+ (workers.length + 1) + '/' + maxWorkers +')');
@@ -337,10 +342,11 @@ var manager = {
 
   /**
   * Get all workers
+  * @param {string} roomName
   * @return {array} workers
   */
-  getAllWorkers: function() {
-    return _.filter(Game.creeps, (creep) => creep.memory.role == 'worker');
+  getAllWorkers: function(roomName) {
+    return _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.initial_room == roomName);
   }
 };
 
