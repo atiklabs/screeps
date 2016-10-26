@@ -8,15 +8,15 @@ var arquitect = {
    * Plan the next buildings.
    */
   plan: function() {
-    // study
-    if (this.getMode() == 'study') {
-      this.saveCurrentWorkerLocations();
-      this.ageWorkerLocations();
-    }
-
-    // plan roads
-    if (this.getMode() == 'plan') {
-      for (let roomName in Game.rooms) {
+    // for every room
+    for (let roomName in Game.rooms) {
+      // study
+      if (this.getMode() == 'study') {
+        this.saveCurrentWorkerLocations(roomName);
+        this.ageWorkerLocations(roomName);
+      }
+      // plan
+      if (this.getMode() == 'plan') {
         this.planRoad(roomName);
       }
     }
@@ -24,6 +24,7 @@ var arquitect = {
 
   /**
    * Will plan one road in the most transited location
+   * @param {string} roomName
    */
   planRoad: function (roomName) {
     var room = Game.rooms[roomName];
@@ -66,39 +67,38 @@ var arquitect = {
 
   /**
   * Save current workers location
+  * @param {string} roomName
   */
-  saveCurrentWorkerLocations: function() {
-    var workers = manager.getAllWorkers();
+  saveCurrentWorkerLocations: function(roomName) {
+    var workers = manager.getAllWorkers(roomName);
     var workersLength = workers.length;
+    if (typeof Memory.arquitect.worker_locations[roomName] == 'undefined') {
+      Memory.arquitect.worker_locations[roomName] = {};
+    }
     for (var i = 0; i < workersLength; i++) {
-      //if (workers[i].fatigue === 0) {
-        var room = workers[i].room.name;
-        var posX = workers[i].pos.x;
-        var posY = workers[i].pos.y;
-        if (typeof Memory.arquitect.worker_locations[room] == 'undefined') {
-          Memory.arquitect.worker_locations[room] = {};
-        }
-        if (typeof Memory.arquitect.worker_locations[room][posX] == 'undefined') {
-          Memory.arquitect.worker_locations[room][posX] = {};
-        }
-        if (typeof Memory.arquitect.worker_locations[room][posX][posY] == 'undefined') {
-          Memory.arquitect.worker_locations[room][posX][posY] = 0;
-        }
-        Memory.arquitect.worker_locations[room][posX][posY]++;
+      var posX = workers[i].pos.x;
+      var posY = workers[i].pos.y;
+      if (typeof Memory.arquitect.worker_locations[roomName][posX] == 'undefined') {
+        Memory.arquitect.worker_locations[roomName][posX] = {};
       }
-    //}
+      if (typeof Memory.arquitect.worker_locations[roomName][posX][posY] == 'undefined') {
+        Memory.arquitect.worker_locations[roomName][posX][posY] = 0;
+      }
+      Memory.arquitect.worker_locations[roomName][posX][posY]++;
+    }
   },
 
   /**
    * Age all worker locations by one.
+   * @param {string} roomName
    */
-  ageWorkerLocations: function() {
+  ageWorkerLocations: function(roomName) {
     if (Game.time%100 === 0) {
       for (var room in Memory.arquitect.worker_locations) {
-        for (var posX in Memory.arquitect.worker_locations[room]) {
-          for (var posY in Memory.arquitect.worker_locations[room][posX]) {
-            if (Memory.arquitect.worker_locations[room][posX][posY] > 0) {
-              Memory.arquitect.worker_locations[room][posX][posY]--;
+        for (var posX in Memory.arquitect.worker_locations[roomName]) {
+          for (var posY in Memory.arquitect.worker_locations[roomName][posX]) {
+            if (Memory.arquitect.worker_locations[roomName][posX][posY] > 0) {
+              Memory.arquitect.worker_locations[roomName][posX][posY]--;
             }
           }
         }

@@ -9,15 +9,15 @@ var manager = {
    * to work. Spawn new workers if necessary.
    */
   manage: function() {
-    // For every room
+    // for every room
     for (let roomName in Game.rooms) {
-      // Tell every worker to continue their task
+      // tell every worker to continue their task
       var workers = this.getAllWorkers(roomName);
       var workersLength = workers.length;
       for (let i = 0; i < workersLength; i++) {
         this.run(workers[i]);
       }
-      // Recruit
+      // recruit
       this.recruit(roomName);
     }
   },
@@ -269,7 +269,7 @@ var manager = {
     // initialize variables
     var sources = worker.room.find(FIND_SOURCES);
     var sourcesLength = sources.length;
-    var workers = this.getAllWorkers();
+    var workers = this.getAllWorkers(worker.memory.initial_room);
     var workersLength = workers.length;
     var workersAssignedToSource = new Array(sourcesLength);
     var i = null;
