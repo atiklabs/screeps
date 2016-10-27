@@ -85,7 +85,7 @@ var manager = {
         }
 
         // maintain the same task
-        if (worker.getState() == 'pickup') {
+        if (worker.getState() == 'pickup') { // right now is not available, too risky to get everything stuck
             worker.setToPickup();
         }
         if (worker.getState() == 'harvest') {

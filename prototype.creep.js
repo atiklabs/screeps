@@ -100,6 +100,7 @@ module.exports = function () {
      */
     Creep.prototype.assignSource = function () {
         // initialize variables
+        console.log('works');
         var sources = this.room.find(FIND_SOURCES);
         var sourcesLength = sources.length;
         var workers = this.room.getAllWorkers();
@@ -109,6 +110,7 @@ module.exports = function () {
         for (let i = 0; i < workersLength; i++) {
             if (workers[i].getSourceIndex() !== null) {
                 occupiedSources[workers[i].getSourceIndex()] = true;
+                console.log('works2');
             }
         }
         // get an empty source
