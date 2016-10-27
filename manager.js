@@ -89,6 +89,9 @@ var manager = {
         }
 
         // maintain the same task
+        if (worker.getState() == 'pickup') {
+            worker.setToPickup();
+        }
         if (worker.getState() == 'harvest') {
             worker.setToHarvest();
         }
