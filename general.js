@@ -70,7 +70,8 @@ var general = {
             var name = null;
             if (attackersLength < maxAttackers) {
                 name = spawns[0].createAttacker();
-            } else if (maxHealers < healersLength) {
+            }
+            if (maxHealers < healersLength) {
                 name = spawns[0].createHealer();
             }
             if (name !== null && isNaN(name)) {
