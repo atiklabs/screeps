@@ -1,4 +1,5 @@
 require('prototype.structureSpawn')();
+require('prototype.Creep')();
 var code = require('code');
 var tools = require('tools');
 var director = require('director');

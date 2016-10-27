@@ -51,44 +51,26 @@ var manager = {
      */
     run: function (worker) {
         // init
-        if (this.getState(worker) == 'init') {
-            this.setState(worker, 'free');
+        if (worker.getState() == 'init') {
+            worker.setState('free');
         }
 
         // free
-        if (this.getState(worker) == 'free') {
+        if (worker.getState() == 'free') {
             if (worker.carry.energy === 0) {
-                this.setState(worker, 'harvest');
+                worker.setState('harvest');
             } else {
-                this.setState(worker, 'ready');
+                worker.setState('ready');
             }
         }
 
         // maintain the same task
-        if (this.getState(worker) == 'harvest') {
-            this.setWorkerToHarvest(worker);
-        }
-        if (this.getState(worker) == 'transfer') {
-            this.setWorkerToTransfer(worker);
-        }
-        if (this.getState(worker) == 'tower') {
-            this.setWorkerToTower(worker);
-        }
-        if (this.getState(worker) == 'build') {
-            this.setWorkerToBuild(worker);
-        }
-        if (this.getState(worker) == 'repair') {
-            this.setWorkerToRepair(worker);
-        }
-        if (this.getState(worker) == 'upgrade') {
-            this.setWorkerToUpgrade(worker);
-        }
 
         // if ready set task
-        if (this.getState(worker) == 'ready') {
-            this.setWorkerToTransfer(worker);
+        if (worker.getState() == 'ready') {
+            worker.setState('transfer');
         }
-        if (this.getState(worker) == 'ready') {
+        if (worker.getState() == 'ready') {
             switch (this.getMode()) {
                 case 'build':
                     this.setWorkerToBuild(worker);
@@ -122,199 +104,6 @@ var manager = {
                         this.setWorkerToUpgrade(worker);
                     }
             }
-        }
-    },
-
-    /**
-     * Harvest
-     * @param {Creep} worker
-     */
-    setWorkerToHarvest: function (worker) {
-        if (worker.carry.energy < worker.carryCapacity) {
-            var sources = worker.room.find(FIND_SOURCES, {
-                filter: (source) => {
-                    return source.energy > 0 || energy.ticksToRegeneration < 10
-                }
-            });
-            if (worker.memory.source_index === null) {
-                this.assignSource(worker);
-            }
-            var error = worker.harvest(sources[worker.memory.source_index]);
-            if (error == ERR_NOT_IN_RANGE) {
-                worker.moveTo(sources[worker.memory.source_index]);
-            } else if (error == ERR_NOT_ENOUGH_RESOURCES) {
-                this.unassignSource(worker);
-                this.setState(worker, 'ready');
-            }
-        } else {
-            this.unassignSource(worker);
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Transfer
-     * @param {Creep} worker
-     */
-    setWorkerToTransfer: function (worker) {
-        var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
-                    structure.energy < structure.energyCapacity;
-            }
-        });
-        if (target !== null) {
-            this.setState(worker, 'transfer');
-            if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(target);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Build
-     * @param {Creep} worker
-     */
-    setWorkerToBuild: function (worker) {
-        var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-        if (target !== null) {
-            this.setState(worker, 'build');
-            if (worker.build(target) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(target);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Repair
-     * @param {Creep} worker
-     */
-    setWorkerToRepair: function (worker) {
-        var targets = worker.room.find(FIND_STRUCTURES, {
-            // repair damaged structures, if it's a road and worker_locations of the road is 0 do not repair.
-            filter: structure => {
-                return structure.hits < structure.hitsMax && (
-                        structure.structureType != STRUCTURE_ROAD || (
-                            typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
-                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
-                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
-                            Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
-                        )
-                    );
-            }
-        });
-        targets.sort((a, b) => a.hits - b.hits);
-        if (targets.length > 0) {
-            this.setState(worker, 'repair');
-            if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(targets[0]);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Tower
-     * @param {Creep} worker
-     */
-    setWorkerToTower: function (worker) {
-        var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
-            }
-        });
-        if (target !== null) {
-            this.setState(worker, 'tower');
-            if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(target);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Upgrade
-     * @param {Creep} worker
-     */
-    setWorkerToUpgrade: function (worker) {
-        this.setState(worker, 'upgrade');
-        if (worker.upgradeController(worker.room.controller) == ERR_NOT_IN_RANGE) {
-            worker.moveTo(worker.room.controller);
-        } else if (worker.carry.energy === 0) {
-            this.setState(worker, 'free');
-        }
-    },
-
-    /**
-     * Assigns a source to the worker
-     * @param {Creep} worker
-     */
-    assignSource: function (worker) {
-        // initialize variables
-        var sources = worker.room.find(FIND_SOURCES);
-        var sourcesLength = sources.length;
-        var workers = this.getAllWorkers(worker.memory.initial_room);
-        var workersLength = workers.length;
-        var workersAssignedToSource = new Array(sourcesLength);
-        for (let i = 0; i < sourcesLength; i++) {
-            workersAssignedToSource[i] = 0;
-        }
-        // get number of assigned workers in every source
-        for (let i = 0; i < workersLength; i++) {
-            if (workers[i].memory.source_index !== null) {
-                workersAssignedToSource[workers[i].memory.source_index]++;
-            }
-        }
-        // get the source with the minimum workers assigned
-        var minSourceIndex = 0;
-        var minSourceWorkers = workersAssignedToSource[minSourceIndex];
-        for (let i = 1; i < sourcesLength; i++) {
-            if (workersAssignedToSource[i] < minSourceWorkers) {
-                minSourceIndex = i;
-            }
-        }
-        worker.memory.source_index = minSourceIndex;
-    },
-
-    /**
-     * Unassigns a worker source.
-     * @param {Creep} worker
-     */
-    unassignSource: function (worker) {
-        worker.memory.source_index = null;
-    },
-
-    /**
-     * Get the state of a worker.
-     * @return {string} getState
-     */
-    getState: function (worker) {
-        return worker.memory.state;
-    },
-
-    /**
-     * Set an state and say it.
-     * @param {Creep} worker
-     * @param {string} state
-     */
-    setState: function (worker, state) {
-        if (worker.memory.state != state) {
-            worker.memory.state = state;
-            worker.say(state);
         }
     },
 
