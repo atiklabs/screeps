@@ -54,19 +54,18 @@ module.exports = function () {
         var soldiersLength = soldiers.length;
         // check occupied ramparts
         var rampartOccupied = new Array(rampartsLength).fill(false);
-        for (let i = 0; i < soldiers; i++) {
+        for (let i = 0; i < soldiersLength; i++) {
             if (soldiers[i].getRampartIndex() !== null) {
-                rampartOccupied[attackers[i].getRampartIndex()] = true;
+                rampartOccupied[soldiers[i].getRampartIndex()] = true;
             }
         }
         // get a free rampart
-        for (let i = 1; i < rampartsLength; i++) {
-            if (rampartOccupied[i] == false) {
+        for (let i = 0; i < rampartsLength; i++) {
+            if (rampartOccupied[i] === false) {
                 this.setRampartIndex(i);
                 return i;
             }
         }
-        ////////////////console.log('return null' + this.name);
         return null;
     };
 
@@ -292,9 +291,7 @@ module.exports = function () {
                 return structure.structureType == STRUCTURE_RAMPART
             }
         });
-        console.log(this.name + 'lol');
         if (this.getRampartIndex() === null) {
-            console.log(this.name + 'zzz');
             if (this.assignRampart() === null) {
                 this.setToAttackNearestHostileCreep();
             }
