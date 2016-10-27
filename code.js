@@ -154,6 +154,12 @@ var code = {
             delete Memory.arquitect;
             this.setVersion('1.15');
         }
+        // 1.17
+        if (this.getVersion() == '1.16') {
+            Memory.architect = {};
+            Memory.architect.worker_locations = {};
+            this.setVersion('1.17');
+        }
     }
 };
 
