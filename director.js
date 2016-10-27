@@ -27,9 +27,9 @@ var director = {
 
         // manager
         if (targets.length >= 1) {
-            general.setMode('repair');
+            manager.setMode('repair');
         } else {
-            general.setMode('default');
+            manager.setMode('default');
         }
         manager.manage(); // default, upgrade, build, repair
     }
