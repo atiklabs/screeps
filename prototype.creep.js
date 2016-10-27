@@ -170,9 +170,14 @@ module.exports = function () {
                         return structure.structureType == STRUCTURE_CONTAINER
                     }
                 });
-                if (container !== null && this.pos == container.pos
-                    && (_.sum(container.store) + this.carry.energy) < container.storeCapacity) {
-                    this.drop(RESOURCE_ENERGY);
+                //                     && (_.sum(container.store) + this.carry.energy) < container.storeCapacity
+                console.log(_.sum(container.store + ' ' + this.carry.energy + ' ' + container.storeCapacity);
+                if (container !== null) {
+                    if (container !== this.pos) {
+                        this.moveTo(container);
+                    } else {
+                        this.drop(RESOURCE_ENERGY);
+                    }
                 } else {
                     this.revokeSource();
                     this.setState('ready');
