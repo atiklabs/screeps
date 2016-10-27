@@ -50,13 +50,12 @@ module.exports = function () {
             }
         });
         var rampartsLength = ramparts.length;
-        console.log(rampartsLength);
-        var attackers = this.room.getAllSoldiers();
-        var attackersLength = attackers.length;
+        var soldiers = this.room.getAllSoldiers();
+        var soldiersLength = soldiers.length;
         // check occupied ramparts
         var rampartOccupied = new Array(rampartsLength).fill(false);
-        for (let i = 0; i < attackersLength; i++) {
-            if (attackers[i].getRampartIndex() !== null) {
+        for (let i = 0; i < soldiers; i++) {
+            if (soldiers[i].getRampartIndex() !== null) {
                 rampartOccupied[attackers[i].getRampartIndex()] = true;
             }
         }
@@ -67,6 +66,7 @@ module.exports = function () {
                 return i;
             }
         }
+        console.log('return null' + this.name);
         return null;
     };
 
