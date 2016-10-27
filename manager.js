@@ -133,7 +133,7 @@ var manager = {
         if (worker.carry.energy < worker.carryCapacity) {
             var sources = worker.room.find(FIND_SOURCES, {
                 filter: (source) => {
-                    return source.energy > 0 || energy.ticksToRegeneration < 10
+                    return source.energy > 0 || source.ticksToRegeneration < 10
                 }
             });
             if (worker.memory.source_index === null) {
