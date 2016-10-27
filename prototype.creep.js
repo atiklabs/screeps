@@ -193,8 +193,7 @@ module.exports = function () {
      * Withdraw
      */
     Creep.prototype.setToWithdraw = function () {
-        console.log(this.name);
-        var containers = this.room.find(FIND_MY_STRUCTURES, {
+        var containers = this.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
             }
