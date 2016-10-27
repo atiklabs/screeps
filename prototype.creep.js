@@ -191,16 +191,15 @@ module.exports = function () {
      * Withdraw
      */
     Creep.prototype.setToWithdraw = function () {
-        var containers = this.room.find(FIND_STRUCTURES, {
+        var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
                 return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
             }
         });
-        if (containers.length > 0) {
+        if (container !== null) {
             this.setState('withdraw');
-            containers.sort((a, b) => a.store[RESOURCE_ENERGY] - b.store[RESOURCE_ENERGY]);
-            if (this.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.moveTo(containers[0]);
+            if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(container);
             } else {
                 this.setState('ready');
             }
