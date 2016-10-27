@@ -90,6 +90,7 @@ module.exports = function () {
      * @param {Creep} worker
      */
     Creep.prototype.setToTransfer = function () {
+        console.log('Transfer ' + this.name);
         var target = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
