@@ -149,13 +149,21 @@ var manager = {
         if (worker.getState() == 'init') {
             worker.setState('free');
         }
+
         // free
         if (worker.getState() == 'free') {
-            if (worker.carry.energy === 0) {
-                worker.setToHarvest();
-            } else {
-                worker.setState('ready');
-            }
+            worker.setState('harvest');
+        }
+
+        // maintain the same task
+        if (worker.getState() == 'harvest') {
+            worker.setToHarvest();
+        }
+        if (worker.getState() == 'withdraw') {
+            worker.setToWithdraw();
+        }
+        if (worker.getState() == 'transfer') {
+            worker.setToTransfer();
         }
 
         // if ready set task
