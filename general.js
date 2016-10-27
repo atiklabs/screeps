@@ -31,16 +31,16 @@ var general = {
             let soldiersLength = soldiers.length;
             if (this.getMode() == 'defend') {
                 // Tell every soldier to defend
-                console.log('works 0');
                 for (let i = 0; i < soldiersLength; i++) {
-                    console.log('works 4');
                     this.defend(soldiers[i]);
                 }
                 // Recruit
                 this.recruit(roomName);
             } else if (this.getMode() == 'attack') {
                 // Tell every soldier to attack
+                console.log('works 0');
                 for (let i = 0; i < soldiersLength; i++) {
+                    console.log('works 4');
                     this.attack(soldiers[i]);
                 }
                 // Recruit
