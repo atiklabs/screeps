@@ -7,7 +7,10 @@ var director = {
      */
     orchestrate: function (manager, general, architect) {
         var ticksHour = Math.floor((Game.time) % 10000);
-        var targets = Game.spawns.Base.room.find(FIND_HOSTILE_CREEPS); // hardcoded for now
+
+        for (let roomName in Game.rooms) {
+            var targets = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
+        }
 
         // architect
         if (ticksHour % 1000 >= 0 && ticksHour % 1000 < 500) {
