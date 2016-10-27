@@ -66,7 +66,7 @@ module.exports = function () {
                 return i;
             }
         }
-        console.log('return null' + this.name);
+        ////////////////console.log('return null' + this.name);
         return null;
     };
 
@@ -292,7 +292,9 @@ module.exports = function () {
                 return structure.structureType == STRUCTURE_RAMPART
             }
         });
+        console.log(this.name + 'lol');
         if (this.getRampartIndex() === null) {
+            console.log(this.name + 'zzz');
             if (this.assignRampart() === null) {
                 this.setToAttackNearestHostileCreep();
             }
