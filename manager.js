@@ -147,12 +147,20 @@ var manager = {
    */
   setWorkerToHarvest: function(worker) {
     if (worker.carry.energy < worker.carryCapacity) {
-      var sources = worker.room.find(FIND_SOURCES);
+      var sources = worker.room.find(FIND_SOURCES, {
+        filter: (source) => {
+          return source.energy > 0 || energy.ticksToRegeneration < 10
+        }
+      });
       if (worker.memory.source_index === null) {
         this.assignSource(worker);
       }
-      if (worker.harvest(sources[worker.memory.source_index]) == ERR_NOT_IN_RANGE) {
+      var error = worker.harvest(sources[worker.memory.source_index]);
+      if (error == ERR_NOT_IN_RANGE) {
         worker.moveTo(sources[worker.memory.source_index]);
+      } else if (error == ERR_NOT_ENOUGH_RESOURCES) {
+        this.unassignSource(worker);
+        this.setState(worker, 'ready');
       }
     } else {
       this.unassignSource(worker);
