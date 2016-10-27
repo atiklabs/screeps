@@ -1,8 +1,14 @@
+// load prototypes
 require('prototype.structureSpawn')();
-require('prototype.Creep')();
+require('prototype.creep')();
+require('prototype.room')();
+// load variables
 var code = require('code');
 var tools = require('tools');
 var director = require('director');
+var manager = require('manager');
+var general = require('general');
+var architect = require('architect');
 
 /**
  * Main loop function
@@ -13,5 +19,5 @@ module.exports.loop = function () {
     // This code will update previous versions of the software
     code.update();
     // Call director
-    director.orchestrate();
+    director.orchestrate(manager, general, architect);
 };

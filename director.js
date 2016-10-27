@@ -1,15 +1,11 @@
-var manager = require('manager');
-var general = require('general');
-var architect = require('architect');
-
 /**
  * The director configures the architect, general and manager and runs them.
  */
 var director = {
     /**
-     * Orquestrate the system.
+     * Orchestrate the system.
      */
-    orchestrate: function () {
+    orchestrate: function (manager, general, architect) {
         var ticksHour = Math.floor((Game.time) % 10000);
         if (ticksHour % 1000 >= 0 && ticksHour % 1000 < 500) {
             architect.setMode('study');

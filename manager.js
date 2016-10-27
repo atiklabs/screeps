@@ -4,14 +4,34 @@
  */
 var manager = {
     /**
+     * Set current manager mode
+     * @return {string} getMode
+     */
+    getMode: function () {
+        return Memory.manager.mode;
+    },
+
+    /**
+     * Set current manager mode
+     * @param {string} mode
+     */
+    setMode: function (mode) {
+        if (Memory.manager.mode != mode) {
+            Memory.manager.mode = mode;
+            console.log('Manager: ' + mode);
+        }
+    },
+
+    /**
      * We will run manage in every iteration in every tick to assign tasks and ask them
      * to work. Spawn new workers if necessary.
      */
     manage: function () {
         // for every room
         for (let roomName in Game.rooms) {
+            var room = Game.rooms[roomName];
             // tell every worker to continue their task
-            var workers = this.getAllWorkers(roomName);
+            var workers = room.getAllWorkers();
             var workersLength = workers.length;
             for (let i = 0; i < workersLength; i++) {
                 this.run(workers[i]);
@@ -25,7 +45,7 @@ var manager = {
         var room = Game.rooms[roomName];
         if (typeof room.controller == 'undefined') return;
         // Useful variables
-        var workers = this.getAllWorkers(roomName);
+        var workers = room.getAllWorkers();
         var workersLength = workers.length;
         var sourcesLength = room.find(FIND_SOURCES).length;
         var controllerLevel = room.controller.level;
@@ -54,85 +74,75 @@ var manager = {
         if (worker.getState() == 'init') {
             worker.setState('free');
         }
-
         // free
         if (worker.getState() == 'free') {
             if (worker.carry.energy === 0) {
-                worker.setState('harvest');
+                worker.setToHarvest();
             } else {
                 worker.setState('ready');
             }
         }
 
         // maintain the same task
+        if (worker.getState() == 'harvest') {
+            worker.setToHarvest();
+        }
+        if (worker.getState() == 'transfer') {
+            worker.setToTransfer();
+        }
+        if (worker.getState() == 'tower') {
+            worker.setToTower();
+        }
+        if (worker.getState() == 'build') {
+            worker.setToBuild();
+        }
+        if (worker.getState() == 'repair') {
+            worker.setToRepair();
+        }
+        if (worker.getState() == 'upgrade') {
+            worker.setToUpgrade();
+        }
 
         // if ready set task
         if (worker.getState() == 'ready') {
-            worker.setState('transfer');
+            worker.setToTransfer();
         }
         if (worker.getState() == 'ready') {
             switch (this.getMode()) {
                 case 'build':
-                    this.setWorkerToBuild(worker);
+                    worker.setToBuild();
                     break;
                 case 'repair':
-                    this.setWorkerToRepair(worker);
+                    worker.setToRepair();
                     break;
                 case 'upgrade':
-                    this.setWorkerToUpgrade(worker);
+                    worker.setToUpgrade();
                     break;
                 default:
-                    var buildWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'build').length;
-                    var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
-                    var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
-                    var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
-                    console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairs, ' + towerWorkers + ' Towers');
+                    var allWorkersInRoom = worker.room.getAllWorkers();
+                    var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
+                    var repairWorkers = _.filter(allWorkersInRoom, (worker) => cworker.memory.state == 'repair').length;
+                    var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
+                    var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
+                    console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
                     var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
-                    if (this.getState(worker) == 'ready' && buildWorkers < total / 4) {
-                        this.setWorkerToBuild(worker);
+                    if (worker.getState() == 'ready' && buildWorkers < total / 4) {
+                        worker.setToBuild();
                     }
-                    if (this.getState(worker) == 'ready' && repairWorkers < total / 4) {
-                        this.setWorkerToRepair(worker);
+                    if (worker.getState() == 'ready' && repairWorkers < total / 4) {
+                        worker.setToRepair();
                     }
-                    if (this.getState(worker) == 'ready' && towerWorkers < total / 4) {
-                        this.setWorkerToTower(worker);
+                    if (worker.getState() == 'ready' && towerWorkers < total / 4) {
+                        worker.setToTower();
                     }
-                    if (this.getState(worker) == 'ready' && upgradeWorkers < total / 4) {
-                        this.setWorkerToUpgrade(worker);
+                    if (worker.getState() == 'ready' && upgradeWorkers < total / 4) {
+                        worker.setToUpgrade();
                     }
-                    if (this.getState(worker) == 'ready') {
-                        this.setWorkerToUpgrade(worker);
+                    if (worker.getState() == 'ready') {
+                        worker.setToUpgrade();
                     }
             }
         }
-    },
-
-    /**
-     * Set current manager mode
-     * @return {string} getMode
-     */
-    getMode: function () {
-        return Memory.manager.mode;
-    },
-
-    /**
-     * Set current manager mode
-     * @param {string} mode
-     */
-    setMode: function (mode) {
-        if (Memory.manager.mode != mode) {
-            Memory.manager.mode = mode;
-            console.log('Manager: ' + mode);
-        }
-    },
-
-    /**
-     * Get all workers
-     * @param {string} roomName
-     * @return {array} workers
-     */
-    getAllWorkers: function (roomName) {
-        return _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.initial_room == roomName);
     }
 };
 
