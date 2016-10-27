@@ -131,7 +131,7 @@ module.exports = function () {
     /**
      * Pickup.
      */
-    Creep.prototype.setToPickup = function() {
+    Creep.prototype.setToPickup = function () {
         if (this.carry.energy < this.carryCapacity) {
             this.setState('pickup');
             var target = this.pos.findClosestByRange(FIND_DROPPED_ENERGY);
@@ -165,23 +165,22 @@ module.exports = function () {
                 }
             } else {
                 // creep is full: deposit in container and continue harvesting if possible else is ready
-                var container = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+                var containers = this.pos.findInRange(FIND_STRUCTURES, 1, {
                     filter: (structure) => {
                         return structure.structureType == STRUCTURE_CONTAINER
                     }
                 });
-                //                     && (_.sum(container.store) + this.carry.energy) < container.storeCapacity
-                console.log(_.sum(container.store) + ' ' + this.carry.energy + ' ' + container.storeCapacity);
-                if (container !== null) {
-                    if (container !== this.pos) {
-                        this.moveTo(container);
-                    } else {
-                        this.drop(RESOURCE_ENERGY);
+                if (containers.length > 0) {
+                    if (this.transfer(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(containers[0]);
                     }
                 } else {
                     this.revokeSource();
                     this.setState('ready');
                 }
+
+                //                     && (_.sum(container.store) + this.carry.energy) < container.storeCapacity
+                //console.log(_.sum(container.store) + ' ' + this.carry.energy + ' ' + container.storeCapacity);
             }
         } else {
             // if we are not assigned to a source then withdraw
