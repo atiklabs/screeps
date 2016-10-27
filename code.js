@@ -19,7 +19,7 @@ var code = {
     },
 
     /**
-     * Update model acording to the current version
+     * Update model to the current version
      */
     update: function () {
         // init variables
