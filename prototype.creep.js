@@ -349,13 +349,18 @@ module.exports = function () {
             this.moveTo(ramparts[this.getRampartIndex()]);
         } else {
             var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            switch (this.memory.archetype) {
-                case 'attacker':
-                    this.attack(target);
-                    break;
-                case 'defender':
-                    this.rangedAttack(target);
-                    break;
+            if (target !== null) {
+                console.log('target found');
+                switch (this.memory.archetype) {
+                    case 'attacker':
+                        this.attack(target);
+                        console.log('attack');
+                        break;
+                    case 'defender':
+                        this.rangedAttack(target);
+                        console.log('attack');
+                        break;
+                }
             }
         }
     };
