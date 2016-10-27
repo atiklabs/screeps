@@ -165,16 +165,14 @@ module.exports = function () {
                 }
             } else {
                 // creep is full: deposit in container and continue harvesting if possible else is ready to work
-                var containers = this.pos.findInRange(FIND_STRUCTURES, 1, {
+                var container = this.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return structure.structureType == STRUCTURE_CONTAINER
                     }
                 });
-                if (containers.length > 0) {
-                    var result = this.transfer(containers[0], RESOURCE_ENERGY);
-                    if (result == ERR_NOT_IN_RANGE) {
-                        this.moveTo(containers[0]);
-                    } else if (result == ERR_FULL) {
+                if (container !== null) {
+                    var result = this.transfer(container, RESOURCE_ENERGY);
+                    if (result !== OK) {
                         this.revokeSource();
                         this.setState('ready');
                     }
