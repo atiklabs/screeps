@@ -101,7 +101,7 @@ var general = {
                 filter: (structure) => structure.structureType == STRUCTURE_SPAWN
             });
             if (spawns.length > 0) {
-                var name = spawns[0].createDefender();
+                var name = spawns[0].createDefender(false);
                 if (name !== null && isNaN(name)) {
                     console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
                 }
