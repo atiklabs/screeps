@@ -131,11 +131,7 @@ var manager = {
      */
     setWorkerToHarvest: function (worker) {
         if (worker.carry.energy < worker.carryCapacity) {
-            var sources = worker.room.find(FIND_SOURCES, {
-                filter: (source) => {
-                    return source.energy > 0 || source.ticksToRegeneration < 10
-                }
-            });
+            var sources = worker.room.find(FIND_SOURCES);
             if (worker.memory.source_index === null) {
                 this.assignSource(worker);
             }
