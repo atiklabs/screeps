@@ -345,7 +345,7 @@ module.exports = function () {
                 this.setToAttackNearestHostileCreep();
             }
         }
-        if (!ramparts[this.getRampartIndex()].isEqualTo(this.pos)) {
+        if (!ramparts[this.getRampartIndex()].pos.isEqualTo(this.pos)) {
             this.moveTo(ramparts[this.getRampartIndex()]);
         } else {
             var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
