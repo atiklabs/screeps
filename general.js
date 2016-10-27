@@ -29,20 +29,20 @@ var general = {
             let room = Game.rooms[roomName];
             let soldiers = room.getAllSoldiers();
             let soldiersLength = soldiers.length;
-            if (this.getMode() == 'defend') {
-                // Tell every soldier to defend
-                for (let i = 0; i < soldiersLength; i++) {
-                    this.defend(soldiers[i]);
-                }
-                // Recruit
-                this.recruit(roomName);
-            } else if (this.getMode() == 'attack') {
+            if (this.getMode() == 'attack') {
                 // Tell every soldier to attack
                 for (let i = 0; i < soldiersLength; i++) {
                     this.attack(soldiers[i]);
                 }
                 // Recruit
-                this.recruit(roomName);
+                this.recruitAttackers(roomName);
+            } else if (this.getMode() == 'defend') {
+                // Tell every soldier to attack
+                for (let i = 0; i < soldiersLength; i++) {
+                    this.defend(soldiers[i]);
+                }
+                // Recruit
+                this.recruitDefenders(roomName);
             }
             // Use tower if necessary
             var towers = Game.rooms[roomName].find(
@@ -52,9 +52,9 @@ var general = {
     },
 
     /**
-     * Comm'on folks! Time to join the army!
+     * Comm'on folks! Attackers is time to join the army!
      */
-    recruit: function (roomName) {
+    recruitAttackers: function (roomName) {
         // Useful variables
         var room = Game.rooms[roomName];
         var maxAttackers = 1;
@@ -81,18 +81,31 @@ var general = {
     },
 
     /**
-     * Defend the room
-     * @param soldier
+     * Comm'on folks! Defenders is time to join the army!
      */
-    defend: function (soldier) {
-        switch (soldier.memory.archetype) {
-            case 'attacker':
-                // init
-                soldier.setToDefendRoom();
-                break;
-            case 'healer':
-                soldier.setToHealMostDamagedAttacker();
-                break;
+    recruitDefenders: function (roomName) {
+        // Useful variables
+        var room = Game.rooms[roomName];
+
+        var ramparts = room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_RAMPART
+            }
+        });
+        var maxDefenders = ramparts.length;
+        var defendersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'defender').length;
+
+        // Spawn as many as needed
+        if (defendersLength < maxDefenders) {
+            var spawns = room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+            });
+            if (spawns.length > 0) {
+                var name = spawns[0].createDefender();
+                if (name !== null && isNaN(name)) {
+                    console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+                }
+            }
         }
     },
 
@@ -103,7 +116,25 @@ var general = {
     attack: function (soldier) {
         switch (soldier.memory.archetype) {
             case 'attacker':
-                // init
+            case 'defender':
+                soldier.setToAttackNearestHostileCreep();
+                break;
+            case 'healer':
+                soldier.setToHealMostDamagedAttacker();
+                break;
+        }
+    },
+
+    /**
+     * Defend the base
+     * @param soldier
+     */
+    defend: function (soldier) {
+        switch (soldier.memory.archetype) {
+            case 'defender':
+                soldier.setToDefendRoom();
+                break;
+            case 'attacker':
                 soldier.setToAttackNearestHostileCreep();
                 break;
             case 'healer':

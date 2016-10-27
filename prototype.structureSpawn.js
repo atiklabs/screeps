@@ -50,6 +50,27 @@ module.exports = function () {
         return name;
     };
 
+    StructureSpawn.prototype.createDefender = function() {
+        var parts = [];
+        var level = 0;
+        var capacitySpent = 0;
+        while (capacitySpent + 200 <= this.room.energyAvailable) {
+            parts.push(RANGED_ATTACK); // 150
+            parts.push(MOVE); // 50
+            level++;
+            capacitySpent += 200;
+        }
+        var name = this.createCreep(parts);
+        if (name !== null && isNaN(name)) {
+            Game.creeps[name].memory.role = 'soldier';
+            Game.creeps[name].memory.state = 'init';
+            Game.creeps[name].memory.archetype = 'defender';
+            Game.creeps[name].memory.level = level;
+            return name;
+        }
+        return name;
+    };
+
     StructureSpawn.prototype.createHealer = function() {
         var parts = [];
         var level = 0;

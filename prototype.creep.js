@@ -262,38 +262,52 @@ module.exports = function () {
     };
 
     /**
-     * Defend room
-     */
-    Creep.prototype.setToDefendRoom = function () {
-        if (this.getRampartIndex() === null) {
-            if (this.assignRampart() === null) {
-                return; // do nothing
-            }
-        }
-        var ramparts = this.room.find(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_RAMPART
-            }
-        });
-        if (ramparts[this.getRampartIndex()] !== this.pos) {
-            this.moveTo(ramparts[this.getRampartIndex()]);
-            return;
-        }
-        var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        this.attack(target);
-    };
-
-    /**
      * Attack nearest hostile creep
      */
     Creep.prototype.setToAttackNearestHostileCreep = function () {
         var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (target !== null) {
-            if (this.attack(target) == ERR_NOT_IN_RANGE) {
-                this.moveTo(target);
+            switch (this.memory.archetype) {
+                case 'attacker':
+                    if (this.attack(target) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(target);
+                    }
+                    break;
+                case 'defender':
+                    if (this.rangedAttack(target) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(target);
+                    }
+                    break;
             }
+        }
+    };
+
+    /**
+     * Defend room
+     */
+    Creep.prototype.setToDefendRoom = function () {
+        var ramparts = this.room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_RAMPART
+            }
+        });
+        if (this.getRampartIndex() === null) {
+            if (this.assignRampart() === null) {
+                this.setToAttackNearestHostileCreep();
+            }
+        }
+        if (ramparts[this.getRampartIndex()] !== this.pos) {
+            this.moveTo(ramparts[this.getRampartIndex()]);
         } else {
-            this.setToDefendRoom();
+            var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            switch (this.memory.archetype) {
+                case 'attacker':
+                    this.attack(target);
+                    break;
+                case 'defender':
+                    this.rangedAttack(target);
+                    break;
+            }
         }
     };
 
