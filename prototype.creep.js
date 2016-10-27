@@ -50,6 +50,7 @@ module.exports = function () {
             }
         });
         var rampartsLength = ramparts.length;
+        console.log(rampartsLength);
         var attackers = this.room.getAllSoldiers();
         var attackersLength = attackers.length;
         // check occupied ramparts
