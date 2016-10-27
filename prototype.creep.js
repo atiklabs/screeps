@@ -171,7 +171,7 @@ module.exports = function () {
                     }
                 });
                 //                     && (_.sum(container.store) + this.carry.energy) < container.storeCapacity
-                console.log(_.sum(container.store + ' ' + this.carry.energy + ' ' + container.storeCapacity);
+                console.log(_.sum(container.store) + ' ' + this.carry.energy + ' ' + container.storeCapacity);
                 if (container !== null) {
                     if (container !== this.pos) {
                         this.moveTo(container);
