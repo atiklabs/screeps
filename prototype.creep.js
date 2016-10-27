@@ -64,6 +64,7 @@ module.exports = function () {
      */
     Creep.prototype.setToHarvest =  function () {
         if (this.carry.energy < this.carryCapacity) {
+            this.setState('harvest');
             var sources = this.room.find(FIND_SOURCES, {
                 filter: (source) => {
                     return source.energy > 0 || source.ticksToRegeneration < 10
@@ -98,9 +99,7 @@ module.exports = function () {
         });
         if (target !== null) {
             this.setState('transfer');
-            console.log('Transfer ' + this.name + ' ' + target);
             if (this.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                console.log('Move to');
                 this.moveTo(target);
             } else if (this.carry.energy === 0) {
                 this.setState('free');
