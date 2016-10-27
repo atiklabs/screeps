@@ -8,5 +8,5 @@ module.exports = function () {
      */
     Room.prototype.getAllWorkers = function () {
         return _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.initial_room == this.roomName);
-    }
+    };
 };

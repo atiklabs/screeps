@@ -22,7 +22,6 @@ module.exports = function () {
 
     /**
      * Assigns a source to the worker
-     * @param {Creep} worker
      */
     Creep.prototype.assignSource = function () {
         // initialize variables
@@ -53,16 +52,34 @@ module.exports = function () {
 
     /**
      * Revoke a worker source.
-     * @param {Creep} worker
      */
     Creep.prototype.revokeSource = function () {
         this.memory.source_index = null;
     };
 
     /**
+     * Pickup.
+     */
+    Creep.prototype.setToPickup = function() {
+        if (this.carry.energy < this.carryCapacity) {
+            this.setState('pickup');
+            var target = this.pos.findClosestByRange(FIND_DROPPED_ENERGY);
+            if (target !== null) {
+                if (this.pickup(target) == ERR_NOT_IN_RANGE) {
+                    this.moveTo(target);
+                }
+            } else {
+                this.setState('free');
+            }
+        } else {
+            this.setState('ready');
+        }
+    };
+
+    /**
      * Harvest
      */
-    Creep.prototype.setToHarvest =  function () {
+    Creep.prototype.setToHarvest = function () {
         if (this.carry.energy < this.carryCapacity) {
             this.setState('harvest');
             var sources = this.room.find(FIND_SOURCES, {
@@ -88,7 +105,6 @@ module.exports = function () {
 
     /**
      * Transfer
-     * @param {Creep} worker
      */
     Creep.prototype.setToTransfer = function () {
         var target = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
@@ -111,7 +127,6 @@ module.exports = function () {
 
     /**
      * Build
-     * @param {Creep} worker
      */
     Creep.prototype.setToBuild = function () {
         var target = this.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
@@ -129,7 +144,6 @@ module.exports = function () {
 
     /**
      * Repair
-     * @param {Creep} worker
      */
     Creep.prototype.setToRepair = function () {
         var targets = this.room.find(FIND_STRUCTURES, {
@@ -160,7 +174,6 @@ module.exports = function () {
 
     /**
      * Tower
-     * @param {Creep} worker
      */
     Creep.prototype.setToTower = function () {
         var target = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
@@ -182,7 +195,6 @@ module.exports = function () {
 
     /**
      * Upgrade
-     * @param {Creep} worker
      */
     Creep.prototype.setToUpgrade = function () {
         this.setState('upgrade');

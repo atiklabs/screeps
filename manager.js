@@ -77,7 +77,12 @@ var manager = {
         // free
         if (worker.getState() == 'free') {
             if (worker.carry.energy === 0) {
-                worker.setToHarvest();
+                var droppedEnergy = worker.room.find(FIND_DROPPED_ENERGY);
+                if (droppedEnergy.length > 0) {
+                    worker.setToPickup();
+                } else {
+                    worker.setToHarvest();
+                }
             } else {
                 worker.setState('ready');
             }
