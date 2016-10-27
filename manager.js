@@ -126,7 +126,7 @@ var manager = {
                 default:
                     var allWorkersInRoom = worker.room.getAllWorkers();
                     var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
-                    var repairWorkers = _.filter(allWorkersInRoom, (worker) => cworker.memory.state == 'repair').length;
+                    var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
                     var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
                     var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
                     console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
