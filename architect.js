@@ -1,4 +1,3 @@
-var manager = require('manager');
 /**
  * Architect
  */
@@ -60,7 +59,8 @@ var architect = {
      * @param {string} roomName
      */
     saveCurrentWorkerLocations: function (roomName) {
-        var workers = manager.getAllWorkers(roomName);
+        var room = Game.rooms[roomName];
+        var workers = room.getAllWorkers();
         var workersLength = workers.length;
         if (typeof Memory.architect.worker_locations[roomName] == 'undefined') {
             Memory.architect.worker_locations[roomName] = {};
