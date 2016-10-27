@@ -30,11 +30,29 @@ module.exports = function () {
 
     /**
      * Set rampart index
-     * @param {string} state
+     * @param {int|null} rampart_index
      */
     Creep.prototype.setRampartIndex = function (rampart_index) {
         if (this.memory.rampart_index != rampart_index) {
             this.memory.rampart_index = rampart_index;
+        }
+    };
+
+    /**
+     * Get source index
+     */
+    Creep.prototype.getSourceIndex = function () {
+        if (typeof this.memory.source_index == 'undefined') return null;
+        return this.memory.source_index;
+    };
+
+    /**
+     * Set source index
+     * @param {int|null} source_index
+     */
+    Creep.prototype.setSourceIndex = function (source_index) {
+        if (this.memory.source_index != source_index) {
+            this.memory.source_index = source_index;
         }
     };
 
@@ -73,11 +91,12 @@ module.exports = function () {
      * Revoke a worker rampart.
      */
     Creep.prototype.revokeRampart = function () {
-        delete this.memory.rampart_index;
+        this.setRampartIndex(null);
     };
 
     /**
      * Assigns a source to the worker
+     * @return {int|null}
      */
     Creep.prototype.assignSource = function () {
         // initialize variables
@@ -85,32 +104,28 @@ module.exports = function () {
         var sourcesLength = sources.length;
         var workers = this.room.getAllWorkers();
         var workersLength = workers.length;
-        var workersAssignedToSource = new Array(sourcesLength);
-        for (let i = 0; i < sourcesLength; i++) {
-            workersAssignedToSource[i] = 0;
-        }
-        // get number of assigned workers in every source
+        var occupiedSources = new Array(sourcesLength).fill(false);
+        // get occupied sources
         for (let i = 0; i < workersLength; i++) {
-            if (workers[i].memory.source_index !== null) {
-                workersAssignedToSource[workers[i].memory.source_index]++;
+            if (workers[i].getSourceIndex() !== null) {
+                occupiedSources[workers[i].getSourceIndex()] = true;
             }
         }
-        // get the source with the minimum workers assigned
-        var minSourceIndex = 0;
-        var minSourceWorkers = workersAssignedToSource[minSourceIndex];
+        // get an empty source
         for (let i = 1; i < sourcesLength; i++) {
-            if (workersAssignedToSource[i] < minSourceWorkers) {
-                minSourceIndex = i;
+            if (occupiedSources[i] === false) {
+                this.setSourceIndex(i);
+                return i;
             }
         }
-        this.memory.source_index = minSourceIndex;
+        return null;
     };
 
     /**
      * Revoke a worker source.
      */
     Creep.prototype.revokeSource = function () {
-        this.memory.source_index = null;
+        this.setSourceIndex(null);
     };
 
     /**
@@ -136,26 +151,58 @@ module.exports = function () {
      * Harvest
      */
     Creep.prototype.setToHarvest = function () {
-        if (this.carry.energy < this.carryCapacity) {
+        if (this.getSourceIndex() !== null || this.assignSource() !== null) {
+            // if we are assigned to a source then harvest
             this.setState('harvest');
-            var sources = this.room.find(FIND_SOURCES, {
-                filter: (source) => {
-                    return source.energy > 0 || source.ticksToRegeneration < 10
+            if (this.carry.energy < this.carryCapacity) {
+                // creep is not full: harvest if possible else withdraw
+                var sources = this.room.find(FIND_SOURCES);
+                var result = this.harvest(sources[this.getSourceIndex()]);
+                if (result == ERR_NOT_IN_RANGE) {
+                    this.moveTo(sources[this.getSourceIndex()]);
+                } else if (result == ERR_NOT_ENOUGH_RESOURCES) { // if resources empty then withdraw
+                    this.setState('withdraw');
                 }
-            });
-            if (this.memory.source_index === null) {
-                this.assignSource(this);
+            } else {
+                // creep is full: deposit in container and continue harvesting if possible else is ready
+                var container = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_CONTAINER
+                    }
+                });
+                if (container !== null && this.pos == container.pos
+                    && (_.sum(container.store) + this.carry.energy) < container.storeCapacity) {
+                    this.drop(RESOURCE_ENERGY);
+                } else {
+                    this.revokeSource();
+                    this.setState('ready');
+                }
             }
-            var error = this.harvest(sources[this.memory.source_index]);
-            if (error == ERR_NOT_IN_RANGE) {
-                this.moveTo(sources[this.memory.source_index]);
-            } else if (error == ERR_NOT_ENOUGH_RESOURCES) {
-                this.revokeSource(this);
+        } else {
+            // if we are not assigned to a source then withdraw
+            this.setState('withdraw');
+        }
+    };
+
+    /**
+     * Withdraw
+     */
+    Creep.prototype.setToWithdraw = function () {
+        var containers = this.room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+            }
+        });
+        if (containers.length > 0) {
+            this.setState('withdraw');
+            containers.sort((a, b) => a.store[RESOURCE_ENERGY] - b.store[RESOURCE_ENERGY]);
+            if (this.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(containers[0]);
+            } else {
                 this.setState('ready');
             }
         } else {
-            this.revokeSource(this);
-            this.setState('ready');
+            this.setState('free');
         }
     };
 
