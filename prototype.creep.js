@@ -90,7 +90,6 @@ module.exports = function () {
      * @param {Creep} worker
      */
     Creep.prototype.setToTransfer = function () {
-        console.log('Transfer ' + this.name);
         var target = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
@@ -99,7 +98,7 @@ module.exports = function () {
         });
         if (target !== null) {
             this.setState('transfer');
-            if (this.transfer(this, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if (this.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.moveTo(target);
             } else if (this.carry.energy === 0) {
                 this.setState('free');
