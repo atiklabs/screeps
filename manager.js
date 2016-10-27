@@ -52,6 +52,7 @@ var manager = {
         var maxWorkers = 8 - controllerLevel + sourcesLength + 1;
         // Spawn automatically new workers
         if (workersLength < maxWorkers) {
+            console.log(workersLength + ' ' + maxWorkers);
             var spawns = room.find(FIND_MY_STRUCTURES, {
                 filter: (structure) => structure.structureType == STRUCTURE_SPAWN
             });

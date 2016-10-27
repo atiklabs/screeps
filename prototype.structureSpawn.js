@@ -10,7 +10,7 @@ module.exports = function () {
         var level = 0;
         var capacitySpent = 0;
         var parts = [];
-        while (capacitySpent + 200 <= this.room.energyCapacityAvailable) {
+        while (capacitySpent + 200 <= this.room.energyAvailable) {
             parts.push(WORK); // 100
             parts.push(CARRY); // 50
             parts.push(MOVE); // 50
