@@ -31,7 +31,9 @@ var general = {
             let soldiersLength = soldiers.length;
             if (this.getMode() == 'defend') {
                 // Tell every soldier to defend
+                console.log('works 0');
                 for (let i = 0; i < soldiersLength; i++) {
+                    console.log('works 4');
                     this.defend(soldiers[i]);
                 }
                 // Recruit
@@ -103,6 +105,7 @@ var general = {
         switch (soldier.archetype) {
             case 'attacker':
                 // init
+                console.log('works 1');
                 soldier.setToAttackNearestHostileCreep();
                 break;
             case 'healer':
