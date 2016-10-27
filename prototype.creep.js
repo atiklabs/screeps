@@ -62,7 +62,7 @@ module.exports = function () {
         // get a free rampart
         for (let i = 1; i < rampartsLength; i++) {
             if (rampartOccupied[i] == false) {
-                this.memory.setRampartIndex(i);
+                this.setRampartIndex(i);
                 return i;
             }
         }
