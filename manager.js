@@ -165,6 +165,9 @@ var manager = {
         if (worker.getState() == 'transfer') {
             worker.setToTransfer();
         }
+        if (worker.getState() == 'repair') {
+            worker.setToRepair();
+        }
 
         // if ready set task
         if (worker.getState() == 'ready') {
