@@ -4,13 +4,16 @@
 module.exports = function () {
     /**
      * Create worker
+     * @param {boolean} useMaxEnergy
      * @returns {string|int}
      */
-    StructureSpawn.prototype.createWorker = function () {
+    StructureSpawn.prototype.createWorker = function (useMaxEnergy = true) {
         var level = 0;
         var capacitySpent = 0;
         var parts = [];
-        while (capacitySpent + 200 <= this.room.energyAvailable) {
+        var energyTotal = this.room.energyAvailable;
+        if (useMaxEnergy) energyTotal = this.room.energyCapacityAvailable;
+        while (capacitySpent + 200 <= energyTotal) {
             parts.push(WORK); // 100
             parts.push(CARRY); // 50
             parts.push(MOVE); // 50
@@ -29,11 +32,18 @@ module.exports = function () {
         return name;
     };
 
-    StructureSpawn.prototype.createAttacker = function() {
+    /**
+     * Create Attacker
+     * @param {boolean} useMaxEnergy
+     * @returns {string|null}
+     */
+    StructureSpawn.prototype.createAttacker = function(useMaxEnergy = true) {
         var parts = [];
         var level = 0;
         var capacitySpent = 0;
-        while (capacitySpent + 130 <= this.room.energyAvailable) {
+        var energyTotal = this.room.energyAvailable;
+        if (useMaxEnergy) energyTotal = this.room.energyCapacityAvailable;
+        while (capacitySpent + 130 <= energyTotal) {
             parts.push(ATTACK); // 80
             parts.push(MOVE); // 50
             level++;
@@ -50,11 +60,18 @@ module.exports = function () {
         return name;
     };
 
-    StructureSpawn.prototype.createDefender = function() {
+    /**
+     * Create Defender
+     * @param {boolean} useMaxEnergy
+     * @returns {string|null}
+     */
+    StructureSpawn.prototype.createDefender = function(useMaxEnergy = true) {
         var parts = [];
         var level = 0;
         var capacitySpent = 0;
-        while (capacitySpent + 200 <= this.room.energyAvailable) {
+        var energyTotal = this.room.energyAvailable;
+        if (useMaxEnergy) energyTotal = this.room.energyCapacityAvailable;
+        while (capacitySpent + 200 <= energyTotal) {
             parts.push(RANGED_ATTACK); // 150
             parts.push(MOVE); // 50
             level++;
@@ -71,11 +88,18 @@ module.exports = function () {
         return name;
     };
 
-    StructureSpawn.prototype.createHealer = function() {
+    /**
+     * Create Healer
+     * @param {boolean} useMaxEnergy
+     * @returns {string|null}
+     */
+    StructureSpawn.prototype.createHealer = function(useMaxEnergy = true) {
         var parts = [];
         var level = 0;
         var capacitySpent = 0;
-        while (capacitySpent + 300 <= this.room.energyAvailable) {
+        var energyTotal = this.room.energyAvailable;
+        if (useMaxEnergy) energyTotal = this.room.energyCapacityAvailable;
+        while (capacitySpent + 300 <= energyTotal) {
             parts.push(HEAL); // 250
             parts.push(MOVE); // 50
             level++;

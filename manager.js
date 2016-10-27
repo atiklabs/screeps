@@ -60,7 +60,7 @@ var manager = {
                 filter: (structure) => structure.structureType == STRUCTURE_SPAWN
             });
             if (spawns.length > 0) {
-                var name = spawns[0].createWorker();
+                var name = spawns[0].createWorker(workersLength !== 0);
                 if (name !== null && isNaN(name)) {
                     workersLength++;
                     console.log('Spawned worker [level ' + Game.creeps[name].memory.level + ']: ' + name + ' (' + (workersLength) + '/' + maxWorkers + ')');
