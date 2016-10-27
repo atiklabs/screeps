@@ -17,7 +17,7 @@ var director = {
         architect.plan(); // study, plan, rest
 
         // general
-        var targets = Game.rooms.E68N51.pos.find(FIND_HOSTILE_CREEPS); // hardcoded for now
+        var targets = Game.spawns.Base.room.pos.find(FIND_HOSTILE_CREEPS); // hardcoded for now
         if (targets.length >= 2) {
             general.setMode('defend');
         } else {
