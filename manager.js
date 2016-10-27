@@ -4,14 +4,34 @@
  */
 var manager = {
     /**
+     * Set current manager mode
+     * @return {string} getMode
+     */
+    getMode: function () {
+        return Memory.manager.mode;
+    },
+
+    /**
+     * Set current manager mode
+     * @param {string} mode
+     */
+    setMode: function (mode) {
+        if (Memory.manager.mode != mode) {
+            Memory.manager.mode = mode;
+            console.log('Manager: ' + mode);
+        }
+    },
+
+    /**
      * We will run manage in every iteration in every tick to assign tasks and ask them
      * to work. Spawn new workers if necessary.
      */
     manage: function () {
         // for every room
         for (let roomName in Game.rooms) {
+            var room = Game.rooms[roomName];
             // tell every worker to continue their task
-            var workers = this.getAllWorkers(roomName);
+            var workers = room.getAllWorkers();
             var workersLength = workers.length;
             for (let i = 0; i < workersLength; i++) {
                 this.run(workers[i]);
@@ -25,7 +45,7 @@ var manager = {
         var room = Game.rooms[roomName];
         if (typeof room.controller == 'undefined') return;
         // Useful variables
-        var workers = this.getAllWorkers(roomName);
+        var workers = room.getAllWorkers();
         var workersLength = workers.length;
         var sourcesLength = room.find(FIND_SOURCES).length;
         var controllerLevel = room.controller.level;
@@ -51,295 +71,78 @@ var manager = {
      */
     run: function (worker) {
         // init
-        if (this.getState(worker) == 'init') {
-            this.setState(worker, 'free');
+        if (worker.getState() == 'init') {
+            worker.setState('free');
         }
-
         // free
-        if (this.getState(worker) == 'free') {
+        if (worker.getState() == 'free') {
             if (worker.carry.energy === 0) {
-                this.setState(worker, 'harvest');
+                worker.setToHarvest();
             } else {
-                this.setState(worker, 'ready');
+                worker.setState('ready');
             }
         }
 
         // maintain the same task
-        if (this.getState(worker) == 'harvest') {
-            this.setWorkerToHarvest(worker);
+        if (worker.getState() == 'harvest') {
+            worker.setToHarvest();
         }
-        if (this.getState(worker) == 'transfer') {
-            this.setWorkerToTransfer(worker);
+        if (worker.getState() == 'transfer') {
+            worker.setToTransfer();
         }
-        if (this.getState(worker) == 'tower') {
-            this.setWorkerToTower(worker);
+        if (worker.getState() == 'tower') {
+            worker.setToTower();
         }
-        if (this.getState(worker) == 'build') {
-            this.setWorkerToBuild(worker);
+        if (worker.getState() == 'build') {
+            worker.setToBuild();
         }
-        if (this.getState(worker) == 'repair') {
-            this.setWorkerToRepair(worker);
+        if (worker.getState() == 'repair') {
+            worker.setToRepair();
         }
-        if (this.getState(worker) == 'upgrade') {
-            this.setWorkerToUpgrade(worker);
+        if (worker.getState() == 'upgrade') {
+            worker.setToUpgrade();
         }
 
         // if ready set task
-        if (this.getState(worker) == 'ready') {
-            this.setWorkerToTransfer(worker);
+        if (worker.getState() == 'ready') {
+            worker.setToTransfer();
         }
-        if (this.getState(worker) == 'ready') {
+        if (worker.getState() == 'ready') {
             switch (this.getMode()) {
                 case 'build':
-                    this.setWorkerToBuild(worker);
+                    worker.setToBuild();
                     break;
                 case 'repair':
-                    this.setWorkerToRepair(worker);
+                    worker.setToRepair();
                     break;
                 case 'upgrade':
-                    this.setWorkerToUpgrade(worker);
+                    worker.setToUpgrade();
                     break;
                 default:
-                    var buildWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'build').length;
-                    var repairWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'repair').length;
-                    var towerWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'tower').length;
-                    var upgradeWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.state == 'upgrade').length;
-                    console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairs, ' + towerWorkers + ' Towers');
+                    var allWorkersInRoom = worker.room.getAllWorkers();
+                    var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
+                    var repairWorkers = _.filter(allWorkersInRoom, (worker) => cworker.memory.state == 'repair').length;
+                    var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
+                    var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
+                    console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
                     var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
-                    if (this.getState(worker) == 'ready' && buildWorkers < total / 4) {
-                        this.setWorkerToBuild(worker);
+                    if (worker.getState() == 'ready' && buildWorkers < total / 4) {
+                        worker.setToBuild();
                     }
-                    if (this.getState(worker) == 'ready' && repairWorkers < total / 4) {
-                        this.setWorkerToRepair(worker);
+                    if (worker.getState() == 'ready' && repairWorkers < total / 4) {
+                        worker.setToRepair();
                     }
-                    if (this.getState(worker) == 'ready' && towerWorkers < total / 4) {
-                        this.setWorkerToTower(worker);
+                    if (worker.getState() == 'ready' && towerWorkers < total / 4) {
+                        worker.setToTower();
                     }
-                    if (this.getState(worker) == 'ready' && upgradeWorkers < total / 4) {
-                        this.setWorkerToUpgrade(worker);
+                    if (worker.getState() == 'ready' && upgradeWorkers < total / 4) {
+                        worker.setToUpgrade();
                     }
-                    if (this.getState(worker) == 'ready') {
-                        this.setWorkerToUpgrade(worker);
+                    if (worker.getState() == 'ready') {
+                        worker.setToUpgrade();
                     }
             }
         }
-    },
-
-    /**
-     * Harvest
-     * @param {Creep} worker
-     */
-    setWorkerToHarvest: function (worker) {
-        if (worker.carry.energy < worker.carryCapacity) {
-            var sources = worker.room.find(FIND_SOURCES);
-            if (worker.memory.source_index === null) {
-                this.assignSource(worker);
-            }
-            var error = worker.harvest(sources[worker.memory.source_index]);
-            if (error == ERR_NOT_IN_RANGE) {
-                worker.moveTo(sources[worker.memory.source_index]);
-            } else if (error == ERR_NOT_ENOUGH_RESOURCES) {
-                this.unassignSource(worker);
-                this.setState(worker, 'ready');
-            }
-        } else {
-            this.unassignSource(worker);
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Transfer
-     * @param {Creep} worker
-     */
-    setWorkerToTransfer: function (worker) {
-        var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
-                    structure.energy < structure.energyCapacity;
-            }
-        });
-        if (target !== null) {
-            this.setState(worker, 'transfer');
-            if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(target);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Build
-     * @param {Creep} worker
-     */
-    setWorkerToBuild: function (worker) {
-        var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-        if (target !== null) {
-            this.setState(worker, 'build');
-            if (worker.build(target) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(target);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Repair
-     * @param {Creep} worker
-     */
-    setWorkerToRepair: function (worker) {
-        var targets = worker.room.find(FIND_STRUCTURES, {
-            // repair damaged structures, if it's a road and worker_locations of the road is 0 do not repair.
-            filter: structure => {
-                return structure.hits < structure.hitsMax && (
-                        structure.structureType != STRUCTURE_ROAD || (
-                            typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
-                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
-                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
-                            Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
-                        )
-                    );
-            }
-        });
-        targets.sort((a, b) => a.hits - b.hits);
-        if (targets.length > 0) {
-            this.setState(worker, 'repair');
-            if (worker.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(targets[0]);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Tower
-     * @param {Creep} worker
-     */
-    setWorkerToTower: function (worker) {
-        var target = worker.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
-            }
-        });
-        if (target !== null) {
-            this.setState(worker, 'tower');
-            if (worker.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                worker.moveTo(target);
-            } else if (worker.carry.energy === 0) {
-                this.setState(worker, 'free');
-            }
-        } else {
-            this.setState(worker, 'ready');
-        }
-    },
-
-    /**
-     * Upgrade
-     * @param {Creep} worker
-     */
-    setWorkerToUpgrade: function (worker) {
-        this.setState(worker, 'upgrade');
-        if (worker.upgradeController(worker.room.controller) == ERR_NOT_IN_RANGE) {
-            worker.moveTo(worker.room.controller);
-        } else if (worker.carry.energy === 0) {
-            this.setState(worker, 'free');
-        }
-    },
-
-    /**
-     * Assigns a source to the worker
-     * @param {Creep} worker
-     */
-    assignSource: function (worker) {
-        // initialize variables
-        var sources = worker.room.find(FIND_SOURCES);
-        var sourcesLength = sources.length;
-        var workers = this.getAllWorkers(worker.memory.initial_room);
-        var workersLength = workers.length;
-        var workersAssignedToSource = new Array(sourcesLength);
-        for (let i = 0; i < sourcesLength; i++) {
-            workersAssignedToSource[i] = 0;
-        }
-        // get number of assigned workers in every source
-        for (let i = 0; i < workersLength; i++) {
-            if (workers[i].memory.source_index !== null) {
-                workersAssignedToSource[workers[i].memory.source_index]++;
-            }
-        }
-        // get the source with the minimum workers assigned
-        var minSourceIndex = 0;
-        var minSourceWorkers = workersAssignedToSource[minSourceIndex];
-        for (let i = 1; i < sourcesLength; i++) {
-            if (workersAssignedToSource[i] < minSourceWorkers) {
-                minSourceIndex = i;
-            }
-        }
-        worker.memory.source_index = minSourceIndex;
-    },
-
-    /**
-     * Unassigns a worker source.
-     * @param {Creep} worker
-     */
-    unassignSource: function (worker) {
-        worker.memory.source_index = null;
-    },
-
-    /**
-     * Get the state of a worker.
-     * @return {string} getState
-     */
-    getState: function (worker) {
-        return worker.memory.state;
-    },
-
-    /**
-     * Set an state and say it.
-     * @param {Creep} worker
-     * @param {string} state
-     */
-    setState: function (worker, state) {
-        if (worker.memory.state != state) {
-            worker.memory.state = state;
-            worker.say(state);
-        }
-    },
-
-    /**
-     * Set current manager mode
-     * @return {string} getMode
-     */
-    getMode: function () {
-        return Memory.manager.mode;
-    },
-
-    /**
-     * Set current manager mode
-     * @param {string} mode
-     */
-    setMode: function (mode) {
-        if (Memory.manager.mode != mode) {
-            Memory.manager.mode = mode;
-            console.log('Manager: ' + mode);
-        }
-    },
-
-    /**
-     * Get all workers
-     * @param {string} roomName
-     * @return {array} workers
-     */
-    getAllWorkers: function (roomName) {
-        return _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.initial_room == roomName);
     }
 };
 
