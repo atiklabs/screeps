@@ -287,7 +287,6 @@ module.exports = function () {
      * Attack nearest hostile creep
      */
     Creep.prototype.setToAttackNearestHostileCreep = function () {
-        console.log('works');
         var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (target !== null) {
             if (this.attack(target) == ERR_NOT_IN_RANGE) {

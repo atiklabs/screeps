@@ -38,9 +38,7 @@ var general = {
                 this.recruit(roomName);
             } else if (this.getMode() == 'attack') {
                 // Tell every soldier to attack
-                console.log('works 0');
                 for (let i = 0; i < soldiersLength; i++) {
-                    console.log('works 4');
                     this.attack(soldiers[i]);
                 }
                 // Recruit
@@ -86,7 +84,7 @@ var general = {
      * @param soldier
      */
     defend: function (soldier) {
-        switch (soldier.archetype) {
+        switch (soldier.memory.archetype) {
             case 'attacker':
                 // init
                 soldier.setToDefendRoom();
@@ -102,10 +100,9 @@ var general = {
      * @param soldier
      */
     attack: function (soldier) {
-        switch (soldier.archetype) {
+        switch (soldier.memory.archetype) {
             case 'attacker':
                 // init
-                console.log('works 1');
                 soldier.setToAttackNearestHostileCreep();
                 break;
             case 'healer':
