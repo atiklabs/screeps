@@ -96,6 +96,7 @@ module.exports = function () {
                     structure.energy < structure.energyCapacity;
             }
         });
+        console.log('Transfer ' + this.name + target.length);
         if (target !== null) {
             this.setState('transfer');
             if (this.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
