@@ -32,14 +32,14 @@ var general = {
             if (this.getMode() == 'attack') {
                 // Tell every soldier to attack
                 for (let i = 0; i < soldiersLength; i++) {
-                    this.attack(soldiers[i]);
+                    this.setModeAttack(soldiers[i]);
                 }
                 // Recruit
                 this.recruitAttackers(roomName);
             } else if (this.getMode() == 'defend') {
                 // Tell every soldier to attack
                 for (let i = 0; i < soldiersLength; i++) {
-                    this.defend(soldiers[i]);
+                    this.setModeDefend(soldiers[i]);
                 }
                 // Recruit
                 this.recruitDefenders(roomName);
@@ -113,7 +113,7 @@ var general = {
      * Attack the nearest hostile creep
      * @param soldier
      */
-    attack: function (soldier) {
+    setModeAttack: function (soldier) {
         switch (soldier.memory.archetype) {
             case 'attacker':
             case 'defender':
@@ -129,7 +129,7 @@ var general = {
      * Defend the base
      * @param soldier
      */
-    defend: function (soldier) {
+    setModeDefend: function (soldier) {
         switch (soldier.memory.archetype) {
             case 'defender':
                 soldier.setToDefendRoom();

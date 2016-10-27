@@ -34,7 +34,11 @@ var manager = {
             var workers = room.getAllWorkers();
             var workersLength = workers.length;
             for (let i = 0; i < workersLength; i++) {
-                this.run(workers[i]);
+                if (this.getMode() == 'repair') {
+                    this.setModeRepair(workers[i]);
+                } else {
+                    this.setModeDefault(workers[i]);
+                }
             }
             // recruit
             this.recruit(roomName);
@@ -69,7 +73,7 @@ var manager = {
      * Worker, it's time to set your task!
      * @param {Creep} worker
      */
-    run: function (worker) {
+    setModeDefault: function (worker) {
         // init
         if (worker.getState() == 'init') {
             worker.setState('free');
@@ -116,40 +120,55 @@ var manager = {
             worker.setToTransfer();
         }
         if (worker.getState() == 'ready') {
-            switch (this.getMode()) {
-                case 'build':
-                    worker.setToBuild();
-                    break;
-                case 'repair':
-                    worker.setToRepair();
-                    break;
-                case 'upgrade':
-                    worker.setToUpgrade();
-                    break;
-                default:
-                    var allWorkersInRoom = worker.room.getAllWorkers();
-                    var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
-                    var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
-                    var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
-                    var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
-                    console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
-                    var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
-                    if (worker.getState() == 'ready' && buildWorkers < total / 4) {
-                        worker.setToBuild();
-                    }
-                    if (worker.getState() == 'ready' && repairWorkers < total / 4) {
-                        worker.setToRepair();
-                    }
-                    if (worker.getState() == 'ready' && towerWorkers < total / 4) {
-                        worker.setToTower();
-                    }
-                    if (worker.getState() == 'ready' && upgradeWorkers < total / 4) {
-                        worker.setToUpgrade();
-                    }
-                    if (worker.getState() == 'ready') {
-                        worker.setToUpgrade();
-                    }
+            var allWorkersInRoom = worker.room.getAllWorkers();
+            var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
+            var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
+            var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
+            var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
+            console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
+            var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
+            if (worker.getState() == 'ready' && buildWorkers < total / 4) {
+                worker.setToBuild();
             }
+            if (worker.getState() == 'ready' && repairWorkers < total / 4) {
+                worker.setToRepair();
+            }
+            if (worker.getState() == 'ready' && towerWorkers < total / 4) {
+                worker.setToTower();
+            }
+            if (worker.getState() == 'ready' && upgradeWorkers < total / 4) {
+                worker.setToUpgrade();
+            }
+            if (worker.getState() == 'ready') {
+                worker.setToUpgrade();
+            }
+        }
+    },
+
+    /**
+     * Worker, it's time to repair everything!
+     * @param {Creep} worker
+     */
+    setModeRepair: function (worker) {
+        // init
+        if (worker.getState() == 'init') {
+            worker.setState('free');
+        }
+        // free
+        if (worker.getState() == 'free') {
+            if (worker.carry.energy === 0) {
+                worker.setToHarvest();
+            } else {
+                worker.setState('ready');
+            }
+        }
+
+        // if ready set task
+        if (worker.getState() == 'ready') {
+            worker.setToTransfer();
+        }
+        if (worker.getState() == 'ready') {
+            worker.setToRepair();
         }
     }
 };

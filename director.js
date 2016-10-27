@@ -7,6 +7,7 @@ var director = {
      */
     orchestrate: function (manager, general, architect) {
         var ticksHour = Math.floor((Game.time) % 10000);
+        var targets = Game.spawns.Base.room.find(FIND_HOSTILE_CREEPS); // hardcoded for now
 
         // architect
         if (ticksHour % 1000 >= 0 && ticksHour % 1000 < 500) {
@@ -17,16 +18,19 @@ var director = {
         architect.plan(); // study, plan, rest
 
         // general
-        var targets = Game.spawns.Base.room.find(FIND_HOSTILE_CREEPS); // hardcoded for now
-        if (targets.length >= 2) {
-            general.setMode('defend');
+        if (targets.length >= 1) {
+            general.setMode('defend'); // todo in case of defenses bridged then mode attack
         } else {
-            general.setMode('defend');
+            general.setMode('rest');
         }
-        general.command(); // defend, claim, attack
+        general.command(); // defend, attack, rest
 
         // manager
-        manager.setMode('default');
+        if (targets.length >= 1) {
+            general.setMode('repair');
+        } else {
+            general.setMode('default');
+        }
         manager.manage(); // default, upgrade, build, repair
     }
 };
