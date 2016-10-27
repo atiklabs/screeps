@@ -28,4 +28,46 @@ module.exports = function () {
         }
         return name;
     };
+
+    StructureSpawn.prototype.createAttacker = function() {
+        var parts = [];
+        var level = 0;
+        var capacitySpent = 0;
+        while (capacitySpent + 130 <= this.room.energyAvailable) {
+            parts.push(ATTACK); // 80
+            parts.push(MOVE); // 50
+            level++;
+            capacitySpent += 130;
+        }
+        var name = this.createCreep(parts);
+        if (name !== null && isNaN(name)) {
+            Game.creeps[name].memory.role = 'soldier';
+            Game.creeps[name].memory.state = 'init';
+            Game.creeps[name].memory.archetype = 'attacker';
+            Game.creeps[name].memory.level = level;
+            return name;
+        }
+        return name;
+    };
+
+    StructureSpawn.prototype.createHealer = function() {
+        var parts = [];
+        var level = 0;
+        var capacitySpent = 0;
+        while (capacitySpent + 300 <= this.room.energyAvailable) {
+            parts.push(HEAL); // 250
+            parts.push(MOVE); // 50
+            level++;
+            capacitySpent += 300;
+        }
+        var name = this.createCreep(parts);
+        if (name !== null && isNaN(name)) {
+            Game.creeps[name].memory.role = 'soldier';
+            Game.creeps[name].memory.state = 'init';
+            Game.creeps[name].memory.archetype = 'healer';
+            Game.creeps[name].memory.level = level;
+            return name;
+        }
+        return name;
+    };
 };

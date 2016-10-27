@@ -21,6 +21,62 @@ module.exports = function () {
     };
 
     /**
+     * Get rampart index
+     */
+    Creep.prototype.getRampartIndex = function () {
+        if (typeof this.memory.rampart_index == 'undefined') return null;
+        return this.memory.rampart_index;
+    };
+
+    /**
+     * Set rampart index
+     * @param {string} state
+     */
+    Creep.prototype.setRampartIndex = function (rampart_index) {
+        if (this.memory.rampart_index != rampart_index) {
+            this.memory.rampart_index = rampart_index;
+        }
+    };
+
+    /**
+     * Assigns a rampart to the worker
+     * @returns {int|null}
+     */
+    Creep.prototype.assignRampart = function () {
+        // initialize variables
+        var ramparts = this.room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_RAMPART
+            }
+        });
+        var rampartsLength = ramparts.length;
+        var attackers = this.room.getAllSoldiers();
+        var attackersLength = attackers.length;
+        // check occupied ramparts
+        var rampartOccupied = new Array(rampartsLength).fill(false);
+        for (let i = 0; i < attackersLength; i++) {
+            if (attackers[i].getRampartIndex() !== null) {
+                rampartOccupied[attackers[i].getRampartIndex()] = true;
+            }
+        }
+        // get a free rampart
+        for (let i = 1; i < rampartsLength; i++) {
+            if (rampartOccupied[i] == false) {
+                this.memory.setRampartIndex(i);
+                return i;
+            }
+        }
+        return null;
+    };
+
+    /**
+     * Revoke a worker rampart.
+     */
+    Creep.prototype.revokeRampart = function () {
+        delete this.memory.rampart_index;
+    };
+
+    /**
      * Assigns a source to the worker
      */
     Creep.prototype.assignSource = function () {
@@ -202,6 +258,61 @@ module.exports = function () {
             this.moveTo(this.room.controller);
         } else if (this.carry.energy === 0) {
             this.setState('free');
+        }
+    };
+
+    /**
+     * Defend room
+     */
+    Creep.prototype.setToDefendRoom = function () {
+        if (this.getRampartIndex() === null) {
+            if (this.assignRampart() === null) {
+                return; // do nothing
+            }
+        }
+        var ramparts = this.room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_RAMPART
+            }
+        });
+        if (ramparts[this.getRampartIndex()] !== this.pos) {
+            this.moveTo(ramparts[this.getRampartIndex()]);
+            return;
+        }
+        var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        this.attack(target);
+    };
+
+    /**
+     * Attack nearest hostile creep
+     */
+    Creep.prototype.setToAttackNearestHostileCreep = function () {
+        var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if (target !== null) {
+            if (this.attack(target) == ERR_NOT_IN_RANGE) {
+                this.moveTo(target);
+            }
+        } else {
+            this.setToDefendRoom();
+        }
+    };
+
+    /**
+     * Heal most damaged attacker or follow the nearest attacker
+     */
+    Creep.prototype.setToHealMostDamagedAttacker = function () {
+        var targets = this.room.find(FIND_MY_CREEPS, {
+            filter: (creep) => {
+                return (creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker');
+            }
+        });
+        if (targets.length > 0) {
+            targets.sort(function (a, b) {
+                return a.hits - b.hits;
+            });
+            if (this.heal(targets[0]) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets[0]);
+            }
         }
     };
 };

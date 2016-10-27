@@ -14,10 +14,10 @@ var director = {
             architect.setMode('plan');
             manager.setMode('default');
         }
-        general.setMode('rest');
+        general.setMode('attack');
         // Ask architect, general and manager to work
         architect.plan(); // study, plan, rest
-        general.command(); // rest, defend, claim, conquer
+        general.command(); // defend, claim, attack
         manager.manage(); // default, upgrade, build, repair
     }
 };
