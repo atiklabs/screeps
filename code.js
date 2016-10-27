@@ -150,9 +150,10 @@ var code = {
         }
         // 1.16
         if (this.getVersion() == '1.15') {
-            Memory.architect = Memory.arquitect;
+            Memory.architect = {};
+            Memory.architect.worker_locations = {};
             delete Memory.arquitect;
-            this.setVersion('1.15');
+            this.setVersion('1.16');
         }
     }
 };
