@@ -164,23 +164,24 @@ module.exports = function () {
                     this.setState('withdraw');
                 }
             } else {
-                // creep is full: deposit in container and continue harvesting if possible else is ready
+                // creep is full: deposit in container and continue harvesting if possible else is ready to work
                 var containers = this.pos.findInRange(FIND_STRUCTURES, 1, {
                     filter: (structure) => {
                         return structure.structureType == STRUCTURE_CONTAINER
                     }
                 });
                 if (containers.length > 0) {
-                    if (this.transfer(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    var result = this.transfer(containers[0], RESOURCE_ENERGY);
+                    if (result == ERR_NOT_IN_RANGE) {
                         this.moveTo(containers[0]);
+                    } else if (result == ERR_FULL) {
+                        this.revokeSource();
+                        this.setState('ready');
                     }
                 } else {
                     this.revokeSource();
                     this.setState('ready');
                 }
-
-                //                     && (_.sum(container.store) + this.carry.energy) < container.storeCapacity
-                //console.log(_.sum(container.store) + ' ' + this.carry.energy + ' ' + container.storeCapacity);
             }
         } else {
             // if we are not assigned to a source then withdraw
@@ -192,6 +193,7 @@ module.exports = function () {
      * Withdraw
      */
     Creep.prototype.setToWithdraw = function () {
+        console.log(this.name);
         var containers = this.room.find(FIND_MY_STRUCTURES, {
             filter: (structure) => {
                 return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
