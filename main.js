@@ -1,7 +1,8 @@
 // load prototypes
-require('prototype.structureSpawn')();
 require('prototype.creep')();
 require('prototype.room')();
+require('prototype.structureSpawn')();
+require('prototype.structureTower')();
 // load variables
 var code = require('code');
 var tools = require('tools');
