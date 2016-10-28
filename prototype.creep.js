@@ -205,36 +205,40 @@ module.exports = function () {
      * Withdraw
      */
     Creep.prototype.setToWithdraw = function () {
-        var fullContainers = this.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_CONTAINER && _.sum(structure.store) == structure.storeCapacity
-            }
-        });
-        if (fullContainers.length > 0) {
-            // if full container then go to a full one
-            this.setState('withdraw');
-            if (this.withdraw(fullContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.moveTo(fullContainers[0]);
-            } else {
-                this.setState('ready');
-            }
-        } else {
-            // if no full container in the room then go to the closest container
-            var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
+        if (this.carry.energy < this.carryCapacity) {
+            var fullContainers = this.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                    return structure.structureType == STRUCTURE_CONTAINER && _.sum(structure.store) == structure.storeCapacity
                 }
             });
-            if (container !== null) {
+            if (fullContainers.length > 0) {
+                // if full container then go to a full one
                 this.setState('withdraw');
-                if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    this.moveTo(container);
+                if (this.withdraw(fullContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    this.moveTo(fullContainers[0]);
                 } else {
                     this.setState('ready');
                 }
             } else {
-                this.setState('free');
+                // if no full container in the room then go to the closest container
+                var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                    }
+                });
+                if (container !== null) {
+                    this.setState('withdraw');
+                    if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(container);
+                    } else {
+                        this.setState('ready');
+                    }
+                } else {
+                    this.setState('free');
+                }
             }
+        } else {
+            this.setState('ready');
         }
     };
 

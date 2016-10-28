@@ -74,6 +74,7 @@ var manager = {
      * @param {Creep} worker
      */
     setModeDefault: function (worker) {
+        // always try to pickup dropped energy on the floor
         if (worker.tryToPickupHere()) return;
 
         // maintain the same task
@@ -114,6 +115,9 @@ var manager = {
      * @param {Creep} worker
      */
     setModeRepair: function (worker) {
+        // always try to pickup dropped energy on the floor
+        if (worker.tryToPickupHere()) return;
+
         // maintain the same task
         if (worker.getState() == 'harvest') worker.setToHarvest();
         if (worker.getState() == 'withdraw') worker.setToWithdraw();
@@ -124,7 +128,7 @@ var manager = {
         // release from certain states that won't be used in this mode
         if (worker.getState() == 'pickup') worker.setState('free');
         if (worker.getState() == 'build') worker.setState('free');
-        if (worker.getState() == 'upgrade') worker.setToUpgrade();
+        if (worker.getState() == 'upgrade') worker.setState('free');
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
