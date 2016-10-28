@@ -428,7 +428,7 @@ module.exports = function () {
             this.setState('upgrade');
             this.moveTo(this.room.controller);
         } else {
-            console.log(result);
+            console.log(this.name + ' ' + result);
         }
     };
 
