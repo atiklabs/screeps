@@ -220,6 +220,7 @@ module.exports = function () {
                 });
                 if (structure !== null) {
                     this.setState('withdraw');
+                    console.log('1');
                     if (this.withdraw(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         this.moveTo(structure);
                     } else {
@@ -238,6 +239,7 @@ module.exports = function () {
                 });
                 if (fullContainers.length > 0) {
                     this.setState('withdraw');
+                    console.log('2');
                     if (this.withdraw(fullContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                         this.moveTo(fullContainers[0]);
                     } else {
@@ -251,6 +253,7 @@ module.exports = function () {
                         }
                     });
                     if (container !== null) {
+                        console.log('3');
                         this.setState('withdraw');
                         if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                             this.moveTo(container);
@@ -265,6 +268,7 @@ module.exports = function () {
                             }
                         });
                         if (storage !== null) {
+                            console.log('4');
                             this.setState('withdraw');
                             if (this.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                                 this.moveTo(storage);
