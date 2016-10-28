@@ -74,46 +74,24 @@ var manager = {
      * @param {Creep} worker
      */
     setModeDefault: function (worker) {
-        // init
-        if (worker.getState() == 'init') {
-            worker.setState('free');
-        }
-
-        // free
-        if (worker.getState() == 'free') {
-            worker.setState('harvest');
-        }
-
         // maintain the same task
-        if (worker.getState() == 'pickup') { // right now is not available, too risky to get everything stuck
-            worker.setToPickup();
-        }
-        if (worker.getState() == 'harvest') {
-            worker.setToHarvest();
-        }
-        if (worker.getState() == 'withdraw') {
-            worker.setToWithdraw();
-        }
-        if (worker.getState() == 'transfer') {
-            worker.setToTransfer();
-        }
-        if (worker.getState() == 'tower') {
-            worker.setToTower();
-        }
-        if (worker.getState() == 'build') {
-            worker.setToBuild();
-        }
-        if (worker.getState() == 'repair') {
-            worker.setToRepair();
-        }
-        if (worker.getState() == 'upgrade') {
-            worker.setToUpgrade();
-        }
+        if (worker.getState() == 'pickup') worker.setToPickup();
+        if (worker.getState() == 'harvest') worker.setToHarvest();
+        if (worker.getState() == 'withdraw') worker.setToWithdraw();
+        if (worker.getState() == 'transfer') worker.setToTransfer();
+        if (worker.getState() == 'tower') worker.setToTower();
+        if (worker.getState() == 'build') worker.setToBuild();
+        if (worker.getState() == 'repair') worker.setToRepair();
+        if (worker.getState() == 'upgrade') worker.setToUpgrade();
 
-        // if ready set task
-        if (worker.getState() == 'ready') {
-            worker.setToTransfer();
-        }
+        // init and free
+        if (worker.getState() == 'init') worker.setState('free');
+        if (worker.getState() == 'free') worker.setState('harvest');
+
+        // if ready set task transfer
+        if (worker.getState() == 'ready') worker.setToTransfer();
+
+        // if full set a working task
         if (worker.getState() == 'ready') {
             var allWorkersInRoom = worker.room.getAllWorkers();
             var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
@@ -122,21 +100,11 @@ var manager = {
             var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
             console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
             var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
-            if (worker.getState() == 'ready' && buildWorkers < total / 4) {
-                worker.setToBuild();
-            }
-            if (worker.getState() == 'ready' && repairWorkers < total / 4) {
-                worker.setToRepair();
-            }
-            if (worker.getState() == 'ready' && towerWorkers < total / 4) {
-                worker.setToTower();
-            }
-            if (worker.getState() == 'ready' && upgradeWorkers < total / 4) {
-                worker.setToUpgrade();
-            }
-            if (worker.getState() == 'ready') {
-                worker.setToUpgrade();
-            }
+            if (worker.getState() == 'ready' && buildWorkers < total / 4) worker.setToBuild();
+            if (worker.getState() == 'ready' && repairWorkers < total / 4) worker.setToRepair();
+            if (worker.getState() == 'ready' && towerWorkers < total / 4) worker.setToTower();
+            if (worker.getState() == 'ready' && upgradeWorkers < total / 4) worker.setToUpgrade();
+            if (worker.getState() == 'ready') worker.setToUpgrade();
         }
     },
 
@@ -145,37 +113,26 @@ var manager = {
      * @param {Creep} worker
      */
     setModeRepair: function (worker) {
-        // init
-        if (worker.getState() == 'init') {
-            worker.setState('free');
-        }
-
-        // free
-        if (worker.getState() == 'free') {
-            worker.setState('harvest');
-        }
-
         // maintain the same task
-        if (worker.getState() == 'harvest') {
-            worker.setToHarvest();
-        }
-        if (worker.getState() == 'withdraw') {
-            worker.setToWithdraw();
-        }
-        if (worker.getState() == 'transfer') {
-            worker.setToTransfer();
-        }
-        if (worker.getState() == 'repair') {
-            worker.setToRepair();
-        }
+        if (worker.getState() == 'harvest') worker.setToHarvest();
+        if (worker.getState() == 'withdraw') worker.setToWithdraw();
+        if (worker.getState() == 'tower') worker.setToTower();
+        if (worker.getState() == 'transfer') worker.setToTransfer();
+        if (worker.getState() == 'repair') worker.setToRepair();
+
+        // release from certain states that won't be used in this mode
+        if (worker.getState() == 'pickup') worker.setState('free');
+        if (worker.getState() == 'build') worker.setState('free');
+        if (worker.getState() == 'upgrade') worker.setToUpgrade();
+
+        // init and free
+        if (worker.getState() == 'init') worker.setState('free');
+        if (worker.getState() == 'free') worker.setState('harvest');
 
         // if ready set task
-        if (worker.getState() == 'ready') {
-            worker.setToTransfer();
-        }
-        if (worker.getState() == 'ready') {
-            worker.setToRepair();
-        }
+        if (worker.getState() == 'ready') worker.setToTransfer();
+        if (worker.getState() == 'tower') worker.setToTower();
+        if (worker.getState() == 'ready') worker.setToRepair();
     }
 };
 
