@@ -395,7 +395,7 @@ module.exports = function () {
             // repair any container
             let target = this.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_STORAGE && structure.hits < structure.hitsMax
+                    return structure.structureType == STRUCTURE_CONTAINER && structure.hits < structure.hitsMax
                 }
             });
             if (target !== null) {
