@@ -423,7 +423,7 @@ module.exports = function () {
     Creep.prototype.setToUpgrade = function () {
         var result = this.upgradeController(this.room.controller);
         if (result == OK) {
-            this.setState('free');
+            this.setState('upgrade');
         } else if (result == ERR_NOT_IN_RANGE) {
             this.setState('upgrade');
             this.moveTo(this.room.controller);
