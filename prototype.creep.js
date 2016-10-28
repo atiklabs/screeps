@@ -303,6 +303,40 @@ module.exports = function () {
     };
 
     /**
+     * Withdraw from the nearest resource
+     * Please do not use setToStorage or this will get stuck
+     * @param {boolean} useStorage
+     */
+    Creep.prototype.setToWithdrawNearest = function () {
+        if (this.carry.energy < this.carryCapacity) {
+            // withdraw from the nearest storage or container (probably is an emergency)
+            var structure = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_STORAGE || structure.structureType == STRUCTURE_CONTAINER)
+                        && structure.store[RESOURCE_ENERGY] > 0
+                }
+            });
+            if (structure !== null) {
+                let result = this.withdraw(structure, RESOURCE_ENERGY);
+                if (result == OK) {
+                    this.setState('ready');
+                } else if (result == ERR_NOT_IN_RANGE) {
+                    this.setState('withdraw');
+                    this.moveTo(structure);
+                } else {
+                    this.setState('free');
+                }
+            } else {
+                // if no storage or container found is found then free (probably will just sit and wait)
+                this.setState('free');
+            }
+        } else {
+            this.setState('ready');
+        }
+    };
+
+
+    /**
      * Transfer
      */
     Creep.prototype.setToTransfer = function () {
