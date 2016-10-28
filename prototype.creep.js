@@ -197,11 +197,11 @@ module.exports = function () {
                         this.setState('harvest');
                     } else {
                         this.revokeSource();
-                        this.setToStorage();
+                        this.setState('ready');
                     }
                 } else {
                     this.revokeSource();
-                    this.setToStorage();
+                    this.setState('ready');
                 }
             }
         } else {

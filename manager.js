@@ -135,7 +135,7 @@ var manager = {
 
         // if ready set task
         if (worker.getState() == 'ready') worker.setToTransfer();
-        if (worker.getState() == 'tower') worker.setToTower();
+        if (worker.getState() == 'ready') worker.setToTower();
         if (worker.getState() == 'ready') worker.setToRepair();
     }
 };
