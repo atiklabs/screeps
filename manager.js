@@ -90,8 +90,8 @@ var manager = {
         // maintain the same task
         if (worker.getState() == 'pickup') worker.setToPickup(); // not used
         if (worker.getState() == 'harvest') worker.setToHarvest();
-        if (worker.getState() == 'withdraw') worker.setToWithdraw();
-        if (worker.getState() == 'withdraw_nearest') worker.setToWithdrawNearest();
+        if (worker.getState() == 'withdraw_container') worker.setToWithdrawContainer();
+        if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
         if (worker.getState() == 'transfer') worker.setToTransfer();
         if (worker.getState() == 'tower') worker.setToTower();
         if (worker.getState() == 'repair') worker.setToRepair();
@@ -110,7 +110,7 @@ var manager = {
                 }
             });
             if (structures.length > 0) {
-                worker.setToWithdrawNearest();
+                worker.setToWithdrawContainer();
             }
             if (worker.getState() == 'free') {
                 worker.setToHarvest();
@@ -143,7 +143,8 @@ var manager = {
 
         // maintain the same task
         if (worker.getState() == 'harvest') worker.setToHarvest();
-        if (worker.getState() == 'withdraw') worker.setToWithdraw(true);
+        if (worker.getState() == 'withdraw_container') worker.setToWithdrawContainer();
+        if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
         if (worker.getState() == 'tower') worker.setToTower();
         if (worker.getState() == 'transfer') worker.setToTransfer();
         if (worker.getState() == 'repair') worker.setToRepair();
@@ -155,7 +156,7 @@ var manager = {
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
-        if (worker.getState() == 'free') worker.setToWithdraw(true);
+        if (worker.getState() == 'free') worker.setToWithdrawContainer();
         if (worker.getState() == 'free') worker.setToHarvest();
 
         // if ready set task
@@ -163,6 +164,8 @@ var manager = {
         if (worker.getState() == 'ready') worker.setToTower();
         if (worker.getState() == 'ready') worker.setToRepair();
     }
+
+
 };
 
 module.exports = manager;
