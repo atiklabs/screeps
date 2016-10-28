@@ -258,8 +258,23 @@ module.exports = function () {
                             this.setState('ready');
                         }
                     } else {
-                        // if no storage is found then free (probably will just sit and wait)
-                        this.setState('free');
+                        // if no container is found then try from storage
+                        var storage = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                            filter: (structure) => {
+                                return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0
+                            }
+                        });
+                        if (storage !== null) {
+                            this.setState('withdraw');
+                            if (this.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                this.moveTo(storage);
+                            } else {
+                                this.setState('ready');
+                            }
+                        } else {
+                            // if no storage or container found is found then free (probably will just sit and wait)
+                            this.setState('free');
+                        }
                     }
                 }
             }
