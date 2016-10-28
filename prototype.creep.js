@@ -256,6 +256,7 @@ module.exports = function () {
             }
         });
         if (storage !== null) {
+            this.setState('storage');
             if (this.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.moveTo(storage);
             } else {

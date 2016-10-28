@@ -83,6 +83,7 @@ var manager = {
         if (worker.getState() == 'repair') worker.setToRepair();
         if (worker.getState() == 'build') worker.setToBuild();
         if (worker.getState() == 'upgrade') worker.setToUpgrade();
+        if (worker.getState() == 'storage') worker.setToStorage();
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
