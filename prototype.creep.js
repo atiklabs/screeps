@@ -308,10 +308,12 @@ module.exports = function () {
         if (target !== null) {
             var result = this.transfer(target, RESOURCE_ENERGY);
             if (result == OK) {
-                this.setState('free');
+                this.setState('transfer');
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('transfer');
                 this.moveTo(target);
+            } else {
+                this.setState('free');
             }
         } else {
             this.setState('ready');
@@ -331,7 +333,7 @@ module.exports = function () {
             var result = this.transfer(storage, RESOURCE_ENERGY);
             if (result == OK) {
                 this.setState('free');
-            } else {
+            } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('storage');
                 this.moveTo(storage);
             }
@@ -348,10 +350,12 @@ module.exports = function () {
         if (target !== null) {
             var result = this.build(target);
             if (result == OK) {
-                this.setState('free');
+                this.setState('build');
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('build');
                 this.moveTo(target);
+            } else {
+                this.setState('free');
             }
         } else {
             this.setState('ready');
@@ -379,10 +383,12 @@ module.exports = function () {
         if (targets.length > 0) {
             var result = this.repair(targets[0]);
             if (result == OK) {
-                this.setState('free');
+                this.setState('repair');
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('repair');
                 this.moveTo(targets[0]);
+            } else {
+                this.setState('free');
             }
         } else {
             this.setState('ready');
