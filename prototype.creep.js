@@ -232,6 +232,8 @@ module.exports = function () {
                     } else if (result == ERR_NOT_IN_RANGE) {
                         this.setState('withdraw');
                         this.moveTo(structure);
+                    } else {
+                        this.setState('free');
                     }
                 } else {
                     // if no storage or container found is found then free (probably will just sit and wait)
@@ -251,8 +253,9 @@ module.exports = function () {
                     } else if (result == ERR_NOT_IN_RANGE) {
                         this.setState('withdraw');
                         this.moveTo(fullContainers[0]);
+                    } else {
+                        this.setState('free');
                     }
-
                 } else {
                     // if no full container in the room then go to the closest container if possible
                     var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -267,6 +270,8 @@ module.exports = function () {
                         } else if (result == ERR_NOT_IN_RANGE) {
                             this.setState('withdraw');
                             this.moveTo(container);
+                        } else {
+                            this.setState('free');
                         }
                     } else {
                         // if no container is found then try from storage
@@ -282,6 +287,8 @@ module.exports = function () {
                             } else if (result == ERR_NOT_IN_RANGE) {
                                 this.setState('withdraw');
                                 this.moveTo(storage);
+                            } else {
+                                this.setState('free');
                             }
                         } else {
                             // if no storage or container found is found then free (probably will just sit and wait)
@@ -336,6 +343,8 @@ module.exports = function () {
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('storage');
                 this.moveTo(storage);
+            } else {
+                this.setState('free');
             }
         } else {
             this.setState('ready');
@@ -411,6 +420,8 @@ module.exports = function () {
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('tower');
                 this.moveTo(target);
+            } else {
+                this.setState('free');
             }
         } else {
             this.setState('ready');
@@ -427,7 +438,7 @@ module.exports = function () {
         } else if (result == ERR_NOT_IN_RANGE) {
             this.setState('upgrade');
             this.moveTo(this.room.controller);
-        } else if (result == ERR_NOT_ENOUGH_RESOURCES) {
+        } else  {
             this.setState('free');
         }
     };
