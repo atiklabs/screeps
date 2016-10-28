@@ -264,7 +264,7 @@ module.exports = function () {
         if (this.carry.energy < this.carryCapacity) {
             // withdraw from the nearest storage or container (probably is an emergency)
             var structure = this.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => { return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0 }
+                filter: (structure) => { return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0 }
             });
             if (structure !== null) {
                 let result = this.withdraw(structure, RESOURCE_ENERGY);
