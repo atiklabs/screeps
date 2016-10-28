@@ -101,11 +101,9 @@ var manager = {
             var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
             var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
             var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
-            var storageWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'storage').length;
             if (worker.getState() == 'ready' && towerWorkers < 1) worker.setToTower();
             if (worker.getState() == 'ready' && repairWorkers < 1) worker.setToRepair();
             if (worker.getState() == 'ready' && buildWorkers < 1) worker.setToBuild();
-            if (worker.getState() == 'ready' && storageWorkers < 1) worker.setToStorage();
             if (worker.getState() == 'ready') worker.setToUpgrade();
         }
     },

@@ -171,10 +171,12 @@ module.exports = function () {
             if (this.carry.energy < this.carryCapacity) {
                 // creep is not full: harvest if possible else withdraw
                 var sources = this.room.find(FIND_SOURCES);
-                var result = this.harvest(sources[this.getSourceIndex()]);
+                let result = this.harvest(sources[this.getSourceIndex()]);
                 if (result == ERR_NOT_IN_RANGE) {
                     this.moveTo(sources[this.getSourceIndex()]);
-                } else if (result == ERR_NOT_ENOUGH_RESOURCES) { // if resources empty then withdraw
+                } else if (result == ERR_NOT_ENOUGH_RESOURCES) {
+                    // if resources empty then withdraw and work
+                    this.revokeSource();
                     this.setToWithdraw();
                 }
             } else {
@@ -185,14 +187,14 @@ module.exports = function () {
                     }
                 });
                 if (container !== null) {
-                    var result = this.transfer(container, RESOURCE_ENERGY);
+                    let result = this.transfer(container, RESOURCE_ENERGY);
                     if (result !== OK) {
                         this.revokeSource();
-                        this.setState('ready');
+                        this.setToStorage();
                     }
                 } else {
                     this.revokeSource();
-                    this.setState('ready');
+                    this.setToStorage();
                 }
             }
         } else {
