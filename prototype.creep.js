@@ -258,6 +258,7 @@ module.exports = function () {
                         if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                             this.moveTo(container);
                         } else {
+                            console.log(this.name + 'x');
                             this.setState('ready');
                         }
                     } else {
