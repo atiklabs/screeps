@@ -84,6 +84,7 @@ var manager = {
      * @param {Creep} worker
      */
     setModeDefault: function (worker) {
+        if (worker.spawning == true) return;
         // always try to pickup dropped energy on the floor
         if (worker.tryToPickupHere()) return;
 
@@ -138,6 +139,7 @@ var manager = {
      * @param {Creep} worker
      */
     setModeRepair: function (worker) {
+        if (worker.spawning == true) return;
         // always try to pickup dropped energy on the floor
         if (worker.tryToPickupHere()) return;
 
