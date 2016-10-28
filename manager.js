@@ -88,18 +88,18 @@ var manager = {
         if (worker.getState() == 'upgrade') worker.setToUpgrade();
         if (worker.getState() == 'storage') worker.setToStorage();
 
-        console.log(worker.name + ' ' + this.getState());
+        console.log(worker.name + ' ' + worker.getState());
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
         if (worker.getState() == 'free') worker.setToHarvest();
 
-        console.log(worker.name + ' ' + this.getState());
+        console.log(worker.name + ' ' + worker.getState());
 
         // if ready set task transfer
         if (worker.getState() == 'ready') worker.setToTransfer();
 
-        console.log(worker.name + ' ' + this.getState());
+        console.log(worker.name + ' ' + worker.getState());
 
         // if full set a working task
         if (worker.getState() == 'ready') {
