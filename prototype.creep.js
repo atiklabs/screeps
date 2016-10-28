@@ -224,6 +224,7 @@ module.exports = function () {
                         this.setState('ready');
                     }
                 } else {
+                    // if no storage or container found is found then free (probably will just sit and wait)
                     this.setState('free');
                 }
             } else {
@@ -259,7 +260,6 @@ module.exports = function () {
                         this.setState('free');
                     }
                 }
-
             }
         } else {
             this.setState('ready');
