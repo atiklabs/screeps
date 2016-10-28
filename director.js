@@ -22,7 +22,7 @@ var director = {
 
         // general
         if (targets.length >= 1) {
-            general.setMode('defend'); // todo in case of defenses bridged then mode attack
+            general.setMode('attack');
         } else {
             general.setMode('rest');
         }
