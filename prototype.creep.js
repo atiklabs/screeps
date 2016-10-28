@@ -220,7 +220,7 @@ module.exports = function () {
                     this.setState('ready');
                 }
             } else {
-                // if no full container in the room then go to the closest container
+                // if no full container in the room then go to the closest container if possible
                 var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
@@ -233,8 +233,24 @@ module.exports = function () {
                     } else {
                         this.setState('ready');
                     }
+
                 } else {
-                    this.setState('free');
+                    // if all containers are empty then use the storage
+                    var storage = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                        filter: (structure) => {
+                            return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0
+                        }
+                    });
+                    if (storage !== null) {
+                        this.setState('withdraw');
+                        if (this.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            this.moveTo(storage);
+                        } else {
+                            this.setState('ready');
+                        }
+                    } else {
+                        this.setState('free');
+                    }
                 }
             }
         } else {
