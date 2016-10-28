@@ -247,6 +247,26 @@ module.exports = function () {
     };
 
     /**
+     * Storage
+     */
+    Creep.prototype.setToStorage = function () {
+        var storage = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_STORAGE
+            }
+        });
+        if (storage !== null) {
+            if (this.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(storage);
+            } else {
+                this.setState('ready');
+            }
+        } else {
+            this.setState('ready');
+        }
+    };
+
+    /**
      * Build
      */
     Creep.prototype.setToBuild = function () {

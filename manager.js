@@ -80,13 +80,13 @@ var manager = {
         if (worker.getState() == 'withdraw') worker.setToWithdraw();
         if (worker.getState() == 'transfer') worker.setToTransfer();
         if (worker.getState() == 'tower') worker.setToTower();
-        if (worker.getState() == 'build') worker.setToBuild();
         if (worker.getState() == 'repair') worker.setToRepair();
+        if (worker.getState() == 'build') worker.setToBuild();
         if (worker.getState() == 'upgrade') worker.setToUpgrade();
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
-        if (worker.getState() == 'free') worker.setState('harvest');
+        if (worker.getState() == 'free') worker.setToHarvest();
 
         // if ready set task transfer
         if (worker.getState() == 'ready') worker.setToTransfer();
@@ -94,17 +94,15 @@ var manager = {
         // if full set a working task
         if (worker.getState() == 'ready') {
             var allWorkersInRoom = worker.room.getAllWorkers();
-            var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
-            var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
             var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
+            var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
+            var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
             var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
-            console.log(upgradeWorkers + ' Upgraders, ' + buildWorkers + ' Builders, ' + repairWorkers + ' Repairers, ' + towerWorkers + ' Towers');
-            var total = buildWorkers + repairWorkers + towerWorkers + upgradeWorkers;
-            if (worker.getState() == 'ready' && buildWorkers < total / 4) worker.setToBuild();
-            if (worker.getState() == 'ready' && repairWorkers < total / 4) worker.setToRepair();
-            if (worker.getState() == 'ready' && towerWorkers < total / 4) worker.setToTower();
-            if (worker.getState() == 'ready' && upgradeWorkers < total / 4) worker.setToUpgrade();
-            if (worker.getState() == 'ready') worker.setToUpgrade();
+            if (worker.getState() == 'ready' && towerWorkers < 1) worker.setToTower();
+            if (worker.getState() == 'ready' && repairWorkers < 1) worker.setToRepair();
+            if (worker.getState() == 'ready' && buildWorkers < 1) worker.setToBuild();
+            if (worker.getState() == 'ready' && upgradeWorkers < 1) worker.setToUpgrade();
+            if (worker.getState() == 'ready') worker.setToStorage();
         }
     },
 
