@@ -378,7 +378,7 @@ module.exports = function () {
         // repair first any of *MY* structures until totally repaired
         let target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
             filter: (structure) => {
-                return structure.hits < structure.hitsMax
+                return structure.hits < structure.hitsMax && structure.hits < 50000
             }
         });
         if (target !== null) {
