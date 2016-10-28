@@ -175,7 +175,7 @@ module.exports = function () {
                 if (result == ERR_NOT_IN_RANGE) {
                     this.moveTo(sources[this.getSourceIndex()]);
                 } else if (result == ERR_NOT_ENOUGH_RESOURCES) { // if resources empty then withdraw
-                    this.setState('withdraw');
+                    this.setToWithdraw();
                 }
             } else {
                 // creep is full: deposit in container and continue harvesting if possible else is ready to work
@@ -197,7 +197,7 @@ module.exports = function () {
             }
         } else {
             // if we are not assigned to a source then withdraw
-            this.setState('withdraw');
+            this.setToWithdraw();
         }
     };
 
