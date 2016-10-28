@@ -16,8 +16,8 @@ module.exports = function () {
     Creep.prototype.setState = function (state) {
         if (this.memory.state != state) {
             this.memory.state = state;
-            this.say(state);
         }
+        this.say(state);
     };
 
     /**
