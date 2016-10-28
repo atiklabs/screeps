@@ -131,11 +131,14 @@ module.exports = function () {
     /**
      * Try to pickup
      */
-    Creep.prototype.tryToPickup = function () {
+    Creep.prototype.tryToPickupHere = function () {
         if (this.carry.energy < this.carryCapacity) {
             var droppedEnergy = this.pos.findInRange(FIND_DROPPED_ENERGY, 1);
             if (droppedEnergy > 0) {
+                this.setState('pickup_here');
                 this.pickup(droppedEnergy[0])
+            } else {
+                this.setState('ready');
             }
         }
     };
