@@ -120,7 +120,7 @@ var manager = {
 
         // maintain the same task
         if (worker.getState() == 'harvest') worker.setToHarvest();
-        if (worker.getState() == 'withdraw') worker.setToWithdraw();
+        if (worker.getState() == 'withdraw') worker.setToWithdraw(true);
         if (worker.getState() == 'tower') worker.setToTower();
         if (worker.getState() == 'transfer') worker.setToTransfer();
         if (worker.getState() == 'repair') worker.setToRepair();
@@ -132,7 +132,8 @@ var manager = {
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
-        if (worker.getState() == 'free') worker.setState('harvest');
+        if (worker.getState() == 'free') worker.setToStorage(true);
+        if (worker.getState() == 'free') worker.setToHarvest();
 
         // if ready set task
         if (worker.getState() == 'ready') worker.setToTransfer();

@@ -203,55 +203,63 @@ module.exports = function () {
 
     /**
      * Withdraw
+     * When useStorage is true then please do not use setToStorage or this will get stuck
+     * @param {boolean} useStorage
      */
-    Creep.prototype.setToWithdraw = function () {
+    Creep.prototype.setToWithdraw = function (useStorage = false) {
         if (this.carry.energy < this.carryCapacity) {
-            var fullContainers = this.room.find(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && _.sum(structure.store) == structure.storeCapacity
-                }
-            });
-            if (fullContainers.length > 0) {
-                // if full container then go to a full one
-                this.setState('withdraw');
-                if (this.withdraw(fullContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    this.moveTo(fullContainers[0]);
-                } else {
-                    this.setState('ready');
-                }
-            } else {
-                // if no full container in the room then go to the closest container if possible
-                var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
+            if (useStorage == true) {
+                // withdraw from the nearest storage or container (probably is an emergency)
+                var structure = this.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
-                        return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+                        return (structure.structureType == STRUCTURE_STORAGE || structure.structureType == STRUCTURE_CONTAINER)
+                            && structure.store[RESOURCE_ENERGY] > 0
                     }
                 });
-                if (container !== null) {
+                if (structure !== null) {
                     this.setState('withdraw');
-                    if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(container);
+                    if (this.withdraw(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(structure);
                     } else {
                         this.setState('ready');
                     }
-
                 } else {
-                    // if all containers are empty then use the storage
-                    var storage = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                    this.setState('free');
+                }
+            } else {
+                // withdraw only from storage, if there is a full container withdraw from a full one
+                var fullContainers = this.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_CONTAINER && _.sum(structure.store) == structure.storeCapacity
+                    }
+                });
+                if (fullContainers.length > 0) {
+                    this.setState('withdraw');
+                    if (this.withdraw(fullContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(fullContainers[0]);
+                    } else {
+                        this.setState('ready');
+                    }
+                } else {
+                    // if no full container in the room then go to the closest container if possible
+                    var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
                         filter: (structure) => {
-                            return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0
+                            return structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
                         }
                     });
-                    if (storage !== null) {
+                    if (container !== null) {
                         this.setState('withdraw');
-                        if (this.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            this.moveTo(storage);
+                        if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            this.moveTo(container);
                         } else {
                             this.setState('ready');
                         }
                     } else {
+                        // if no storage is found then free (probably will just sit and wait)
                         this.setState('free');
                     }
                 }
+
             }
         } else {
             this.setState('ready');
