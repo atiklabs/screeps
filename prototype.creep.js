@@ -260,7 +260,7 @@ module.exports = function () {
             if (this.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.moveTo(storage);
             } else {
-                this.setState('ready');
+                this.setState('free');
             }
         } else {
             this.setState('ready');
