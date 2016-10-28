@@ -110,7 +110,7 @@ var manager = {
                 }
             });
             if (structures.length > 0) {
-                worker.setToWithdrawContainer();
+                worker.setToWithdrawStorage();
             }
             if (worker.getState() == 'free') {
                 worker.setToHarvest();
