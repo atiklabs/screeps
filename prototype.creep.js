@@ -226,7 +226,7 @@ module.exports = function () {
                     }
                 });
                 if (structure !== null) {
-                    var result = this.withdraw(structure, RESOURCE_ENERGY);
+                    let result = this.withdraw(structure, RESOURCE_ENERGY);
                     if (result == OK) {
                         this.setState('ready');
                     } else if (result == ERR_NOT_IN_RANGE) {
@@ -247,7 +247,7 @@ module.exports = function () {
                     }
                 });
                 if (fullContainers.length > 0) {
-                    var result = this.withdraw(fullContainers[0], RESOURCE_ENERGY);
+                    let result = this.withdraw(fullContainers[0], RESOURCE_ENERGY);
                     if (result == OK) {
                         this.setState('ready');
                     } else if (result == ERR_NOT_IN_RANGE) {
@@ -264,7 +264,7 @@ module.exports = function () {
                         }
                     });
                     if (container !== null) {
-                        var result = this.withdraw(container, RESOURCE_ENERGY);
+                        let result = this.withdraw(container, RESOURCE_ENERGY);
                         if (result == OK) {
                             this.setState('ready');
                         } else if (result == ERR_NOT_IN_RANGE) {
@@ -281,7 +281,7 @@ module.exports = function () {
                             }
                         });
                         if (storage !== null) {
-                            var result = this.withdraw(storage, RESOURCE_ENERGY);
+                            let result = this.withdraw(storage, RESOURCE_ENERGY);
                             if (result == OK) {
                                 this.setState('ready');
                             } else if (result == ERR_NOT_IN_RANGE) {
@@ -375,32 +375,71 @@ module.exports = function () {
      * Repair
      */
     Creep.prototype.setToRepair = function () {
-        var targets = this.room.find(FIND_STRUCTURES, {
-            // repair damaged structures, if it's a road and worker_locations of the road is 0 do not repair.
-            filter: structure => {
-                return structure.hits < structure.hitsMax && (
-                        structure.structureType != STRUCTURE_ROAD || (
-                            typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
-                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
-                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
-                            Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
-                        )
-                    );
+        // repair first any of *MY* structures until totally repaired
+        let target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.hits < structure.hitsMax
             }
         });
-        targets.sort((a, b) => a.hits - b.hits);
-        if (targets.length > 0) {
-            var result = this.repair(targets[0]);
+        if (target !== null) {
+            let result = this.repair(target);
             if (result == OK) {
                 this.setState('repair');
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('repair');
-                this.moveTo(targets[0]);
+                this.moveTo(target);
             } else {
                 this.setState('free');
             }
         } else {
-            this.setState('ready');
+            // repair any container
+            let target = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_STORAGE && structure.hits < structure.hitsMax
+                }
+            });
+            if (target !== null) {
+                let result = this.repair(target);
+                if (result == OK) {
+                    this.setState('repair');
+                } else if (result == ERR_NOT_IN_RANGE) {
+                    this.setState('repair');
+                    this.moveTo(target);
+                } else {
+                    this.setState('free');
+                }
+            } else {
+                // repair any wall or road, if it's a road and worker_locations of the road is 0 do not repair.
+                let targets = this.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.hits < structure.hitsMax && (
+                            structure.structureType == STRUCTURE_WALL || (
+                                structure.structureType == STRUCTURE_ROAD && (
+                                    typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
+                                    typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
+                                    typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
+                                    Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
+                                )
+                            )
+                        );
+                    }
+                });
+                targets.sort((a, b) => a.hits - b.hits);
+                if (targets.length > 0) {
+                    var result = this.repair(targets[0]);
+                    if (result == OK) {
+                        this.setState('repair');
+                    } else if (result == ERR_NOT_IN_RANGE) {
+                        this.setState('repair');
+                        this.moveTo(targets[0]);
+                    } else {
+                        this.setState('free');
+                    }
+                } else {
+                    // everything is repaired
+                    this.setState('ready');
+                }
+            }
         }
     };
 
