@@ -75,7 +75,7 @@ var manager = {
      */
     setModeDefault: function (worker) {
         // always try to pickup
-        worker.tryToPickup();
+        worker.tryToPickupHere();
 
         // maintain the same task
         if (worker.getState() == 'pickup') worker.setToPickup(); // not used
