@@ -102,12 +102,7 @@ var manager = {
         if (worker.getState() == 'init') worker.setState('free');
         if (worker.getState() == 'free') {
             // if structures spawn or extension without capacity then withdraw, else harvest
-            var structures = worker.room.find(FIND_MY_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
-                        structure.energy < structure.energyCapacity;
-                }
-            });
+            var structures = 1;
             if (structures.length > 0) {
                 worker.setToWithdraw();
             }
