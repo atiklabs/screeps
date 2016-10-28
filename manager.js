@@ -131,7 +131,6 @@ var manager = {
             if (worker.getState() == 'ready' && towerWorkers < 1) worker.setToTower();
             if (worker.getState() == 'ready' && repairWorkers < 1) worker.setToRepair();
             if (worker.getState() == 'ready' && buildWorkers < 1) worker.setToBuild();
-            if (worker.getState() == 'ready' && buildWorkers < 1) worker.setToBuild();
             if (worker.getState() == 'ready' && storageWorkers < 1) worker.setToStorage();
             if (worker.getState() == 'ready') worker.setToUpgrade();
         }
