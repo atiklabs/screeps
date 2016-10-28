@@ -74,8 +74,11 @@ var manager = {
      * @param {Creep} worker
      */
     setModeDefault: function (worker) {
+        // always try to pickup
+        worker.tryToPickup();
+
         // maintain the same task
-        if (worker.getState() == 'pickup') worker.setToPickup();
+        if (worker.getState() == 'pickup') worker.setToPickup(); // not used
         if (worker.getState() == 'harvest') worker.setToHarvest();
         if (worker.getState() == 'withdraw') worker.setToWithdraw();
         if (worker.getState() == 'transfer') worker.setToTransfer();
