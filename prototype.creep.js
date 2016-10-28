@@ -359,10 +359,17 @@ module.exports = function () {
      * Repair
      */
     Creep.prototype.setToRepair = function () {
-        // repair first any of *MY* structures until totally repaired
-        let target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+        // repair first any structure that really needs to eb repaired
+        let target = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.hits < structure.hitsMax && structure.hits < 50000
+                return structure.hits < structure.hitsMax && structure.hits < 50000 && (
+                    structure.structureType != STRUCTURE_ROAD || (
+                        typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
+                        typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
+                        typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
+                        Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
+                    )
+                );
             }
         });
         if (target !== null) {
@@ -376,53 +383,33 @@ module.exports = function () {
                 this.setState('free');
             }
         } else {
-            // repair any container
-            let target = this.pos.findClosestByPath(FIND_STRUCTURES, {
+            // repair anything that is not a wall, if it's a road and worker_locations of the road is 0 do not repair.
+            let targets = this.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && structure.hits < structure.hitsMax
+                    return structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL && (
+                        structure.structureType != STRUCTURE_ROAD || (
+                            typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
+                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
+                            typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
+                            Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
+                        )
+                    );
                 }
             });
-            if (target !== null) {
-                let result = this.repair(target);
+            targets.sort((a, b) => a.hits - b.hits);
+            if (targets.length > 0) {
+                var result = this.repair(targets[0]);
                 if (result == OK) {
                     this.setState('repair');
                 } else if (result == ERR_NOT_IN_RANGE) {
                     this.setState('repair');
-                    this.moveTo(target);
+                    this.moveTo(targets[0]);
                 } else {
                     this.setState('free');
                 }
             } else {
-                // repair any wall or road, if it's a road and worker_locations of the road is 0 do not repair.
-                let targets = this.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return structure.hits < structure.hitsMax && (
-                            structure.structureType == STRUCTURE_WALL || (
-                                structure.structureType == STRUCTURE_ROAD && (
-                                    typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
-                                    typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
-                                    typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] != 'undefined' &&
-                                    Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x][structure.pos.y] > 0
-                                )
-                            )
-                        );
-                    }
-                });
-                targets.sort((a, b) => a.hits - b.hits);
-                if (targets.length > 0) {
-                    var result = this.repair(targets[0]);
-                    if (result == OK) {
-                        this.setState('repair');
-                    } else if (result == ERR_NOT_IN_RANGE) {
-                        this.setState('repair');
-                        this.moveTo(targets[0]);
-                    } else {
-                        this.setState('free');
-                    }
-                } else {
-                    // everything is repaired
-                    this.setState('ready');
-                }
+                // everything is repaired
+                this.setState('ready');
             }
         }
     };
