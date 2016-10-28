@@ -147,10 +147,13 @@ module.exports = function () {
      */
     Creep.prototype.setToPickup = function () {
         if (this.carry.energy < this.carryCapacity) {
-            this.setState('pickup');
             var target = this.pos.findClosestByRange(FIND_DROPPED_ENERGY);
             if (target !== null) {
-                if (this.pickup(target) == ERR_NOT_IN_RANGE) {
+                var result = this.pickup(target);
+                if (result == OK) {
+                    this.setState('ready');
+                } else if (result == ERR_NOT_IN_RANGE) {
+                    this.setState('pickup');
                     this.moveTo(target);
                 }
             } else {
@@ -172,7 +175,9 @@ module.exports = function () {
                 // creep is not full: harvest if possible else withdraw
                 var sources = this.room.find(FIND_SOURCES);
                 let result = this.harvest(sources[this.getSourceIndex()]);
-                if (result == ERR_NOT_IN_RANGE) {
+                if (result == OK) {
+                    this.setState('harvest');
+                } else if (result == ERR_NOT_IN_RANGE) {
                     this.moveTo(sources[this.getSourceIndex()]);
                 } else if (result == ERR_NOT_ENOUGH_RESOURCES) {
                     // if resources empty then withdraw and work
@@ -181,14 +186,16 @@ module.exports = function () {
                 }
             } else {
                 // creep is full: deposit in container and continue harvesting if possible else is ready to work
-                var container = this.pos.findClosestByRange(FIND_STRUCTURES, {
+                var containers = this.pos.findInRange(FIND_STRUCTURES, 1, {
                     filter: (structure) => {
                         return structure.structureType == STRUCTURE_CONTAINER
                     }
                 });
-                if (container !== null) {
-                    let result = this.transfer(container, RESOURCE_ENERGY);
-                    if (result !== OK) {
+                if (containers.length > 0) {
+                    let result = this.transfer(containers[0], RESOURCE_ENERGY);
+                    if (result == OK) {
+                        this.setState('harvest');
+                    } else {
                         this.revokeSource();
                         this.setToStorage();
                     }
@@ -219,11 +226,12 @@ module.exports = function () {
                     }
                 });
                 if (structure !== null) {
-                    this.setState('withdraw');
-                    if (this.withdraw(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(structure);
-                    } else {
+                    var result = this.withdraw(structure, RESOURCE_ENERGY);
+                    if (result == OK) {
                         this.setState('ready');
+                    } else if (result == ERR_NOT_IN_RANGE) {
+                        this.setState('withdraw');
+                        this.moveTo(structure);
                     }
                 } else {
                     // if no storage or container found is found then free (probably will just sit and wait)
@@ -237,12 +245,14 @@ module.exports = function () {
                     }
                 });
                 if (fullContainers.length > 0) {
-                    this.setState('withdraw');
-                    if (this.withdraw(fullContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(fullContainers[0]);
-                    } else {
+                    var result = this.withdraw(fullContainers[0], RESOURCE_ENERGY);
+                    if (result == OK) {
                         this.setState('ready');
+                    } else if (result == ERR_NOT_IN_RANGE) {
+                        this.setState('withdraw');
+                        this.moveTo(fullContainers[0]);
                     }
+
                 } else {
                     // if no full container in the room then go to the closest container if possible
                     var container = this.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -251,11 +261,12 @@ module.exports = function () {
                         }
                     });
                     if (container !== null) {
-                        this.setState('withdraw');
-                        if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            this.moveTo(container);
-                        } else {
+                        var result = this.withdraw(container, RESOURCE_ENERGY);
+                        if (result == OK) {
                             this.setState('ready');
+                        } else if (result == ERR_NOT_IN_RANGE) {
+                            this.setState('withdraw');
+                            this.moveTo(container);
                         }
                     } else {
                         // if no container is found then try from storage
@@ -265,11 +276,12 @@ module.exports = function () {
                             }
                         });
                         if (storage !== null) {
-                            this.setState('withdraw');
-                            if (this.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                this.moveTo(storage);
-                            } else {
+                            var result = this.withdraw(storage, RESOURCE_ENERGY);
+                            if (result == OK) {
                                 this.setState('ready');
+                            } else if (result == ERR_NOT_IN_RANGE) {
+                                this.setState('withdraw');
+                                this.moveTo(storage);
                             }
                         } else {
                             // if no storage or container found is found then free (probably will just sit and wait)
@@ -294,11 +306,12 @@ module.exports = function () {
             }
         });
         if (target !== null) {
-            this.setState('transfer');
-            if (this.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.moveTo(target);
-            } else if (this.carry.energy === 0) {
+            var result = this.transfer(target, RESOURCE_ENERGY);
+            if (result == OK) {
                 this.setState('free');
+            } else if (result == ERR_NOT_IN_RANGE) {
+                this.setState('transfer');
+                this.moveTo(target);
             }
         } else {
             this.setState('ready');
@@ -315,11 +328,12 @@ module.exports = function () {
             }
         });
         if (storage !== null) {
-            this.setState('storage');
-            if (this.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.moveTo(storage);
-            } else {
+            var result = this.transfer(storage, RESOURCE_ENERGY);
+            if (result == OK) {
                 this.setState('free');
+            } else {
+                this.setState('storage');
+                this.moveTo(storage);
             }
         } else {
             this.setState('ready');
@@ -332,11 +346,12 @@ module.exports = function () {
     Creep.prototype.setToBuild = function () {
         var target = this.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
         if (target !== null) {
-            this.setState('build');
-            if (this.build(target) == ERR_NOT_IN_RANGE) {
-                this.moveTo(target);
-            } else if (this.carry.energy === 0) {
+            var result = this.build(target);
+            if (result == OK) {
                 this.setState('free');
+            } else if (result == ERR_NOT_IN_RANGE) {
+                this.setState('build');
+                this.moveTo(target);
             }
         } else {
             this.setState('ready');
@@ -362,11 +377,12 @@ module.exports = function () {
         });
         targets.sort((a, b) => a.hits - b.hits);
         if (targets.length > 0) {
-            this.setState('repair');
-            if (this.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-                this.moveTo(targets[0]);
-            } else if (this.carry.energy === 0) {
+            var result = this.repair(targets[0]);
+            if (result == OK) {
                 this.setState('free');
+            } else if (result == ERR_NOT_IN_RANGE) {
+                this.setState('repair');
+                this.moveTo(targets[0]);
             }
         } else {
             this.setState('ready');
@@ -383,11 +399,12 @@ module.exports = function () {
             }
         });
         if (target !== null) {
-            this.setState('tower');
-            if (this.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.moveTo(target);
-            } else if (this.carry.energy === 0) {
+            var result = this.transfer(target, RESOURCE_ENERGY);
+            if (result == OK) {
                 this.setState('free');
+            } else if (result == ERR_NOT_IN_RANGE) {
+                this.setState('tower');
+                this.moveTo(target);
             }
         } else {
             this.setState('ready');
@@ -398,11 +415,12 @@ module.exports = function () {
      * Upgrade
      */
     Creep.prototype.setToUpgrade = function () {
-        this.setState('upgrade');
-        if (this.upgradeController(this.room.controller) == ERR_NOT_IN_RANGE) {
-            this.moveTo(this.room.controller);
-        } else if (this.carry.energy === 0) {
+        var result = this.upgradeController(this.room.controller);
+        if (result == OK) {
             this.setState('free');
+        } else if (result == ERR_NOT_IN_RANGE) {
+            this.setState('upgrade');
+            this.moveTo(this.room.controller);
         }
     };
 
