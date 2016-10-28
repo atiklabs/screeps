@@ -18,6 +18,16 @@ var manager = {
     setMode: function (mode) {
         if (Memory.manager.mode != mode) {
             Memory.manager.mode = mode;
+            // reset status from workers
+            for (let roomName in Game.rooms) {
+                var room = Game.rooms[roomName];
+                var workers = room.getAllWorkers();
+                var workersLength = workers.length;
+                for (let i = 0; i < workersLength; i++) {
+                    workers[i].setState('init');
+                }
+            }
+            // show in log
             console.log('Manager: ' + mode);
         }
     },
@@ -92,7 +102,7 @@ var manager = {
         if (worker.getState() == 'init') worker.setState('free');
         if (worker.getState() == 'free') {
             // if structures spawn or extension without capacity then withdraw, else harvest
-            var structures = this.room.find(FIND_MY_STRUCTURES, {
+            var structures = worker.room.find(FIND_MY_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
                         structure.energy < structure.energyCapacity;
