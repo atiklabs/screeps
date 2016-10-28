@@ -135,7 +135,7 @@ module.exports = function () {
         if (this.carry.energy < this.carryCapacity) {
             var droppedEnergy = this.pos.findInRange(FIND_DROPPED_ENERGY, 1);
             if (droppedEnergy.length > 0 && this.pickup(droppedEnergy[0]) == OK) {
-                this.say('pickup');
+                this.say('pickup!');
                 return true;
             }
         }
