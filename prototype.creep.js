@@ -298,7 +298,6 @@ module.exports = function () {
             if (this.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.moveTo(target);
             } else if (this.carry.energy === 0) {
-                console.log(this.name + ' transfer free');
                 this.setState('free');
             }
         } else {
