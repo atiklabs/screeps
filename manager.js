@@ -132,7 +132,7 @@ var manager = {
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
-        if (worker.getState() == 'free') worker.setToStorage(true);
+        if (worker.getState() == 'free') worker.setToWithdraw(true);
         if (worker.getState() == 'free') worker.setToHarvest();
 
         // if ready set task
