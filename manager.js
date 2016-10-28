@@ -91,6 +91,7 @@ var manager = {
         if (worker.getState() == 'pickup') worker.setToPickup(); // not used
         if (worker.getState() == 'harvest') worker.setToHarvest();
         if (worker.getState() == 'withdraw') worker.setToWithdraw();
+        if (worker.getState() == 'withdraw_nearest') worker.setToWithdrawNearest();
         if (worker.getState() == 'transfer') worker.setToTransfer();
         if (worker.getState() == 'tower') worker.setToTower();
         if (worker.getState() == 'repair') worker.setToRepair();

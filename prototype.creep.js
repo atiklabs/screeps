@@ -321,7 +321,7 @@ module.exports = function () {
                 if (result == OK) {
                     this.setState('ready');
                 } else if (result == ERR_NOT_IN_RANGE) {
-                    this.setState('withdraw');
+                    this.setState('withdraw_nearest');
                     this.moveTo(structure);
                 } else {
                     this.setState('free');
