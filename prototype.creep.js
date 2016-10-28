@@ -427,8 +427,8 @@ module.exports = function () {
         } else if (result == ERR_NOT_IN_RANGE) {
             this.setState('upgrade');
             this.moveTo(this.room.controller);
-        } else {
-            console.log(this.name + ' ' + result);
+        } else if (result == ERR_NOT_ENOUGH_RESOURCES) {
+            this.setState('free');
         }
     };
 
