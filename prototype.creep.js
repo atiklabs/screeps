@@ -362,7 +362,7 @@ module.exports = function () {
         // repair first any structure that really needs to eb repaired
         let target = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.hits < structure.hitsMax && structure.hits < 25000 && (
+                return structure.hits < structure.hitsMax && structure.hits < 10000 && (
                     structure.structureType != STRUCTURE_ROAD || (
                         typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
                         typeof Memory.architect.worker_locations[structure.pos.roomName][structure.pos.x] != 'undefined' &&
