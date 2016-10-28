@@ -375,11 +375,10 @@ module.exports = function () {
      * Repair
      */
     Creep.prototype.setToRepair = function () {
-        var maxRepair = 50000;
         // repair first any of *MY* structures until totally repaired
         let target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
             filter: (structure) => {
-                return structure.hits < structure.hitsMax && structure.hits < maxRepair
+                return structure.hits < structure.hitsMax
             }
         });
         if (target !== null) {
@@ -396,7 +395,7 @@ module.exports = function () {
             // repair any container
             let target = this.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_CONTAINER && structure.hits < structure.hitsMax && structure.hits < maxRepair
+                    return structure.structureType == STRUCTURE_CONTAINER && structure.hits < structure.hitsMax
                 }
             });
             if (target !== null) {
@@ -413,7 +412,7 @@ module.exports = function () {
                 // repair any wall or road, if it's a road and worker_locations of the road is 0 do not repair.
                 let targets = this.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
-                        return structure.hits < structure.hitsMax && structure.hits < maxRepair && (
+                        return structure.hits < structure.hitsMax && (
                             structure.structureType == STRUCTURE_WALL || (
                                 structure.structureType == STRUCTURE_ROAD && (
                                     typeof Memory.architect.worker_locations[structure.pos.roomName] != 'undefined' &&
