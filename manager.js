@@ -90,7 +90,19 @@ var manager = {
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
-        if (worker.getState() == 'free') worker.setToHarvest();
+        if (worker.getState() == 'free') {
+            var structures = this.room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
+                        structure.energy < structure.energyCapacity;
+                }
+            });
+            if (structures.length > 0) {
+                worker.setToWithdraw();
+            } else {
+                worker.setToHarvest();
+            }
+        }
 
         // if ready set task transfer
         if (worker.getState() == 'ready') worker.setToTransfer();
