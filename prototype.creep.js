@@ -81,7 +81,7 @@ module.exports = function () {
         }
         // get an empty rampart
         for (let i = 0; i < rampartsLength; i++) {
-            if (currentSoldiersRamparts.indexOf(ramparts[i].id != -1)) {
+            if (currentSoldiersRamparts.indexOf(ramparts[i].id == -1)) {
                 this.setSourceIndex(ramparts[i].id);
                 return ramparts[i].id;
             }
@@ -119,7 +119,7 @@ module.exports = function () {
         }
         // get an empty source
         for (let i = 0; i < sourcesLength; i++) {
-            if (currentWorkersSources.indexOf(sources[i].id != -1)) {
+            if (currentWorkersSources.indexOf(sources[i].id == -1)) {
                 this.setSourceIndex(sources[i].id);
                 return sources[i].id;
             }
