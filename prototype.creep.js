@@ -22,6 +22,7 @@ module.exports = function () {
 
     /**
      * Get rampart index
+     * @return {string|null}
      */
     Creep.prototype.getRampartIndex = function () {
         if (typeof this.memory.rampart_index == 'undefined') return null;
@@ -30,7 +31,7 @@ module.exports = function () {
 
     /**
      * Set rampart index
-     * @param {int|null} rampart_index
+     * @param {string|null} rampart_index
      */
     Creep.prototype.setRampartIndex = function (rampart_index) {
         if (this.memory.rampart_index != rampart_index) {
@@ -40,6 +41,7 @@ module.exports = function () {
 
     /**
      * Get source index
+     * @return {string|null}
      */
     Creep.prototype.getSourceIndex = function () {
         if (typeof this.memory.source_index == 'undefined') return null;
@@ -48,7 +50,7 @@ module.exports = function () {
 
     /**
      * Set source index
-     * @param {int|null} source_index
+     * @param {string|null} source_index
      */
     Creep.prototype.setSourceIndex = function (source_index) {
         if (this.memory.source_index != source_index) {
@@ -58,7 +60,7 @@ module.exports = function () {
 
     /**
      * Assigns a rampart to the worker
-     * @returns {int|null}
+     * @returns {string|null}
      */
     Creep.prototype.assignRampart = function () {
         // initialize variables
@@ -70,18 +72,18 @@ module.exports = function () {
         var rampartsLength = ramparts.length;
         var soldiers = this.room.getAllSoldiers();
         var soldiersLength = soldiers.length;
-        // check occupied ramparts
-        var rampartOccupied = new Array(rampartsLength).fill(false);
+        // get current soldiers ramparts
+        var currentSoldiersRamparts = [];
         for (let i = 0; i < soldiersLength; i++) {
-            if (soldiers[i].getRampartIndex() !== null) {
-                rampartOccupied[soldiers[i].getRampartIndex()] = true;
+            if (soldiers[i].getSourceIndex() !== null) {
+                currentSoldiersRamparts.push(soldiers[i].getSourceIndex());
             }
         }
-        // get a free rampart
+        // get an empty rampart
         for (let i = 0; i < rampartsLength; i++) {
-            if (rampartOccupied[i] === false) {
-                this.setRampartIndex(i);
-                return i;
+            if (currentSoldiersRamparts.indexOf(ramparts[i].id != -1)) {
+                this.setSourceIndex(ramparts[i].id);
+                return ramparts[i].id;
             }
         }
         return null;
@@ -96,26 +98,30 @@ module.exports = function () {
 
     /**
      * Assigns a source to the worker
-     * @return {int|null}
+     * @return {string|null}
      */
     Creep.prototype.assignSource = function () {
         // initialize variables
-        var sources = this.room.find(FIND_SOURCES);
+        var sources = this.room.find(FIND_SOURCES, {
+            filter: (source) => {
+                return source.energy > 0
+            }
+        });
         var sourcesLength = sources.length;
         var workers = this.room.getAllWorkers();
         var workersLength = workers.length;
-        var occupiedSources = new Array(sourcesLength).fill(false);
-        // get occupied sources
+        // get current workers sources
+        var currentWorkersSources = [];
         for (let i = 0; i < workersLength; i++) {
             if (workers[i].getSourceIndex() !== null) {
-                occupiedSources[workers[i].getSourceIndex()] = true;
+                currentWorkersSources.push(workers[i].getSourceIndex());
             }
         }
         // get an empty source
         for (let i = 0; i < sourcesLength; i++) {
-            if (occupiedSources[i] === false) {
-                this.setSourceIndex(i);
-                return i;
+            if (currentWorkersSources.indexOf(sources[i].id != -1)) {
+                this.setSourceIndex(sources[i].id);
+                return sources[i].id;
             }
         }
         return null;
@@ -173,14 +179,20 @@ module.exports = function () {
             this.setState('harvest');
             if (this.carry.energy < this.carryCapacity) {
                 // creep is not full: harvest if possible else withdraw
-                var sources = this.room.find(FIND_SOURCES);
-                let result = this.harvest(sources[this.getSourceIndex()]);
-                if (result == OK) {
-                    this.setState('harvest');
-                } else if (result == ERR_NOT_IN_RANGE) {
-                    this.moveTo(sources[this.getSourceIndex()]);
-                } else if (result == ERR_NOT_ENOUGH_RESOURCES) {
-                    // if resources empty then withdraw and work
+                var source = Game.getObjectById(this.getSourceIndex());
+                if (source !== null) {
+                    let result = this.harvest(source);
+                    if (result == OK) {
+                        this.setState('harvest');
+                    } else if (result == ERR_NOT_IN_RANGE) {
+                        this.moveTo(source);
+                    } else if (result == ERR_NOT_ENOUGH_RESOURCES) {
+                        // if resources empty then withdraw and work
+                        this.revokeSource();
+                        this.setToWithdrawContainer();
+                    }
+                } else {
+                    // source does not exist
                     this.revokeSource();
                     this.setToWithdrawContainer();
                 }
@@ -478,33 +490,31 @@ module.exports = function () {
      * Defend room
      */
     Creep.prototype.setToDefendRoom = function () {
-        var ramparts = this.room.find(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_RAMPART
-            }
-        });
         if (this.getRampartIndex() === null) {
             if (this.assignRampart() === null) {
                 this.setToAttackNearestHostileCreep();
             }
         }
-        if (!ramparts[this.getRampartIndex()].pos.isEqualTo(this.pos)) {
-            this.moveTo(ramparts[this.getRampartIndex()]);
-        } else {
-            var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if (target !== null) {
-                console.log('target found');
-                switch (this.memory.archetype) {
-                    case 'attacker':
-                        this.attack(target);
-                        console.log('attack');
-                        break;
-                    case 'defender':
-                        this.rangedAttack(target);
-                        console.log('attack');
-                        break;
+        var rampart = Game.getObjectById(this.getRampartIndex());
+        if (rampart !== null) {
+            if (!rampart.pos.isEqualTo(this.pos)) {
+                this.moveTo(rampart);
+            } else {
+                var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                if (target !== null) {
+                    switch (this.memory.archetype) {
+                        case 'attacker':
+                            this.attack(target);
+                            break;
+                        case 'defender':
+                            this.rangedAttack(target);
+                            break;
+                    }
                 }
             }
+        } else {
+            // rampart does not longer exist
+            this.revokeRampart();
         }
     };
 

@@ -155,6 +155,15 @@ var code = {
             delete Memory.arquitect;
             this.setVersion('1.16');
         }
+        // 1.17
+        if (this.getVersion() == '1.16') {
+            for (name in Game.creeps) {
+                creep = Game.creeps[name];
+                creep.revokeRampart();
+                creep.revokeSource();
+            }
+            this.setVersion('1.17');
+        }
     }
 };
 
