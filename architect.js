@@ -26,6 +26,7 @@ var architect = {
     planRoad: function (roomName) {
         var maxConstructionSites = 2;
         var room = Game.rooms[roomName];
+        if (typeof room.controller == 'undefined' || room.controller.level <= 2) return;
         if (room.find(FIND_CONSTRUCTION_SITES).length >= maxConstructionSites) return;
         var roadRoom, roadPosX, roadPosY, posXInt, posYInt, maxValue, constructionSiteFound, structureFound;
         roadRoom = roadPosX = roadPosY = posXInt = posYInt = maxValue = constructionSiteFound = structureFound = null;
