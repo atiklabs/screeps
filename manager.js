@@ -114,7 +114,6 @@ var manager = {
                 worker.setToWithdrawStorage();
             }
             if (worker.getState() == 'free') worker.setToHarvest();
-            if (worker.getState() == 'free') worker.setToWithdrawStorage();
         }
 
         // if ready set task transfer
