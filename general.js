@@ -45,7 +45,7 @@ var general = {
                 this.recruitDefenders(roomName);
             } else if (this.getMode() == 'rest') {
                 // Recruit scouts
-                this.recruitScout(roomName);
+                //this.recruitScout(roomName);
                 for (let i = 0; i < soldiersLength; i++) {
                     this.setModeRest(soldiers[i]);
                 }
