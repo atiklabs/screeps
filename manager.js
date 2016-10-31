@@ -98,6 +98,8 @@ var manager = {
         if (worker.getValue('home') != worker.room.name) {
             worker.setToHome();
             return;
+        } else if (worker.getState() == 'go_home') {
+            worker.setState('init');
         }
 
         // maintain the same task
