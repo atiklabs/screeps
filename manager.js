@@ -53,6 +53,11 @@ var manager = {
                     this.setModeDefault(workers[i]);
                 }
             }
+            var currentRoomWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.home == roomName);
+            if (currentRoomWorkers.length == 0) {
+                var allWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker');
+                allWorkers[0].setValue('home', roomName);
+            }
             // recruit
             this.recruit(roomName);
         }
@@ -89,6 +94,11 @@ var manager = {
     setModeDefault: function (worker) {
         // always try to pickup dropped energy on the floor
         if (worker.tryToPickupHere()) return;
+
+        if (worker.getValue('home') != worker.room.name) {
+            worker.setToHome();
+            return;
+        }
 
         // maintain the same task
         this.setToSameTask(worker);

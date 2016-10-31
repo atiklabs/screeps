@@ -389,4 +389,18 @@ module.exports = function () {
             this.setState('free');
         }
     };
+
+    /**
+     * Go Home!
+     */
+    Creep.prototype.setToHome = function () {
+        if (this.getValue('home') != this.room.name) {
+            var exitDir = this.room.findExitTo(this.getValue('home'));
+            var exit = this.pos.findClosestByRange(exitDir);
+            this.moveTo(exit);
+            this.setState('go_home');
+        } else {
+            this.setState('init');
+        }
+    };
 };
