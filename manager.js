@@ -55,7 +55,7 @@ var manager = {
             }
             var currentRoomWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.home == roomName);
             if (currentRoomWorkers.length == 0) {
-                var allWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker');
+                var allWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.ticksToLive > 1000);
                 allWorkers[0].setValue('home', roomName);
             }
             // recruit
