@@ -123,7 +123,7 @@ var general = {
         var room = Game.rooms[roomName];
 
         var maxScouts = 1;
-        var scoutsLength = Game.getAllScouts().length;
+        var scoutsLength = _.filter(this.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.role == 'scout').length;
 
         // Spawn as many as needed
         if (scoutsLength < maxScouts) {
