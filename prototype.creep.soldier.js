@@ -20,6 +20,7 @@ module.exports = function () {
             this.memory.rampart_index = rampart_index;
         }
     };
+
     /**
      * Assigns a rampart to the worker
      * @returns {string|null}
@@ -126,6 +127,31 @@ module.exports = function () {
             });
             if (this.heal(targets[0]) == ERR_NOT_IN_RANGE) {
                 this.moveTo(targets[0]);
+            }
+        }
+    };
+
+    /**
+     * Scouting Mission
+     */
+    Creep.prototype.setToScout = function () {
+        /**
+         * Choose room to go.
+         * Move to room.
+         * Avoid other creeps.
+         * Maybe can get stuck so check if it's possible to go to the room.
+         * If we like the room claim it.
+         */
+        if (this.room.name != 'E67N51') {
+            var exitDir = this.room.findExitTo('E67N51');
+            var exit = this.pos.findClosestByRange(exitDir);
+            this.moveTo(exit);
+        } else {
+            var result = this.claimController(this.room.controller);
+            if (result == OK) {
+            } else if (result == ERR_NOT_IN_RANGE) {
+                this.moveTo(this.room.controller);
+            } else  {
             }
         }
     };

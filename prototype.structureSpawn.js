@@ -115,4 +115,27 @@ module.exports = function () {
         }
         return name;
     };
+
+    /**
+     * Create Scout
+     * @returns {string|null}
+     */
+    StructureSpawn.prototype.createScout = function() {
+        var parts = [];
+        parts.push(CLAIM); // 600
+        parts.push(MOVE); // 50
+        parts.push(MOVE); // 50
+        parts.push(MOVE); // 50
+        parts.push(MOVE); // 50
+        parts.push(MOVE); // 50 // 850
+        var name = this.createCreep(parts);
+        if (name !== null && isNaN(name)) {
+            Game.creeps[name].memory.role = 'soldier';
+            Game.creeps[name].memory.state = 'init';
+            Game.creeps[name].memory.archetype = 'scout';
+            Game.creeps[name].memory.level = 1;
+            return name;
+        }
+        return name;
+    };
 };
