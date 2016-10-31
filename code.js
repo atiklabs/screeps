@@ -164,13 +164,13 @@ var code = {
             }
             this.setVersion('1.18');
         }
-        // 1.19
-        if (this.getVersion() == '1.18') {
+        // 1.20
+        if (this.getVersion() == '1.18' || this.getVersion() == '1.19') {
             for (name in Game.creeps) {
                 creep = Game.creeps[name];
                 creep.setValue('home', creep.room.name);
             }
-            this.setVersion('1.19');
+            this.setVersion('1.20');
         }
     }
 };
