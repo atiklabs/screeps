@@ -43,6 +43,12 @@ var general = {
                 }
                 // Recruit
                 this.recruitDefenders(roomName);
+            } else if (this.getMode() == 'rest') {
+                // Recruit scouts
+                this.recruitScout(roomName);
+                for (let i = 0; i < soldiersLength; i++) {
+                    this.setModeRest(soldiers[i]);
+                }
             }
             // Use tower if necessary
             var towers = Game.rooms[roomName].find(
@@ -109,6 +115,31 @@ var general = {
     },
 
     /**
+     * I've got an scouting mission for you.
+     * @param roomName
+     */
+    recruitScout: function (roomName) {
+        // Useful variables
+        var room = Game.rooms[roomName];
+
+        var maxScouts = 1;
+        var scoutsLength = Game.getAllScouts().length;
+
+        // Spawn as many as needed
+        if (scoutsLength < maxScouts) {
+            var spawns = room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+            });
+            if (spawns.length > 0) {
+                var name = spawns[0].createScout();
+                if (name !== null && isNaN(name)) {
+                    console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+                }
+            }
+        }
+    },
+
+    /**
      * Attack the nearest hostile creep
      * @param soldier
      */
@@ -130,6 +161,27 @@ var general = {
      */
     setModeDefend: function (soldier) {
         switch (soldier.memory.archetype) {
+            case 'defender':
+                soldier.setToDefendRoom();
+                break;
+            case 'attacker':
+                soldier.setToAttackNearestHostileCreep();
+                break;
+            case 'healer':
+                soldier.setToHealMostDamagedAttacker();
+                break;
+        }
+    },
+
+    /**
+     * Resting mode, scout!
+     * @param soldier
+     */
+    setModeRest: function (soldier) {
+        switch (soldier.memory.archetype) {
+            case 'scout':
+                soldier.setToScout();
+                break;
             case 'defender':
                 soldier.setToDefendRoom();
                 break;

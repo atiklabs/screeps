@@ -44,6 +44,9 @@ var manager = {
             var workers = room.getAllWorkers();
             var workersLength = workers.length;
             for (let i = 0; i < workersLength; i++) {
+                // if still spawning do nothing
+                if (workers[i].spawning == true) return;
+                // set action depending on the current mode
                 if (this.getMode() == 'repair') {
                     this.setModeRepair(workers[i]);
                 } else {
@@ -84,21 +87,11 @@ var manager = {
      * @param {Creep} worker
      */
     setModeDefault: function (worker) {
-        if (worker.spawning == true) return;
         // always try to pickup dropped energy on the floor
         if (worker.tryToPickupHere()) return;
 
         // maintain the same task
-        if (worker.getState() == 'pickup') worker.setToPickup(); // not used
-        if (worker.getState() == 'harvest') worker.setToHarvest();
-        if (worker.getState() == 'withdraw_container') worker.setToWithdrawContainer();
-        if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
-        if (worker.getState() == 'transfer') worker.setToTransfer();
-        if (worker.getState() == 'tower') worker.setToTower();
-        if (worker.getState() == 'repair') worker.setToRepair();
-        if (worker.getState() == 'build') worker.setToBuild();
-        if (worker.getState() == 'upgrade') worker.setToUpgrade();
-        if (worker.getState() == 'storage') worker.setToStorage();
+        this.setToSameTask(worker);
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
@@ -140,23 +133,12 @@ var manager = {
      * Worker, it's time to repair everything!
      * @param {Creep} worker
      */
-    setModeRepair: function (worker) {
-        if (worker.spawning == true) return;
+    setModeRepair: function(worker) {
         // always try to pickup dropped energy on the floor
         if (worker.tryToPickupHere()) return;
 
         // maintain the same task
-        if (worker.getState() == 'harvest') worker.setToHarvest();
-        if (worker.getState() == 'withdraw_container') worker.setToWithdrawContainer();
-        if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
-        if (worker.getState() == 'tower') worker.setToTower();
-        if (worker.getState() == 'transfer') worker.setToTransfer();
-        if (worker.getState() == 'repair') worker.setToRepair();
-
-        // release from certain states that won't be used in this mode
-        if (worker.getState() == 'pickup') worker.setState('free');
-        if (worker.getState() == 'build') worker.setState('free');
-        if (worker.getState() == 'upgrade') worker.setState('free');
+        this.setToSameTask(worker);
 
         // init and free
         if (worker.getState() == 'init') worker.setState('free');
@@ -167,9 +149,20 @@ var manager = {
         if (worker.getState() == 'ready') worker.setToTransfer();
         if (worker.getState() == 'ready') worker.setToTower();
         if (worker.getState() == 'ready') worker.setToRepair();
+    },
+
+    setToSameTask: function(worker) {
+        if (worker.getState() == 'pickup') worker.setToPickup(); // not used
+        if (worker.getState() == 'harvest') worker.setToHarvest();
+        if (worker.getState() == 'withdraw_container') worker.setToWithdrawContainer();
+        if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
+        if (worker.getState() == 'transfer') worker.setToTransfer();
+        if (worker.getState() == 'tower') worker.setToTower();
+        if (worker.getState() == 'repair') worker.setToRepair();
+        if (worker.getState() == 'build') worker.setToBuild();
+        if (worker.getState() == 'upgrade') worker.setToUpgrade();
+        if (worker.getState() == 'storage') worker.setToStorage();
     }
-
-
 };
 
 module.exports = manager;

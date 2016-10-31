@@ -1,5 +1,8 @@
 // load prototypes
 require('prototype.creep')();
+require('prototype.creep.soldier')();
+require('prototype.creep.worker')();
+require('prototype.game')();
 require('prototype.room')();
 require('prototype.structureSpawn')();
 require('prototype.structureTower')();
