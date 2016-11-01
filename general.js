@@ -63,6 +63,7 @@ var general = {
         var healersLength = healers.length;
         console.log('recruit ' + attackersLength);
         if (attackersLength < 2 || healersLength < 2) {
+            console.log('recruit!! ' + attackersLength);
             this.recruitAttackers(roomName);
         } else {
             for (let i = 0; i < attackersLength; i++) {
