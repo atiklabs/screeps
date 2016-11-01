@@ -26,7 +26,7 @@ var director = {
             general.command(roomName); // defend, attack, rest
 
             if (roomName == 'E68N51') {
-                this.attackRoom(roomName, 'E66N51');
+                general.attackRoom(roomName, 'E66N51');
             }
 
             // manager
