@@ -81,12 +81,17 @@ module.exports = function () {
             switch (this.memory.archetype) {
                 case 'attacker':
                     if (this.attack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(targets[0]);
+                        // let yourself be healed
+                        if (this.hits == this.hitsMax) {
+                            this.moveTo(targets[0]);
+                        }
                     }
                     break;
                 case 'defender':
                     if (this.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(targets[0]);
+                        if (this.hits == this.hitsMax) {
+                            this.moveTo(targets[0]);
+                        }
                     }
                     break;
             }
