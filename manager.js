@@ -77,6 +77,7 @@ var manager = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -105,6 +106,7 @@ var manager = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -165,6 +167,7 @@ var manager = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -191,6 +194,7 @@ var manager = {
             if (worker.getState() == 'ready') worker.setToRepair();
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 

@@ -57,6 +57,7 @@ var general = {
             towers.forEach(tower => tower.defendRoom());
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -75,6 +76,8 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
+
         }
     },
 
@@ -109,6 +112,7 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -142,6 +146,7 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -171,6 +176,7 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -191,6 +197,7 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -213,6 +220,7 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -238,6 +246,7 @@ var general = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 };

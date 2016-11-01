@@ -54,6 +54,7 @@ var architect = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 
@@ -82,6 +83,7 @@ var architect = {
             }
         } catch (error) {
             console.log('Error: ' + error);
+            Game.notify('Error: ' + error);
         }
     },
 

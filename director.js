@@ -31,6 +31,7 @@ var director = {
                 }
             } catch (error) {
                 console.log('Error: ' + error);
+                Game.notify('Error: ' + error);
             }
 
             // manager
