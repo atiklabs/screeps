@@ -51,22 +51,33 @@ var general = {
             }
         }
         // Use tower if necessary
-        var towers = Game.rooms[roomName].find(
-            FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-        towers.forEach(tower => tower.defendRoom());
+        try {
+            var towers = Game.rooms[roomName].find(
+                FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+            towers.forEach(tower => tower.defendRoom());
+        } catch (error) {
+            console.log('Error: ' + error);
+        }
     },
 
     attackRoom: function (roomName, targetRoomName) {
-        var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker');
-        var healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer');
-        var attackersLength = attackers.length;
-        var healersLength = healers.length;
-        if (attackersLength < 2 || healersLength < 2) {
-            this.recruitAttackers(roomName, 2);
-        } else {
-            for (let i = 0; i < attackersLength; i++) {
-                attackers[i].attackRoom(targetRoomName);
+        try {
+            var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker');
+            var healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer');
+            var attackersLength = attackers.length;
+            var healersLength = healers.length;
+            if (attackersLength < 2 || healersLength < 2) {
+                this.recruitAttackers(roomName, 2);
+                for (let i = 0; i < attackersLength; i++) {
+                    attackers[i].moveTo(RoomPosition(26, 43, roomName));
+                }
+            } else {
+                for (let i = 0; i < attackersLength; i++) {
+                    attackers[i].attackRoom(targetRoomName);
+                }
             }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 
@@ -74,30 +85,34 @@ var general = {
      * Comm'on folks! Attackers is time to join the army!
      */
     recruitAttackers: function (roomName, numAttackers = false) {
-        // Useful variables
-        var room = Game.rooms[roomName];
-        var maxAttackers = 1;
-        var maxHealers = 1;
-        if (maxAttackers !== false) {
-            maxAttackers = maxHealers = numAttackers;
-        }
-        var attackersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker').length;
-        var healersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer').length;
+        try {
+            // Useful variables
+            var room = Game.rooms[roomName];
+            var maxAttackers = 1;
+            var maxHealers = 1;
+            if (maxAttackers !== false) {
+                maxAttackers = maxHealers = numAttackers;
+            }
+            var attackersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker').length;
+            var healersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer').length;
 
-        // Spawn as many as needed
-        var spawns = room.find(FIND_MY_STRUCTURES, {
-            filter: (structure) => structure.structureType == STRUCTURE_SPAWN
-        });
-        if (spawns.length > 0) {
-            var name = null;
-            if (attackersLength < maxAttackers) {
-                name = spawns[0].createAttacker();
-            } else if (healersLength < maxHealers) {
-                name = spawns[0].createHealer();
+            // Spawn as many as needed
+            var spawns = room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+            });
+            if (spawns.length > 0) {
+                var name = null;
+                if (attackersLength < maxAttackers) {
+                    name = spawns[0].createAttacker();
+                } else if (healersLength < maxHealers) {
+                    name = spawns[0].createHealer();
+                }
+                if (name !== null && isNaN(name)) {
+                    console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+                }
             }
-            if (name !== null && isNaN(name)) {
-                console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
-            }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 
@@ -105,28 +120,32 @@ var general = {
      * Comm'on folks! Defenders is time to join the army!
      */
     recruitDefenders: function (roomName) {
-        // Useful variables
-        var room = Game.rooms[roomName];
+        try {
+            // Useful variables
+            var room = Game.rooms[roomName];
 
-        var ramparts = room.find(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_RAMPART
-            }
-        });
-        var maxDefenders = ramparts.length;
-        var defendersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'defender').length;
-
-        // Spawn as many as needed
-        if (defendersLength < maxDefenders) {
-            var spawns = room.find(FIND_MY_STRUCTURES, {
-                filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+            var ramparts = room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_RAMPART
+                }
             });
-            if (spawns.length > 0) {
-                var name = spawns[0].createDefender(false);
-                if (name !== null && isNaN(name)) {
-                    console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+            var maxDefenders = ramparts.length;
+            var defendersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'defender').length;
+
+            // Spawn as many as needed
+            if (defendersLength < maxDefenders) {
+                var spawns = room.find(FIND_MY_STRUCTURES, {
+                    filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+                });
+                if (spawns.length > 0) {
+                    var name = spawns[0].createDefender(false);
+                    if (name !== null && isNaN(name)) {
+                        console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+                    }
                 }
             }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 
@@ -135,23 +154,27 @@ var general = {
      * @param roomName
      */
     recruitScout: function (roomName) {
-        // Useful variables
-        var room = Game.rooms[roomName];
+        try {
+            // Useful variables
+            var room = Game.rooms[roomName];
 
-        var maxScouts = 1;
-        var scoutsLength = _.filter(this.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'scout').length;
+            var maxScouts = 1;
+            var scoutsLength = _.filter(this.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'scout').length;
 
-        // Spawn as many as needed
-        if (scoutsLength < maxScouts) {
-            var spawns = room.find(FIND_MY_STRUCTURES, {
-                filter: (structure) => structure.structureType == STRUCTURE_SPAWN
-            });
-            if (spawns.length > 0) {
-                var name = spawns[0].createScout();
-                if (name !== null && isNaN(name)) {
-                    console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+            // Spawn as many as needed
+            if (scoutsLength < maxScouts) {
+                var spawns = room.find(FIND_MY_STRUCTURES, {
+                    filter: (structure) => structure.structureType == STRUCTURE_SPAWN
+                });
+                if (spawns.length > 0) {
+                    var name = spawns[0].createScout();
+                    if (name !== null && isNaN(name)) {
+                        console.log('Spawned soldier [level: ' + Game.creeps[name].memory.level + ', archetype: ' + Game.creeps[name].memory.archetype + ']: ' + name);
+                    }
                 }
             }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 
@@ -160,14 +183,18 @@ var general = {
      * @param soldier
      */
     setModeAttack: function (soldier) {
-        switch (soldier.memory.archetype) {
-            case 'attacker':
-            case 'defender':
-                soldier.setToAttackNearestTarget();
-                break;
-            case 'healer':
-                soldier.setToHealMostDamagedAttacker();
-                break;
+        try {
+            switch (soldier.memory.archetype) {
+                case 'attacker':
+                case 'defender':
+                    soldier.setToAttackNearestTarget();
+                    break;
+                case 'healer':
+                    soldier.setToHealMostDamagedAttacker();
+                    break;
+            }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 
@@ -176,16 +203,20 @@ var general = {
      * @param soldier
      */
     setModeDefend: function (soldier) {
-        switch (soldier.memory.archetype) {
-            case 'defender':
-                soldier.setToDefendRoom();
-                break;
-            case 'attacker':
-                soldier.setToAttackNearestTarget();
-                break;
-            case 'healer':
-                soldier.setToHealMostDamagedAttacker();
-                break;
+        try {
+            switch (soldier.memory.archetype) {
+                case 'defender':
+                    soldier.setToDefendRoom();
+                    break;
+                case 'attacker':
+                    soldier.setToAttackNearestTarget();
+                    break;
+                case 'healer':
+                    soldier.setToHealMostDamagedAttacker();
+                    break;
+            }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 
@@ -194,19 +225,23 @@ var general = {
      * @param soldier
      */
     setModeRest: function (soldier) {
-        switch (soldier.memory.archetype) {
-            case 'scout':
-                soldier.setToScout();
-                break;
-            case 'defender':
-                soldier.setToDefendRoom();
-                break;
-            case 'attacker':
-                soldier.setToAttackNearestTarget();
-                break;
-            case 'healer':
-                soldier.setToHealMostDamagedAttacker();
-                break;
+        try {
+            switch (soldier.memory.archetype) {
+                case 'scout':
+                    soldier.setToScout();
+                    break;
+                case 'defender':
+                    soldier.setToDefendRoom();
+                    break;
+                case 'attacker':
+                    soldier.setToAttackNearestTarget();
+                    break;
+                case 'healer':
+                    soldier.setToHealMostDamagedAttacker();
+                    break;
+            }
+        } catch (error) {
+            console.log('Error: ' + error);
         }
     },
 };
