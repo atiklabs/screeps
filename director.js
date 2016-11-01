@@ -25,8 +25,12 @@ var director = {
             }
             general.command(roomName); // defend, attack, rest
 
-            if (roomName == 'E68N51') {
-                general.attackRoom(roomName, 'E66N51');
+            try {
+                if (roomName == 'E68N51') {
+                    general.attackRoom(roomName, 'E66N51');
+                }
+            } catch (error) {
+                console.log('Error: ' + error);
             }
 
             // manager
