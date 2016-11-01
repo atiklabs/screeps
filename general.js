@@ -23,38 +23,37 @@ var general = {
 
     /**
      * Command the troops to the victory.
+     * @param {string} roomName
      */
-    command: function () {
-        for (let roomName in Game.rooms) {
-            let room = Game.rooms[roomName];
-            let soldiers = room.getAllSoldiers();
-            let soldiersLength = soldiers.length;
-            if (this.getMode() == 'attack') {
-                // Tell every soldier to attack
-                for (let i = 0; i < soldiersLength; i++) {
-                    this.setModeAttack(soldiers[i]);
-                }
-                // Recruit
-                this.recruitAttackers(roomName);
-            } else if (this.getMode() == 'defend') {
-                // Tell every soldier to attack
-                for (let i = 0; i < soldiersLength; i++) {
-                    this.setModeDefend(soldiers[i]);
-                }
-                // Recruit
-                this.recruitDefenders(roomName);
-            } else if (this.getMode() == 'rest') {
-                // Recruit scouts
-                //this.recruitScout(roomName);
-                for (let i = 0; i < soldiersLength; i++) {
-                    this.setModeRest(soldiers[i]);
-                }
+    command: function (roomName) {
+        let room = Game.rooms[roomName];
+        let soldiers = room.getAllSoldiers();
+        let soldiersLength = soldiers.length;
+        if (this.getMode() == 'attack') {
+            // Tell every soldier to attack
+            for (let i = 0; i < soldiersLength; i++) {
+                this.setModeAttack(soldiers[i]);
             }
-            // Use tower if necessary
-            var towers = Game.rooms[roomName].find(
-                FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-            towers.forEach(tower => tower.defendRoom());
+            // Recruit
+            this.recruitAttackers(roomName);
+        } else if (this.getMode() == 'defend') {
+            // Tell every soldier to attack
+            for (let i = 0; i < soldiersLength; i++) {
+                this.setModeDefend(soldiers[i]);
+            }
+            // Recruit
+            this.recruitDefenders(roomName);
+        } else if (this.getMode() == 'rest') {
+            // Recruit scouts
+            //this.recruitScout(roomName);
+            for (let i = 0; i < soldiersLength; i++) {
+                this.setModeRest(soldiers[i]);
+            }
         }
+        // Use tower if necessary
+        var towers = Game.rooms[roomName].find(
+            FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+        towers.forEach(tower => tower.defendRoom());
     },
 
     /**

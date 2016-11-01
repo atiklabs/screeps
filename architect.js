@@ -4,18 +4,16 @@
 var architect = {
     /**
      * Plan the next buildings.
+     * @param {string} roomName
      */
-    plan: function () {
-        // for every room
-        for (let roomName in Game.rooms) {
-            // study
-            if (this.getMode() == 'study') {
-                this.saveCurrentWorkerLocations(roomName);
-            }
-            // plan
-            if (this.getMode() == 'plan') {
-                this.planRoad(roomName);
-            }
+    plan: function (roomName) {
+        // study
+        if (this.getMode() == 'study') {
+            this.saveCurrentWorkerLocations(roomName);
+        }
+        // plan
+        if (this.getMode() == 'plan') {
+            this.planRoad(roomName);
         }
     },
 

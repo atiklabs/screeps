@@ -35,46 +35,44 @@ var manager = {
     /**
      * We will run manage in every iteration in every tick to assign tasks and ask them
      * to work. Spawn new workers if necessary.
+     * @param {string} roomName
      */
-    manage: function () {
-        // for every room
-        for (let roomName in Game.rooms) {
-            var room = Game.rooms[roomName];
-            // tell every worker to continue their task
-            var workers = room.getAllWorkers();
-            var workersLength = workers.length;
-            for (let i = 0; i < workersLength; i++) {
-                // if still spawning do nothing
-                if (workers[i].spawning == true) return;
-                // set action depending on the current mode
-                if (this.getMode() == 'repair') {
-                    this.setModeRepair(workers[i]);
-                } else {
-                    this.setModeDefault(workers[i]);
+    manage: function (roomName) {
+        var room = Game.rooms[roomName];
+        // tell every worker to continue their task
+        var workers = room.getAllWorkers();
+        var workersLength = workers.length;
+        for (let i = 0; i < workersLength; i++) {
+            // if still spawning do nothing
+            if (workers[i].spawning == true) return;
+            // set action depending on the current mode
+            if (this.getMode() == 'repair') {
+                this.setModeRepair(workers[i]);
+            } else {
+                this.setModeDefault(workers[i]);
+            }
+        }
+        // call creeps from other rooms
+        if (typeof room.controller != 'undefined') {
+            var currentRoomWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.home == roomName);
+            if (currentRoomWorkers.length < 2) {
+                var allWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.ticksToLive > 1000);
+                if (allWorkers.length > 2) {
+                    allWorkers[0].setValue('home', roomName);
                 }
             }
-            // call creeps from other rooms
-            if (typeof room.controller != 'undefined') {
-                var currentRoomWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.home == roomName);
-                if (currentRoomWorkers.length < 2) {
-                    var allWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.ticksToLive > 1000);
-                    if (allWorkers.length > 2) {
-                        allWorkers[0].setValue('home', roomName);
-                    }
-                }
+        }
+        // recruit
+        this.recruit(roomName);
+        // transfer energy between links
+        var links = room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_LINK && structure.energy > 0
             }
-            // recruit
-            this.recruit(roomName);
-            // transfer energy between links
-            var links = room.find(FIND_MY_STRUCTURES, {
-                filter: (structure) => {
-                    return structure.structureType == STRUCTURE_LINK && structure.energy > 0
-                }
-            });
-            var linksLength = links.length;
-            for (let i = 0; i < linksLength; i++) {
-                links[i].transferEnergyToControllerLink();
-            }
+        });
+        var linksLength = links.length;
+        for (let i = 0; i < linksLength; i++) {
+            links[i].transferEnergyToControllerLink();
         }
     },
 
