@@ -66,12 +66,11 @@ var general = {
             var healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer' && !creep.spawning);
             var attackersLength = attackers.length;
             var healersLength = healers.length;
-            console.log(attackersLength);
             if (attackersLength < 2 || healersLength < 2) {
                 this.recruitAttackers(roomName, 2);
             } else {
                 for (let i = 0; i < attackersLength; i++) {
-                    attackers[i].attackRoom(roomName, targetRoomName);
+                    attackers[i].setToAttackRoom(targetRoomName);
                 }
             }
         } catch (error) {
