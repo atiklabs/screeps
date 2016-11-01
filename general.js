@@ -202,7 +202,7 @@ var general = {
                 soldier.setToDefendRoom();
                 break;
             case 'attacker':
-                soldier.setToAttackNearestHostileCreep();
+                soldier.setToAttackNearestTarget();
                 break;
             case 'healer':
                 soldier.setToHealMostDamagedAttacker();
