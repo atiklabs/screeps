@@ -68,9 +68,6 @@ var general = {
             var healersLength = healers.length;
             if (attackersLength < 2 || healersLength < 2) {
                 this.recruitAttackers(roomName, 2);
-                for (let i = 0; i < attackersLength; i++) {
-                    attackers[i].moveTo(26, 43);
-                }
             } else {
                 for (let i = 0; i < attackersLength; i++) {
                     attackers[i].attackRoom(roomName, targetRoomName);
