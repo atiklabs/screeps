@@ -72,6 +72,7 @@ var manager = {
                 }
             });
             var linksLength = links.length;
+            console.log('links:' + linksLength);
             for (let i = 0; i < linksLength; i++) {
                 console.log('link' + i);
                 links[i].transferEnergyToControllerLink();
