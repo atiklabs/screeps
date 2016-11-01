@@ -81,17 +81,12 @@ module.exports = function () {
             switch (this.memory.archetype) {
                 case 'attacker':
                     if (this.attack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        // let yourself be healed
-                        if (this.hits === this.hitsMax) {
-                            this.moveTo(targets[0]);
-                        }
+                        this.moveTo(targets[0]);
                     }
                     break;
                 case 'defender':
                     if (this.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        if (this.hits === this.hitsMax) {
-                            this.moveTo(targets[0]);
-                        }
+                        this.moveTo(targets[0]);
                     }
                     break;
             }
@@ -105,16 +100,12 @@ module.exports = function () {
                 switch (this.memory.archetype) {
                     case 'attacker':
                         if (this.attack(target) == ERR_NOT_IN_RANGE) {
-                            if (this.hits === this.hitsMax) {
-                                this.moveTo(target);
-                            }
+                            this.moveTo(target);
                         }
                         break;
                     case 'defender':
                         if (this.rangedAttack(target) == ERR_NOT_IN_RANGE) {
-                            if (this.hits === this.hitsMax) {
-                                this.moveTo(target);
-                            }
+                            this.moveTo(target);
                         }
                         break;
                 }
@@ -166,8 +157,11 @@ module.exports = function () {
             attackers.sort(function (a, b) {
                 return a.hits - b.hits;
             });
-            if (this.heal(attackers[0]) == ERR_NOT_IN_RANGE) {
-                this.moveTo(attackers[0]);
+            this.moveTo(attackers[0]);
+            if (this.pos.isNearTo(attackers[0])) {
+                this.heal(attackers[0]);
+            } else {
+                this.rangedHeal(attackers[0]);
             }
         }
     };
