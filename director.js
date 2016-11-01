@@ -27,6 +27,7 @@ var director = {
 
             try {
                 if (roomName == 'E68N51') {
+                    // problem! this gets wrong with also attack mode
                     //general.attackRoom(roomName, 'E66N51');
                 }
             } catch (error) {

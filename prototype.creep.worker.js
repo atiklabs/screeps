@@ -157,7 +157,7 @@ module.exports = function () {
         if (this.carry.energy < this.carryCapacity) {
             var links = this.pos.findInRange(FIND_MY_STRUCTURES, 1, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_LINK
+                    return structure.structureType == STRUCTURE_LINK && structure.energy > 0
                 }
             });
             if (links.length > 0) {
