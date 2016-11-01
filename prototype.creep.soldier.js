@@ -149,17 +149,13 @@ module.exports = function () {
      * Heal most damaged attacker or follow the nearest attacker
      */
     Creep.prototype.setToHealMostDamagedAttacker = function () {
-        var targets = this.pos.findClosestByRange(FIND_MY_CREEPS, {
-            filter: (creep) => {
-                return (creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker');
-            }
-        });
-        if (targets.length > 0) {
-            targets.sort(function (a, b) {
+        var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker' && !creep.spawning);
+        if (attackers.length > 0) {
+            attackers.sort(function (a, b) {
                 return a.hits - b.hits;
             });
-            if (this.heal(targets[0]) == ERR_NOT_IN_RANGE) {
-                this.moveTo(targets[0]);
+            if (this.heal(attackers[0]) == ERR_NOT_IN_RANGE) {
+                this.moveTo(attackers[0]);
             }
         }
     };
