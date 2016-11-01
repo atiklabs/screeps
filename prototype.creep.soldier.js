@@ -149,7 +149,7 @@ module.exports = function () {
      * Heal most damaged attacker or follow the nearest attacker
      */
     Creep.prototype.setToHealMostDamagedAttacker = function () {
-        var targets = this.room.find(FIND_MY_CREEPS, {
+        var targets = this.pos.findClosestByRange(FIND_MY_CREEPS, {
             filter: (creep) => {
                 return (creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker');
             }
