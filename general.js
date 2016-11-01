@@ -71,7 +71,7 @@ var general = {
                 this.recruitAttackers(roomName, 1, 3);
             } else {
                 for (let i = 0; i < attackersLength; i++) {
-                    attackers[i].setToAttackRoom(targetRoomName);
+                    //attackers[i].setToAttackRoom(targetRoomName);
                 }
             }
         } catch (error) {
