@@ -3,6 +3,7 @@ require('prototype.creep')();
 require('prototype.creep.soldier')();
 require('prototype.creep.worker')();
 require('prototype.room')();
+require('prototype.structureLink')();
 require('prototype.structureSpawn')();
 require('prototype.structureTower')();
 // load variables

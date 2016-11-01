@@ -53,6 +53,7 @@ var manager = {
                     this.setModeDefault(workers[i]);
                 }
             }
+            // call creeps from other rooms
             if (typeof room.controller != 'undefined') {
                 var currentRoomWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.home == roomName);
                 if (currentRoomWorkers.length < 2) {
@@ -64,6 +65,16 @@ var manager = {
             }
             // recruit
             this.recruit(roomName);
+            // transfer energy between links
+            var links = this.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_LINK
+                }
+            });
+            var linksLength = links.length;
+            for (let i = 0; i < linksLength; i++) {
+                links[i].transferEnergyToControllerLink();
+            }
         }
     },
 
@@ -135,11 +146,13 @@ var manager = {
             var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
             var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
             var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
+            var linkWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'link').length;
             var storageWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'storage').length;
             if (worker.getState() == 'ready' && towerWorkers < 1) worker.setToTower();
             if (worker.getState() == 'ready' && repairWorkers < 1) worker.setToRepair();
             if (worker.getState() == 'ready' && buildWorkers < 1) worker.setToBuild();
             if (worker.getState() == 'ready' && upgradeWorkers < 1) worker.setToUpgrade();
+            if (worker.getState() == 'ready' && linkWorkers < 1) worker.setToLink();
             if (worker.getState() == 'ready' && storageWorkers < 1) worker.setToStorage();
             if (worker.getState() == 'ready') worker.setToUpgrade();
         }
@@ -174,6 +187,7 @@ var manager = {
         if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
         if (worker.getState() == 'transfer') worker.setToTransfer();
         if (worker.getState() == 'tower') worker.setToTower();
+        if (worker.getState() == 'link') worker.setToLink();
         if (worker.getState() == 'repair') worker.setToRepair();
         if (worker.getState() == 'build') worker.setToBuild();
         if (worker.getState() == 'upgrade') worker.setToUpgrade();

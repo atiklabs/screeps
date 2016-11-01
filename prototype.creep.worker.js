@@ -143,8 +143,32 @@ module.exports = function () {
             }
         } else {
             // if we are not assigned to a source then withdraw
-            this.setToWithdrawContainer();
+            if (this.setToWithdrawLink() == false) {
+                this.setToWithdrawContainer();
+            }
         }
+    };
+
+    /**
+     * Withdraw from link, return true if success
+     * @return {boolean}
+     */
+    Creep.prototype.setToWithdrawLink = function () {
+        if (this.carry.energy < this.carryCapacity) {
+            var links = this.pos.findInRange(FIND_MY_STRUCTURES, 1, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_LINK
+                }
+            });
+            if (links.length > 0) {
+                let result = this.withdraw(links[0], RESOURCE_ENERGY);
+                if (result == OK) {
+                    this.setState('ready');
+                    return true;
+                }
+            }
+        }
+        return false;
     };
 
     /**
@@ -264,6 +288,30 @@ module.exports = function () {
             } else if (result == ERR_NOT_IN_RANGE) {
                 this.setState('storage');
                 this.moveTo(storage);
+            } else {
+                this.setState('free');
+            }
+        } else {
+            this.setState('ready');
+        }
+    };
+
+    /**
+     * Link
+     */
+    Creep.prototype.setToLink = function () {
+        var link = this.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_LINK && structure.energy < structure.energyCapacity
+            }
+        });
+        if (link !== null) {
+            var result = this.transfer(link, RESOURCE_ENERGY);
+            if (result == OK) {
+                this.setState('free');
+            } else if (result == ERR_NOT_IN_RANGE) {
+                this.setState('link');
+                this.moveTo(link);
             } else {
                 this.setState('free');
             }
