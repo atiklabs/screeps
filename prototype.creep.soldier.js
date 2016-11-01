@@ -154,6 +154,9 @@ module.exports = function () {
      * Heal most damaged attacker or follow the nearest attacker
      */
     Creep.prototype.setToHealMostDamagedAttacker = function () {
+        if (this.hits < this.hitsMax) {
+            this.heal(this);
+        }
         var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker' && !creep.spawning);
         if (attackers.length > 0) {
             attackers.sort(function (a, b) {
