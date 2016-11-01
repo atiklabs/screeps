@@ -82,14 +82,14 @@ module.exports = function () {
                 case 'attacker':
                     if (this.attack(targets[0]) == ERR_NOT_IN_RANGE) {
                         // let yourself be healed
-                        if (this.hits == this.hitsMax) {
+                        if (this.hits === this.hitsMax) {
                             this.moveTo(targets[0]);
                         }
                     }
                     break;
                 case 'defender':
                     if (this.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        if (this.hits == this.hitsMax) {
+                        if (this.hits === this.hitsMax) {
                             this.moveTo(targets[0]);
                         }
                     }
@@ -98,19 +98,23 @@ module.exports = function () {
         } else {
             var target = this.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType != STRUCTURE_STORAGE
+                    return structure.structureType != STRUCTURE_STORAGE && structure.structureType != STRUCTURE_CONTROLLER
                 }
             });
             if (target !== false) {
                 switch (this.memory.archetype) {
                     case 'attacker':
                         if (this.attack(target) == ERR_NOT_IN_RANGE) {
-                            this.moveTo(target);
+                            if (this.hits === this.hitsMax) {
+                                this.moveTo(target);
+                            }
                         }
                         break;
                     case 'defender':
                         if (this.rangedAttack(target) == ERR_NOT_IN_RANGE) {
-                            this.moveTo(target);
+                            if (this.hits === this.hitsMax) {
+                                this.moveTo(target);
+                            }
                         }
                         break;
                 }
