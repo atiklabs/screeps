@@ -67,7 +67,7 @@ var general = {
             var attackersLength = attackers.length;
             var healersLength = healers.length;
             if (attackersLength < 2 || healersLength < 2) {
-                this.recruitAttackers(roomName, 2);
+                this.recruitAttackers(roomName, 1, 3);
             } else {
                 for (let i = 0; i < attackersLength; i++) {
                     attackers[i].setToAttackRoom(targetRoomName);
@@ -81,15 +81,14 @@ var general = {
     /**
      * Comm'on folks! Attackers is time to join the army!
      */
-    recruitAttackers: function (roomName, numAttackers = false) {
+    recruitAttackers: function (roomName, numAttackers = false, numHealers = false) {
         try {
             // Useful variables
             var room = Game.rooms[roomName];
             var maxAttackers = 1;
             var maxHealers = 1;
-            if (maxAttackers !== false) {
-                maxAttackers = maxHealers = numAttackers;
-            }
+            if (numAttackers !== false) maxAttackers = numAttackers;
+            if (numHealers !== false) maxHealers = numHealers;
             var attackersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker').length;
             var healersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer').length;
 
