@@ -66,7 +66,7 @@ var manager = {
             // recruit
             this.recruit(roomName);
             // transfer energy between links
-            var links = this.find(FIND_MY_STRUCTURES, {
+            var links = room.find(FIND_MY_STRUCTURES, {
                 filter: (structure) => {
                     return structure.structureType == STRUCTURE_LINK
                 }
