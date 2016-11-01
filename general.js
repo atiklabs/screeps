@@ -56,14 +56,31 @@ var general = {
         towers.forEach(tower => tower.defendRoom());
     },
 
+    attackRoom: function (roomName, targetRoomName) {
+        var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker');
+        var healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer');
+        var attackersLength = attackers.length;
+        var healersLength = healers.length;
+        if (attackersLength < 2 || healersLength < 2) {
+            this.recruitAttackers(roomName);
+        } else {
+            for (let i = 0; i < attackersLength; i++) {
+                attackers[i].attackRoom(targetRoomName);
+            }
+        }
+    },
+
     /**
      * Comm'on folks! Attackers is time to join the army!
      */
-    recruitAttackers: function (roomName) {
+    recruitAttackers: function (roomName, numAttackers = false) {
         // Useful variables
         var room = Game.rooms[roomName];
         var maxAttackers = 1;
         var maxHealers = 1;
+        if (maxAttackers !== false) {
+            maxAttackers = maxHealers = numAttackers;
+        }
         var attackersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker').length;
         var healersLength = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'healer').length;
 
@@ -146,7 +163,7 @@ var general = {
         switch (soldier.memory.archetype) {
             case 'attacker':
             case 'defender':
-                soldier.setToAttackNearestHostileCreep();
+                soldier.setToAttackNearestTarget();
                 break;
             case 'healer':
                 soldier.setToHealMostDamagedAttacker();
@@ -164,7 +181,7 @@ var general = {
                 soldier.setToDefendRoom();
                 break;
             case 'attacker':
-                soldier.setToAttackNearestHostileCreep();
+                soldier.setToAttackNearestTarget();
                 break;
             case 'healer':
                 soldier.setToHealMostDamagedAttacker();

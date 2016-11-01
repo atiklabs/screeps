@@ -60,22 +60,55 @@ module.exports = function () {
     };
 
     /**
+     * Attack room
+     */
+    Creep.prototype.setToAttackRoom = function (roomName) {
+        if (this.room.name != roomName) {
+            var exitDir = this.room.findExitTo(roomName);
+            var exit = this.pos.findClosestByRange(exitDir);
+            this.moveTo(exit);
+        } else {
+            this.setToAttackNearestTarget();
+        }
+    };
+
+    /**
      * Attack nearest hostile creep
      */
-    Creep.prototype.setToAttackNearestHostileCreep = function () {
-        var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if (target !== null) {
+    Creep.prototype.setToAttackNearestTarget = function () {
+        var targets = this.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+        if (targets.length > 0) {
             switch (this.memory.archetype) {
                 case 'attacker':
-                    if (this.attack(target) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(target);
+                    if (this.attack(targets[0]) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(targets[0]);
                     }
                     break;
                 case 'defender':
-                    if (this.rangedAttack(target) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(target);
+                    if (this.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
+                        this.moveTo(targets[0]);
                     }
                     break;
+            }
+        } else {
+            var target = this.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType != STRUCTURE_STORAGE
+                }
+            });
+            if (target !== false) {
+                switch (this.memory.archetype) {
+                    case 'attacker':
+                        if (this.attack(target) == ERR_NOT_IN_RANGE) {
+                            this.moveTo(target);
+                        }
+                        break;
+                    case 'defender':
+                        if (this.rangedAttack(target) == ERR_NOT_IN_RANGE) {
+                            this.moveTo(target);
+                        }
+                        break;
+                }
             }
         }
     };
@@ -86,7 +119,7 @@ module.exports = function () {
     Creep.prototype.setToDefendRoom = function () {
         if (this.getRampartIndex() === null) {
             if (this.assignRampart() === null) {
-                this.setToAttackNearestHostileCreep();
+                this.setToAttackNearestTarget();
             }
         }
         var rampart = Game.getObjectById(this.getRampartIndex());
