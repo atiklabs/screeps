@@ -70,7 +70,7 @@ var general = {
                 this.recruitAttackers(roomName, 2);
             } else {
                 for (let i = 0; i < attackersLength; i++) {
-                    //attackers[i].setToAttackRoom(targetRoomName);
+                    attackers[i].setToAttackRoom(targetRoomName);
                 }
             }
         } catch (error) {
