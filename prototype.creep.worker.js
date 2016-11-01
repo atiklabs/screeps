@@ -143,7 +143,7 @@ module.exports = function () {
             }
         } else {
             // if we are not assigned to a source then withdraw
-            if (this.setToWithdrawLink() == false) {
+            if (this.setToWithdrawLink() === false) {
                 this.setToWithdrawContainer();
             }
         }
@@ -165,6 +165,8 @@ module.exports = function () {
                 if (result == OK) {
                     this.setState('ready');
                     return true;
+                } else {
+                    console.log('Error when withdrawing from link (' + this.name + '):' + result);
                 }
             }
         }

@@ -68,13 +68,11 @@ var manager = {
             // transfer energy between links
             var links = room.find(FIND_MY_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType == STRUCTURE_LINK
+                    return structure.structureType == STRUCTURE_LINK && structure.energy > 0
                 }
             });
             var linksLength = links.length;
-            console.log('links:' + linksLength);
             for (let i = 0; i < linksLength; i++) {
-                console.log('link' + i);
                 links[i].transferEnergyToControllerLink();
             }
         }
