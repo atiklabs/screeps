@@ -69,7 +69,7 @@ var general = {
             if (attackersLength < 2 || healersLength < 2) {
                 this.recruitAttackers(roomName, 2);
                 for (let i = 0; i < attackersLength; i++) {
-                    attackers[i].moveTo(RoomPosition(26, 43, roomName));
+                    attackers[i].moveTo(26, 43);
                 }
             } else {
                 for (let i = 0; i < attackersLength; i++) {
