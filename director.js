@@ -27,7 +27,7 @@ var director = {
 
             try {
                 if (roomName == 'E68N51') {
-                    general.attackRoom(roomName, 'E66N51');
+                    //general.attackRoom(roomName, 'E66N51');
                 }
             } catch (error) {
                 console.log('Error: ' + error);
