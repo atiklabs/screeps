@@ -6,9 +6,11 @@ module.exports = function () {
      * Transfer energy
      */
     StructureLink.prototype.transferEnergyToControllerLink = function () {
-        if (!this.isControllerLink()) {
+        if (!this.isControllerLink() && this.energy > 0) {
+            console.log('is not controller link');
             var controllerLink = this.room.getControllerLink();
             if (controllerLink != null) {
+                console.log('transfer');
                 this.transferEnergy(controllerLink);
             }
         }
