@@ -39,6 +39,7 @@ var manager = {
      */
     manage: function (roomName) {
         var room = Game.rooms[roomName];
+
         // tell every worker to continue their task
         var workers = room.getAllWorkers();
         var workersLength = workers.length;
@@ -52,8 +53,9 @@ var manager = {
                 this.setModeDefault(workers[i]);
             }
         }
+
         // call creeps from other rooms
-        if (typeof room.controller != 'undefined') {
+        if (typeof room.controller != 'undefined' && room.controller.my) {
             var currentRoomWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.memory.home == roomName);
             if (currentRoomWorkers.length < 2) {
                 var allWorkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker' && creep.ticksToLive > 1000);
@@ -62,8 +64,10 @@ var manager = {
                 }
             }
         }
+
         // recruit
         this.recruit(roomName);
+
         // transfer energy between links
         try {
             var links = room.find(FIND_MY_STRUCTURES, {
