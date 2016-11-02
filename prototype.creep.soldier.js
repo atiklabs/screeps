@@ -60,6 +60,38 @@ module.exports = function () {
     };
 
     /**
+     * Defend room
+     */
+    Creep.prototype.setToDefendRoom = function () {
+        if (this.getRampartIndex() === null) {
+            if (this.assignRampart() === null) {
+                this.setToAttackNearestTarget();
+            }
+        }
+        var rampart = Game.getObjectById(this.getRampartIndex());
+        if (rampart !== null) {
+            if (!rampart.pos.isEqualTo(this.pos)) {
+                this.moveTo(rampart);
+            } else {
+                var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                if (target !== null) {
+                    switch (this.memory.archetype) {
+                        case 'attacker':
+                            this.attack(target);
+                            break;
+                        case 'defender':
+                            this.rangedAttack(target);
+                            break;
+                    }
+                }
+            }
+        } else {
+            // rampart does not longer exist
+            this.revokeRampart();
+        }
+    };
+
+    /**
      * Attack room
      */
     Creep.prototype.setToAttackRoom = function (roomName) {
@@ -106,38 +138,6 @@ module.exports = function () {
                         break;
                 }
             }
-        }
-    };
-
-    /**
-     * Defend room
-     */
-    Creep.prototype.setToDefendRoom = function () {
-        if (this.getRampartIndex() === null) {
-            if (this.assignRampart() === null) {
-                this.setToAttackNearestTarget();
-            }
-        }
-        var rampart = Game.getObjectById(this.getRampartIndex());
-        if (rampart !== null) {
-            if (!rampart.pos.isEqualTo(this.pos)) {
-                this.moveTo(rampart);
-            } else {
-                var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                if (target !== null) {
-                    switch (this.memory.archetype) {
-                        case 'attacker':
-                            this.attack(target);
-                            break;
-                        case 'defender':
-                            this.rangedAttack(target);
-                            break;
-                    }
-                }
-            }
-        } else {
-            // rampart does not longer exist
-            this.revokeRampart();
         }
     };
 
