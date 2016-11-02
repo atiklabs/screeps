@@ -71,11 +71,11 @@ var general = {
                 //this.recruitAttackers(roomName, 1, 3);
             } else {
                 for (let i = 0; i < attackersLength; i++) {
-                    //attackers[i].setToAttackRoom(targetRoomName);
+                    attackers[i].setToAttackRoom(targetRoomName);
                 }
             }
             for (let i = 0; i < attackersLength; i++) {
-                attackers[i].moveTo(new RoomPosition(37, 47, 'E66N52'));
+                //attackers[i].moveTo(new RoomPosition(37, 47, 'E66N52'));
             }
             for (let i = 0; i < healersLength; i++) {
                 healers[i].moveTo(attackers[0]);

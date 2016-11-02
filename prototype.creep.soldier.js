@@ -80,14 +80,10 @@ module.exports = function () {
         if (targets.length > 0) {
             switch (this.memory.archetype) {
                 case 'attacker':
-                    if (this.attack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(targets[0]);
-                    }
+                    this.attack(targets[0]);
                     break;
                 case 'defender':
-                    if (this.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
-                        this.moveTo(targets[0]);
-                    }
+                    this.attack(targets[0]);
                     break;
             }
         } else {
