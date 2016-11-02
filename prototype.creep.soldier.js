@@ -98,7 +98,7 @@ module.exports = function () {
         if (this.room.name != roomName) {
             var exitDir = this.room.findExitTo(roomName);
             var exit = this.pos.findClosestByRange(exitDir);
-            this.moveTo(exit);
+            this.moveTo(exit, {reusePath: 0});
         } else {
             this.setToAttackNearestTarget();
         }
