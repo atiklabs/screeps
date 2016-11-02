@@ -78,7 +78,7 @@ var general = {
                 attackers[i].setToAttackRoom(targetRoomName);
             }
             for (let i = 0; i < healersLength; i++) {
-                //healers[i].moveTo(attackers[0], {reusePath: 0});
+                healers[i].moveTo(attackers[0], {reusePath: 0});
                 healers[i].setToHealMostDamagedAttacker();
             }
         } catch (error) {
