@@ -75,16 +75,15 @@ var general = {
                 }
             }
             for (let i = 0; i < attackersLength; i++) {
-                attackers[i].moveTo(new RoomPosition(37, 47, 'E66N52'), 0);
+                attackers[i].moveTo(new RoomPosition(37, 47, 'E66N52'), {reusePath: 0});
             }
             for (let i = 0; i < healersLength; i++) {
-                healers[i].moveTo(attackers[0], 0);
+                healers[i].moveTo(attackers[0], {reusePath: 0});
                 healers[i].setToHealMostDamagedAttacker();
             }
         } catch (error) {
             console.log('Error: ' + error);
             Game.notify('Error: ' + error);
-
         }
     },
 
