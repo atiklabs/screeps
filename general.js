@@ -74,8 +74,11 @@ var general = {
                 }
             } else {
                 for (let i = 0; i < attackersLength; i++) {
-                    attackers[i].setToAttackRoom(targetRoomName);
+                    //attackers[i].setToAttackRoom(targetRoomName);
                 }
+            }
+            for (let i = 0; i < attackersLength; i++) {
+                attackers[i].moveTo(new RoomPosition(33, 4, 'E67N51'));
             }
             for (let i = 0; i < healersLength; i++) {
                 healers[i].moveTo(attackers[0]);
