@@ -148,15 +148,15 @@ module.exports = function () {
         if (this.hits < this.hitsMax) {
             this.heal(this);
         }
-        var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && !creep.spawning);
-        if (attackers.length > 0) {
-            attackers.sort(function (a, b) {
+        var soldiers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && !creep.spawning);
+        if (soldiers.length > 0) {
+            soldiers.sort(function (a, b) {
                 return (b.hitsMax - b.hits) - (a.hitsMax - a.hits);
             });
-            if (this.pos.isNearTo(attackers[0])) {
-                this.heal(attackers[0]);
+            if (this.pos.isNearTo(soldiers[0])) {
+                this.heal(soldiers[0]);
             } else {
-                this.rangedHeal(attackers[0]);
+                this.rangedHeal(soldiers[0]);
             }
         }
     };
