@@ -97,7 +97,7 @@ module.exports = function () {
     Creep.prototype.setToAttackRoom = function (roomName) {
         if (this.room.name != roomName) {
             var exitDir = this.room.findExitTo(roomName);
-            var exit = this.pos.findClosestByRange(exitDir);
+            var exit = this.pos.findClosestByPath(exitDir);
             this.moveTo(exit, {reusePath: 0});
         } else {
             this.setToAttackNearestTarget();
@@ -115,11 +115,11 @@ module.exports = function () {
                     this.attack(targets[0]);
                     break;
                 case 'defender':
-                    this.attack(targets[0]);
+                    this.rangedAttack(targets[0]);
                     break;
             }
         } else {
-            var target = this.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {
+            var target = this.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: (structure) => {
                     return structure.structureType != STRUCTURE_STORAGE && structure.structureType != STRUCTURE_CONTROLLER
                 }
@@ -145,18 +145,17 @@ module.exports = function () {
      * Heal most damaged attacker or follow the nearest attacker
      */
     Creep.prototype.setToHealMostDamagedAttacker = function () {
-        if (this.hits < this.hitsMax) {
-            this.heal(this);
-        }
-        var soldiers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && !creep.spawning);
-        if (soldiers.length > 0) {
-            soldiers.sort(function (a, b) {
-                return (b.hitsMax - b.hits) - (a.hitsMax - a.hits);
-            });
-            if (this.pos.isNearTo(soldiers[0])) {
-                this.heal(soldiers[0]);
+        var soldier = this.pos.findClosestByPath(FIND_MY_CREEPS, {
+            filter: (creep) => {
+                return creep.memory.role == 'soldier' && creep.hits < creep.hitsMax
+            }
+        });
+        if (soldier !== null) {
+            this.moveTo(soldier);
+            if (this.pos.isNearTo(soldier)) {
+                this.heal(soldier);
             } else {
-                this.rangedHeal(soldiers[0]);
+                this.rangedHeal(soldier);
             }
         }
     };
