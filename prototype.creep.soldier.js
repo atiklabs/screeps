@@ -121,7 +121,7 @@ module.exports = function () {
         } else {
             var target = this.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
-                    return structure.structureType != STRUCTURE_STORAGE && structure.structureType != STRUCTURE_CONTROLLER
+                    return structure.structureType != STRUCTURE_STORAGE && structure.structureType != STRUCTURE_CONTROLLER && structure.structureType != STRUCTURE_WALL
                 }
             });
             if (target !== false) {
