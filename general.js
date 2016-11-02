@@ -73,8 +73,8 @@ var general = {
             for (let i = 0; i < attackersLength; i++) {
                 //attackers[i].moveTo(new RoomPosition(1, 37, 'E67N52'), {reusePath: 0});
                 //attackers[i].moveTo(new RoomPosition(28, 48, 'E66N52'), {reusePath: 0});
-                attackers[i].moveTo(new RoomPosition(27, 3, 'E66N51'), {reusePath: 0});
-                //attackers[i].setToAttackRoom(targetRoomName);
+                attackers[i].moveTo(new RoomPosition(32, 2, 'E66N50'), {reusePath: 0});
+                attackers[i].setToAttackRoom(targetRoomName);
             }
             for (let i = 0; i < healersLength; i++) {
                 healers[i].moveTo(attackers[0], {reusePath: 0});
