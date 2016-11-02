@@ -151,7 +151,7 @@ module.exports = function () {
         var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && !creep.spawning);
         if (attackers.length > 0) {
             attackers.sort(function (a, b) {
-                return a.hits - b.hits;
+                return (b.hitsMax - b.hits) - (a.hitsMax - a.hits);
             });
             this.moveTo(attackers[0], {reusePath: 0});
             if (this.pos.isNearTo(attackers[0])) {
