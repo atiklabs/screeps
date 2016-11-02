@@ -152,7 +152,7 @@ module.exports = function () {
         if (this.hits < this.hitsMax) {
             this.heal(this);
         }
-        var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker' && !creep.spawning);
+        var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier' && !creep.spawning);
         if (attackers.length > 0) {
             attackers.sort(function (a, b) {
                 return a.hits - b.hits;

@@ -76,6 +76,10 @@ var general = {
                 for (let i = 0; i < attackersLength; i++) {
                     attackers[i].setToAttackRoom(targetRoomName);
                 }
+                for (let i = 0; i < healersLength; i++) {
+                    healers[i].moveTo(attackers[0]);
+                    healers[i].setToHealMostDamagedAttacker();
+                }
             }
         } catch (error) {
             console.log('Error: ' + error);
