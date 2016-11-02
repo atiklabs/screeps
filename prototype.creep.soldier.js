@@ -119,7 +119,7 @@ module.exports = function () {
                     break;
             }
         } else {
-            var target = this.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+            var target = this.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return structure.structureType != STRUCTURE_STORAGE && structure.structureType != STRUCTURE_CONTROLLER
                 }
