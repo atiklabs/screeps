@@ -96,12 +96,12 @@ module.exports = function () {
                 switch (this.memory.archetype) {
                     case 'attacker':
                         if (this.attack(target) == ERR_NOT_IN_RANGE) {
-                            this.moveTo(target);
+                            this.moveTo(target, 0);
                         }
                         break;
                     case 'defender':
                         if (this.rangedAttack(target) == ERR_NOT_IN_RANGE) {
-                            this.moveTo(target);
+                            this.moveTo(target, 0);
                         }
                         break;
                 }
@@ -153,7 +153,7 @@ module.exports = function () {
             attackers.sort(function (a, b) {
                 return a.hits - b.hits;
             });
-            this.moveTo(attackers[0]);
+            this.moveTo(attackers[0], 0);
             if (this.pos.isNearTo(attackers[0])) {
                 this.heal(attackers[0]);
             } else {
