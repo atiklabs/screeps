@@ -78,7 +78,8 @@ var general = {
                 attackers[i].moveTo(new RoomPosition(37, 47, 'E66N52'));
             }
             for (let i = 0; i < healersLength; i++) {
-                healers[i].moveTo(attackers[0]);
+                //healers[i].moveTo(attackers[0]);
+                healers[i].moveTo(new RoomPosition(37, 47, 'E66N52'));
                 healers[i].setToHealMostDamagedAttacker();
             }
         } catch (error) {
