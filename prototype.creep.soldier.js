@@ -151,7 +151,7 @@ module.exports = function () {
             }
         });
         if (soldier !== null) {
-            this.moveTo(soldier);
+            this.moveTo(soldier, {reusePath: 0});
             if (this.pos.isNearTo(soldier)) {
                 this.heal(soldier);
             } else {
