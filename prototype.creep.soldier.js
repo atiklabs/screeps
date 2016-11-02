@@ -153,7 +153,6 @@ module.exports = function () {
             attackers.sort(function (a, b) {
                 return (b.hitsMax - b.hits) - (a.hitsMax - a.hits);
             });
-            this.moveTo(attackers[0], {reusePath: 0});
             if (this.pos.isNearTo(attackers[0])) {
                 this.heal(attackers[0]);
             } else {
