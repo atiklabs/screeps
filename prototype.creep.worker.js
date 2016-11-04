@@ -447,7 +447,6 @@ module.exports = function () {
         if (this.getValue('home') != this.room.name) {
             var exitDir = this.room.findExitTo(this.getValue('home'));
             var exit = this.pos.findClosestByPath(exitDir);
-            console.log(this.name + ' ' + this.getValue('home') + ' ' + exitDir);
             this.moveTo(exit);
             this.setState('go_home');
         } else {
