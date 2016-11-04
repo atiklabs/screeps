@@ -123,19 +123,16 @@ var manager = {
             // always try to pickup dropped energy on the floor
             if (worker.tryToPickupHere()) return;
 
-            if (worker.getValue('home') != worker.room.name) {
-                worker.setToHome();
-                return;
-            } else if (worker.getState() == 'go_home') {
-                worker.setState('init');
-            }
-
             // maintain the same task
             this.setToSameTask(worker);
 
             // init and free
             if (worker.getState() == 'init') worker.setState('free');
             if (worker.getState() == 'free') {
+                if (worker.getValue('home') != worker.room.name) {
+                    worker.setToHome();
+                    return;
+                }
                 // if structures spawn or extension without capacity then withdraw, else harvest
                 var structures = worker.room.find(FIND_MY_STRUCTURES, {
                     filter: (structure) => {
@@ -204,6 +201,7 @@ var manager = {
 
     setToSameTask: function(worker) {
         if (worker.getState() == 'pickup') worker.setToPickup(); // not used
+        if (worker.getState() == 'go_home') worker.setToHome();
         if (worker.getState() == 'harvest') worker.setToHarvest();
         if (worker.getState() == 'withdraw_container') worker.setToWithdrawContainer();
         if (worker.getState() == 'withdraw_storage') worker.setToWithdrawStorage();
