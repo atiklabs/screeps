@@ -129,7 +129,7 @@ var manager = {
             // init and free
             if (worker.getState() == 'init') worker.setState('free');
             if (worker.getState() == 'free') {
-                if (worker.getValue('home') != worker.room.name) {
+                if (worker.getValue('home') !== null && worker.getValue('home') != worker.room.name) {
                     worker.setToHome();
                     return;
                 }
