@@ -23,17 +23,17 @@ var director = {
             } else {
                 general.setMode('rest');
             }
-            //general.command(roomName); // defend, attack, rest
+            general.command(roomName); // defend, attack, rest
 
-            try {
-                if (roomName == 'E68N51') {
+            //try {
+                //if (roomName == 'E68N51') {
                     // problem! this gets wrong with also attack mode
-                    general.attackRoom(roomName, 'E66N51');
-                }
-            } catch (error) {
-                console.log('Error: ' + error);
-                Game.notify('Error: ' + error);
-            }
+                    //general.attackRoom(roomName, 'E66N51');
+                //}
+            //} catch (error) {
+                //console.log('Error: ' + error);
+                //Game.notify('Error: ' + error);
+            //}
 
             // manager
             if (targets.length >= 1) {
