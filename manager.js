@@ -146,6 +146,8 @@ var manager = {
                 if (worker.getState() == 'free') worker.setToHarvest();
             }
 
+            if (worker.getState() == 'ready' && towerWorkers < 1) worker.setToTower();
+
             // if ready set task transfer
             if (worker.getState() == 'ready') worker.setToTransfer();
 
