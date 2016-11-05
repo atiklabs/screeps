@@ -51,7 +51,11 @@ var general = {
             // Recruit scouts
             //this.recruitScout(roomName);
             for (let i = 0; i < soldiersLength; i++) {
-                this.setModeRest(soldiers[i]);
+                if (typeof  Game.flags.Soldiers != 'undefined') {
+                    soldiers[i].moveTo(Game.flags.Soldiers);
+                } else {
+                    this.setModeRest(soldiers[i]);
+                }
             }
         }
         // Use tower if necessary
