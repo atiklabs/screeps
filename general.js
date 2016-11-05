@@ -32,7 +32,11 @@ var general = {
         if (this.getMode() == 'attack') {
             // Tell every soldier to attack
             for (let i = 0; i < soldiersLength; i++) {
-                this.setModeAttack(soldiers[i]);
+                if (typeof  Game.flags.Soldiers != 'undefined') {
+                    soldiers[i].moveTo(Game.flags.Soldiers);
+                } else {
+                    this.setModeAttack(soldiers[i]);
+                }
             }
             // Recruit
             this.recruitAttackers(roomName);
