@@ -18,7 +18,7 @@ var director = {
             architect.plan(roomName); // study, plan, rest
 
             // general
-            general.setMode('rest');
+            general.setMode('defend');
             general.command(roomName); // defend, attack, rest
 
             /*
