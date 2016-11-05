@@ -108,14 +108,15 @@ module.exports = function () {
      * Attack nearest hostile creep
      */
     Creep.prototype.setToAttackNearestTarget = function () {
-        var targets = this.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
-        if (targets.length > 0) {
+        var target = this.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+        if (target !== null) {
+            this.moveTo(target);
             switch (this.memory.archetype) {
                 case 'attacker':
-                    this.attack(targets[0]);
+                    this.attack(target);
                     break;
                 case 'defender':
-                    this.rangedAttack(targets[0]);
+                    this.rangedAttack(target);
                     break;
             }
         } else {

@@ -18,8 +18,10 @@ var director = {
             architect.plan(roomName); // study, plan, rest
 
             // general
-                general.setMode('attack');
+            general.setMode('attack');
+            general.command(roomName); // defend, attack, rest
 
+            /*
             if (false) {
                 try {
                     if (roomName == 'E68N51') {
@@ -31,8 +33,8 @@ var director = {
                     Game.notify('Error: ' + error);
                 }
             } else {
-                general.command(roomName); // defend, attack, rest
             }
+            */
 
             // manager
             if (targets.length >= 1) {
