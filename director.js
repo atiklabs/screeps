@@ -37,11 +37,7 @@ var director = {
             */
 
             // manager
-            if (targets.length >= 1) {
-                manager.setMode('repair');
-            } else {
                 manager.setMode('default');
-            }
             manager.manage(roomName); // default, upgrade, build, repair
         }
     }
