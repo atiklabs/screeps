@@ -18,11 +18,7 @@ var director = {
             architect.plan(roomName); // study, plan, rest
 
             // general
-            if (targets.length >= 1) {
                 general.setMode('attack');
-            } else {
-                general.setMode('rest');
-            }
 
             if (false) {
                 try {
