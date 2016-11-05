@@ -23,9 +23,8 @@ var director = {
             } else {
                 general.setMode('rest');
             }
-            //general.command(roomName); // defend, attack, rest
 
-            if (true) {
+            if (false) {
                 try {
                     if (roomName == 'E68N51') {
                         //problem! this gets wrong with also attack mode
@@ -35,6 +34,8 @@ var director = {
                     console.log('Error: ' + error);
                     Game.notify('Error: ' + error);
                 }
+            } else {
+                general.command(roomName); // defend, attack, rest
             }
 
             // manager
