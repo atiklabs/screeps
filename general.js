@@ -68,13 +68,10 @@ var general = {
             var attackersLength = attackers.length;
             var healersLength = healers.length;
             if (attackersLength < 1 || healersLength < 3) {
-                //this.recruitAttackers(roomName, 1, 3);
+                this.recruitAttackers(roomName, 1, 3);
             }
             for (let i = 0; i < attackersLength; i++) {
-                //attackers[i].moveTo(new RoomPosition(1, 37, 'E67N52'), {reusePath: 0});
-                //attackers[i].moveTo(new RoomPosition(28, 48, 'E66N52'), {reusePath: 0});
-                //attackers[i].moveTo(new RoomPosition(32, 2, 'E66N50'), {reusePath: 0});
-                //attackers[i].moveTo(new RoomPosition(32, 47, 'E66N51'), {reusePath: 0});
+                attackers[i].moveTo(new RoomPosition(36, 48, 'E66N50'), {reusePath: 0});
                 attackers[i].setToAttackRoom(targetRoomName);
             }
             for (let i = 0; i < healersLength; i++) {
