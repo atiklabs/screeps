@@ -146,7 +146,7 @@ module.exports = function () {
      * Heal most damaged attacker or follow the nearest attacker
      */
     Creep.prototype.setToHealMostDamagedAttacker = function () {
-        var soldiers = this.room.find(FIND_MY_CREEPS, {
+        let soldiers = this.room.find(FIND_MY_CREEPS, {
             filter: (creep) => {
                 return creep.memory.role == 'soldier' && creep.hits < creep.hitsMax
             }
@@ -162,9 +162,9 @@ module.exports = function () {
                 this.rangedHeal(soldiers[0]);
             }
         } else {
-            var soldiers = this.room.find(FIND_MY_CREEPS, {
+            let soldiers = this.room.find(FIND_MY_CREEPS, {
                 filter: (creep) => {
-                    return creep.memory.role == 'soldier'
+                    return creep.memory.role == 'soldier' && creep.memory.archetype == 'attacker'
                 }
             });
             if (soldiers.length > 0) {
