@@ -71,7 +71,6 @@ var general = {
                 this.recruitAttackers(roomName, 1, 1);
             }
             for (let i = 0; i < attackersLength; i++) {
-                attackers[i].moveTo(new RoomPosition(30, 20, 'E67N51'), {reusePath: 0});
                 attackers[i].setToAttackRoom(targetRoomName);
             }
             for (let i = 0; i < healersLength; i++) {
