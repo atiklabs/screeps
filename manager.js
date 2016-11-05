@@ -146,6 +146,8 @@ var manager = {
                 if (worker.getState() == 'free') worker.setToHarvest();
             }
 
+            var allWorkersInRoom = worker.room.getAllWorkers();
+            var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
             if (worker.getState() == 'ready' && towerWorkers < 1) worker.setToTower();
 
             // if ready set task transfer
@@ -154,9 +156,9 @@ var manager = {
             // if full set a working task
             if (worker.getState() == 'ready') {
                 var allWorkersInRoom = worker.room.getAllWorkers();
-                var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
                 var repairWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'repair').length;
                 var buildWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'build').length;
+                var towerWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'tower').length;
                 var upgradeWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'upgrade').length;
                 var linkWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'link').length;
                 var storageWorkers = _.filter(allWorkersInRoom, (worker) => worker.memory.state == 'storage').length;
