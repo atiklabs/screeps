@@ -161,6 +161,15 @@ module.exports = function () {
             } else {
                 this.rangedHeal(soldiers[0]);
             }
+        } else {
+            var soldiers = this.room.find(FIND_MY_CREEPS, {
+                filter: (creep) => {
+                    return creep.memory.role == 'soldier'
+                }
+            });
+            if (soldiers.length > 0) {
+                this.moveTo(soldiers[0], {reusePath: 0});
+            }
         }
     };
 
