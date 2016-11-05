@@ -194,6 +194,8 @@ var general = {
         try {
             switch (soldier.memory.archetype) {
                 case 'attacker':
+                    soldier.setToAttackNearestTarget();
+                    break;
                 case 'defender':
                     soldier.setToAttackNearestTarget();
                     break;

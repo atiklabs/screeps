@@ -11,7 +11,7 @@ module.exports = function () {
             hostiles.sort(function (a, b) {
                 return a.hits - b.hits;
             });
-            this.attack(hostiles[0]);
+            //this.attack(hostiles[0]);
         }
     };
 };
