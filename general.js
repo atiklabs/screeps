@@ -71,8 +71,11 @@ var general = {
                 //this.recruitAttackers(roomName, 1, 1);
             }
             for (let i = 0; i < attackersLength; i++) {
-                attackers[i].moveTo(Game.flags.Attack);
-                attackers[i].setToAttackRoom(targetRoomName);
+                if (typeof  Game.flags.Soldiers != 'undefined') {
+                    attackers[i].moveTo(Game.flags.Soldiers);
+                } else {
+                    attackers[i].setToAttackRoom(targetRoomName);
+                }
             }
             for (let i = 0; i < healersLength; i++) {
                 healers[i].moveTo(attackers[0], {reusePath: 0});
